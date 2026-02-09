@@ -182,7 +182,10 @@
 
 <div class="topo-titulo">
     <button class="btn-menu-mobile" onclick="toggleMenu()">☰</button>
-    <span id="tituloTopo">RE SOLUTION - GESTÃO FINANCEIRA</span>
+    <div style="display: flex; align-items: center; gap: 5px;">
+        <span style="font-weight: 800; color: var(--primary-color);">RE SOLUTION</span>
+        <span id="labelMesAtivo" style="font-weight: 400; color: var(--text-secondary); font-size: 0.9rem; margin-left: 5px;">— JAN/2026</span>
+    </div>
     <div class="controles-topo">
         <button id="btnDarkMode" onclick="toggleDarkMode()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">🌙</button>
     </div>
@@ -207,7 +210,7 @@
 <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
         
     <div style="display: flex; flex-direction: column; gap: 10px;">
-        <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-secondary);">MÊS DE REFERÊNCIA</label>
+        <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-secondary); text-transform: uppercase;">Mês de Referência</label>
         <select id="mes" onchange="mudarMes()" style="width: 100%;">
             <option value="2026-01">Janeiro/2026</option>
             <option value="2026-02">Fevereiro/2026</option>
@@ -223,7 +226,7 @@
             <option value="2026-12">Dezembro/2026</option>
         </select>
 
-        <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-secondary); margin-top: 10px;">DADOS</label>
+        <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-secondary); text-transform: uppercase; margin-top: 10px;">Dados e Backup</label>
         <button class="btn-system" onclick="exportarDados()" style="width: 100%; text-align: left;">📤 Exportar Backup</button>
         <button class="btn-system" onclick="document.getElementById('inputImport').click()" style="width: 100%; text-align: left;">📥 Importar Backup</button>
         <input type="file" id="inputImport" style="display:none" onchange="importarDados(event)">
@@ -302,10 +305,23 @@ function salvar(){ localStorage.setItem('financeiroDados2026', JSON.stringify(da
 function garantirMes(){ if(!dadosPorMes[mesAtual]) dadosPorMes[mesAtual] = { receber: [], pagar: [] }; }
 function formatar(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
 
-function mudarMes(){
+function mudarMes() {
     mesAtual = document.getElementById('mes').value;
-    const textoMes = document.getElementById('mes').selectedOptions[0].text;
-    document.getElementById('tituloTopo').innerHTML = `Re Solution - GESTÃO FINANCEIRA — ${textoMes.toUpperCase()}`;
+    
+    // Pega o texto do mês selecionado (ex: Janeiro/2026)
+    const nomeMesFull = document.getElementById('mes').selectedOptions[0].text;
+    
+    // Transforma em formato curto (ex: JAN/2026) para o topo
+    const mesCurto = nomeMesFull.substring(0, 3).toUpperCase() + nomeMesFull.substring(nomeMesFull.indexOf('/'));
+    
+    // Atualiza apenas a parte do mês no topo
+    document.getElementById('labelMesAtivo').innerText = `— ${mesCurto}`;
+    
+    // Se estiver no celular, fecha o menu automaticamente ao selecionar
+    if (window.innerWidth <= 1024) {
+        toggleMenu();
+    }
+    
     render();
 }
 

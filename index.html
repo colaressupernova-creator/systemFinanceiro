@@ -307,7 +307,7 @@ function formatar(v){ return v.toLocaleString('pt-BR',{style:'currency',currency
 
 function mudarMes() {
     mesAtual = document.getElementById('mes').value;
-    
+    localStorage.setItem('mesSelecionado', mesAtual);
     // Pega o texto do mês selecionado (ex: Janeiro/2026)
     const nomeMesFull = document.getElementById('mes').selectedOptions[0].text;
     

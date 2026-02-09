@@ -284,10 +284,23 @@
 </div>
 
 <script>
+// 1. Recupera os dados guardados
 let dadosPorMes = JSON.parse(localStorage.getItem('financeiroDados2026') || '{}');
-let mesAtual = document.getElementById('mes').value;
+
+// 2. RECUPERA O MÊS SALVO (A mágica acontece aqui)
+// Ele tenta ler 'mesSelecionado'. Se não existir, usa '2026-01' como padrão.
+let mesSalvo = localStorage.getItem('mesSelecionado') || '2026-01';
+
+// 3. Aplica o mês recuperado ao elemento <select> na tela
+document.getElementById('mes').value = mesSalvo;
+
+// 4. Define a variável global mesAtual com o valor que acabamos de recuperar
+let mesAtual = mesSalvo;
+
 let editandoIndex = null;
 let editandoTipo = null;
+
+// --- A seguir, coloque as suas funções (toggleDarkMode, salvar, render, etc) ---
 
 if (localStorage.getItem('darkMode') === 'enabled') {
     document.body.classList.add('dark-mode');

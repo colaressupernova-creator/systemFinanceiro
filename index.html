@@ -474,65 +474,33 @@ function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].
 
 function atualizarGrafico(){
     const resumo = {};
-    // Soma apenas o que está marcado como pago
-    if (dadosPorMes[mesAtual] && dadosPorMes[mesAtual].pagar) {
-        dadosPorMes[mesAtual].pagar.forEach(item => { 
-            if(item.marcado) {
-                resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
-            }
-        });
-    }
+    dadosPorMes[mesAtual].pagar.forEach(item => { 
+        if(item.marcado) {
+            resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
+        }
+    });
 
     const ctx = document.getElementById('graficoPizza');
     if(window.meuGrafico) window.meuGrafico.destroy();
-    
-    // Se não houver dados, não desenha nada
     if(Object.keys(resumo).length === 0) return;
 
     window.meuGrafico = new Chart(ctx, {
-        type: 'doughnut', 
+        type: 'pie', // Volta para Pizza
         data: {
             labels: Object.keys(resumo),
             datasets: [{ 
                 data: Object.values(resumo), 
-                backgroundColor: ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899'],
-                borderWidth: 2,
-                // Cor da borda se ajusta ao modo noturno para não "brilhar"
-                borderColor: document.body.classList.contains('dark-mode') ? '#1e293b' : '#ffffff',
-                hoverOffset: 15
+                backgroundColor: ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899']
             }]
         },
         options: {
-            cutout: '75%', // Deixa o buraco da rosca maior e mais elegante
-            maintainAspectRatio: true,
-            aspectRatio: 1,2 // Aumente para 2.5 se quiser que o gráfico diminua ainda mais
-            layout: {
-                padding: {
-                    top: 10,
-                    bottom: 10,
-                    left: 20,
-                    right: 20
-                }
-            },
+            responsive: true,
             plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.label || '';
-                            let valor = context.parsed || 0;
-                            return `${label}: ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
-                        }
-                    }
-                }
-            },
-            animation: {
-                duration: 500 // Animação suave para evitar pulos de posição
+                legend: { display: false }
             }
         }
     });
 }
-
 function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_re.json"; a.click(); }
 function importarDados(e) { const reader = new FileReader(); reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); }; reader.readAsText(e.target.files[0]); }
 

@@ -295,8 +295,7 @@ let mesAtual = mesSalvo;
 let editandoIndex = null;
 let editandoTipo = null;
 
-// --- A seguir, coloque as suas funções (toggleDarkMode, salvar, render, etc) ---
-
+// Verifica Dark Mode ao carregar
 if (localStorage.getItem('darkMode') === 'enabled') {
     document.body.classList.add('dark-mode');
     document.getElementById('btnDarkMode').innerText = '☀️';
@@ -313,23 +312,18 @@ function salvar(){ localStorage.setItem('financeiroDados2026', JSON.stringify(da
 function garantirMes(){ if(!dadosPorMes[mesAtual]) dadosPorMes[mesAtual] = { receber: [], pagar: [] }; }
 function formatar(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
 
+function atualizarLabelTopo() {
+    const select = document.getElementById('mes');
+    const nomeMesFull = select.selectedOptions[0].text;
+    const mesCurto = nomeMesFull.substring(0, 3).toUpperCase() + nomeMesFull.substring(nomeMesFull.indexOf('/'));
+    document.getElementById('labelMesAtivo').innerText = `— ${mesCurto}`;
+}
+
 function mudarMes() {
     mesAtual = document.getElementById('mes').value;
     localStorage.setItem('mesSelecionado', mesAtual);
-    // Pega o texto do mês selecionado (ex: Janeiro/2026)
-    const nomeMesFull = document.getElementById('mes').selectedOptions[0].text;
-    
-    // Transforma em formato curto (ex: JAN/2026) para o topo
-    const mesCurto = nomeMesFull.substring(0, 3).toUpperCase() + nomeMesFull.substring(nomeMesFull.indexOf('/'));
-    
-    // Atualiza apenas a parte do mês no topo
-    document.getElementById('labelMesAtivo').innerText = `— ${mesCurto}`;
-    
-    // Se estiver no celular, fecha o menu automaticamente ao selecionar
-    if (window.innerWidth <= 1024) {
-        toggleMenu();
-    }
-    
+    atualizarLabelTopo();
+    if (window.innerWidth <= 1024) toggleMenu();
     render();
 }
 
@@ -349,6 +343,7 @@ function adicionar(){
         dadosPorMes[mesAtual][tipo].push(item);
     }
     editandoIndex = null;
+    document.getElementById('btnSalvar').innerText = "Adicionar";
     document.getElementById('descricao').value = ''; document.getElementById('valor').value = '';
     salvar(); render();
 }
@@ -374,11 +369,9 @@ function render() {
     let totalRec = 0, totalPag = 0, urgente = false;
     const hoje = new Date().toISOString().split('T')[0];
 
-    // Ordenação
     dadosPorMes[mesAtual].receber.sort((a,b) => a.data > b.data ? 1 : -1);
     dadosPorMes[mesAtual].pagar.sort((a,b) => a.data > b.data ? 1 : -1);
 
-    // Renderizar Tabelas conforme colunas pedidas: Disc // Valor // Data // Ok
     ['receber', 'pagar'].forEach(tipo => {
         dadosPorMes[mesAtual][tipo].forEach((item, i) => {
             if(item.marcado) { if(tipo === 'receber') totalRec += item.valor; else totalPag += item.valor; }
@@ -411,7 +404,6 @@ function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].
 
 function atualizarGrafico(){
     const resumo = {};
-    // Soma apenas o que está marcado como pago
     dadosPorMes[mesAtual].pagar.forEach(item => { 
         if(item.marcado) {
             resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
@@ -420,7 +412,6 @@ function atualizarGrafico(){
 
     const ctx = document.getElementById('graficoPizza');
     if(window.meuGrafico) window.meuGrafico.destroy();
-    
     if(Object.keys(resumo).length === 0) return;
 
     window.meuGrafico = new Chart(ctx, {
@@ -438,7 +429,6 @@ function atualizarGrafico(){
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        // Esta função formata o número para R$ no gráfico
                         label: function(context) {
                             let label = context.label || '';
                             let valor = context.parsed || 0;
@@ -453,21 +443,18 @@ function atualizarGrafico(){
 
 function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_re.json"; a.click(); }
 function importarDados(e) { const reader = new FileReader(); reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); }; reader.readAsText(e.target.files[0]); }
-    function toggleMenu() {
-    // Verifica se a tela é de celular antes de agir
+
+function toggleMenu() {
     if (window.innerWidth <= 1024) {
         document.querySelector('.lateral').classList.toggle('active');
         document.getElementById('overlay').classList.toggle('active');
     }
-        function atualizarLabelTopo() {
-    const select = document.getElementById('mes');
-    const nomeMesFull = select.selectedOptions[0].text;
-    const mesCurto = nomeMesFull.substring(0, 3).toUpperCase() + nomeMesFull.substring(nomeMesFull.indexOf('/'));
-    document.getElementById('labelMesAtivo').innerText = `— ${mesCurto}`;
-}
 }
 
+// Execução inicial ao abrir a página
 atualizarLabelTopo();
+render();
+</script>
 </script>
 </body>
 </html>

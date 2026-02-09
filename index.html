@@ -217,7 +217,9 @@ select option {
 <body>
 
 <div class="topo-titulo">
-    <span id="tituloTopo">Re Solution - GESTÃO FINANCEIRA — JAN/2026</span>
+    
+    <span id="tituloTopo">Re Solution - GESTÃO FINANCEIRA — <span id="dataEscrita">JAN/2026</span></span>
+    
     <div class="controles-topo">
         <button class="btn-system" onclick="exportarDados()">📤 Exportar</button>
         <button class="btn-system" onclick="document.getElementById('inputImport').click()">📥 Importar</button>
@@ -339,10 +341,17 @@ function formatarDataBR(dataISO){
 }
 
 function mudarMes(){
+    // Pega o valor do seletor (ex: 2026-01)
     mesAtual = document.getElementById('mes').value;
-    document.getElementById('tituloTopo').innerText = "GESTÃO FINANCEIRA — " + document.getElementById('mes').selectedOptions[0].text;
-    cancelarEdicao();
-    render();
+    
+    // Pega o texto do mês selecionado (ex: Jan/2026)
+    const textoMes = document.getElementById('mes').selectedOptions[0].text;
+    
+    // Atualiza APENAS a parte da data, mantendo o nome da empresa
+    document.getElementById('tituloTopo').innerHTML = `Re Solution - GESTÃO FINANCEIRA — ${textoMes.toUpperCase()}`;
+    
+    cancelarEdicao(); // Limpa campos se estiver editando algo
+    render(); // Recarrega as tabelas e saldos
 }
 
 function adicionar(){

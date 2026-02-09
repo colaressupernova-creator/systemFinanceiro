@@ -200,6 +200,10 @@
     
     <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
 
+<div class="card" style="margin-top: 20px;">
+        <canvas id="graficoPizza"></canvas>
+    </div>
+        
     <div style="display: flex; flex-direction: column; gap: 10px;">
         <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-secondary);">MÊS DE REFERÊNCIA</label>
         <select id="mes" onchange="mudarMes()" style="width: 100%;">
@@ -223,9 +227,7 @@
         <input type="file" id="inputImport" style="display:none" onchange="importarDados(event)">
     </div>
 
-    <div class="card" style="margin-top: 20px;">
-        <canvas id="graficoPizza"></canvas>
-    </div>
+    
 </div>
 
     <div class="principal">

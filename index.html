@@ -49,7 +49,41 @@
             background-repeat: no-repeat; background-position: right 8px center; background-size: 14px;
         }
 
-        .topo-titulo { background: var(--bg-card); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 15px; }
+        .topo-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Alinha o conteúdo à esquerda */
+    gap: 15px; /* Espaço entre o botão, o título e os controles */
+    padding: 1rem 2rem;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Garante que os controles (Exportar/Mês) fiquem no canto direito */
+.controles-topo {
+    margin-left: auto; 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-menu-mobile {
+    display: none; /* Escondido no PC */
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--primary-color);
+    padding: 0;
+    margin-right: 10px;
+}
+
+/* Mostra o botão apenas no celular */
+@media (max-width: 1024px) {
+    .btn-menu-mobile {
+        display: block;
+    }
+}
         #tituloTopo { font-weight: 700; color: var(--primary-color); }
         .btn-system { background: none; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 8px; color: var(--text-main); cursor: pointer; }
 
@@ -85,6 +119,22 @@
 
     /* Estilo do botão que abre o menu no topo */
     .btn-menu-mobile { display: block !important; }
+}
+
+.lateral .btn-system {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 8px;
+    color: var(--text-main);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.lateral .btn-system:hover {
+    background: var(--primary-color);
+    color: white;
 }
 
 /* Botão de abrir menu (escondido no PC) */
@@ -130,27 +180,10 @@
 <body>
 <div id="overlay" onclick="toggleMenu()"></div>
 
-<button class="btn-menu-mobile" onclick="toggleMenu()">📊</button>
 <div class="topo-titulo">
-    <span id="tituloTopo">RE SOLUTION - GESTÃO FINANCEIRA — JAN/2026</span>
+    <button class="btn-menu-mobile" onclick="toggleMenu()">☰</button>
+    <span id="tituloTopo">RE SOLUTION - GESTÃO FINANCEIRA</span>
     <div class="controles-topo">
-        <button class="btn-system" onclick="exportarDados()">📤 Exportar</button>
-        <button class="btn-system" onclick="document.getElementById('inputImport').click()">📥 Importar</button>
-        <input type="file" id="inputImport" style="display:none" onchange="importarDados(event)">
-        <select id="mes" onchange="mudarMes()">
-            <option value="2026-01">Jan/2026</option>
-            <option value="2026-02">Fev/2026</option>
-            <option value="2026-03">Mar/2026</option>
-            <option value="2026-04">Abr/2026</option>
-            <option value="2026-05">Mai/2026</option>
-            <option value="2026-06">Jun/2026</option>
-            <option value="2026-07">Jul/2026</option>
-            <option value="2026-08">Ago/2026</option>
-            <option value="2026-09">Set/2026</option>
-            <option value="2026-10">Out/2026</option>
-            <option value="2026-11">Nov/2026</option>
-            <option value="2026-12">Dez/2026</option>
-        </select>
         <button id="btnDarkMode" onclick="toggleDarkMode()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">🌙</button>
     </div>
 </div>
@@ -158,12 +191,42 @@
 <div id="bannerAlerta">🔔 ATENÇÃO: Contas vencendo hoje ou atrasadas!</div>
 
 <div class="layout">
-    <div class="lateral">
-        <div class="card">Recebido<span id="totalRecebido" style="color:var(--success-color)">R$ 0,00</span></div>
-        <div class="card">Pago<span id="totalPago" style="color:var(--danger-color)">R$ 0,00</span></div>
-        <div class="card">Saldo<span id="saldo" style="color:var(--primary-color)">R$ 0,00</span></div>
-        <div class="card"><canvas id="graficoPizza"></canvas></div>
+    <div class="lateral" id="menuLateral">
+
+    
+    <div class="card">Recebido<span id="totalRecebido" style="color:var(--success-color)">R$ 0,00</span></div>
+    <div class="card">Pago<span id="totalPago" style="color:var(--danger-color)">R$ 0,00</span></div>
+    <div class="card">Saldo<span id="saldo" style="color:var(--primary-color)">R$ 0,00</span></div>
+    
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-secondary);">MÊS DE REFERÊNCIA</label>
+        <select id="mes" onchange="mudarMes()" style="width: 100%;">
+            <option value="2026-01">Janeiro/2026</option>
+            <option value="2026-02">Fevereiro/2026</option>
+            <option value="2026-03">Março/2026</option>
+            <option value="2026-04">Abril/2026</option>
+            <option value="2026-05">Maio/2026</option>
+            <option value="2026-06">Junho/2026</option>
+            <option value="2026-07">Julho/2026</option>
+            <option value="2026-08">Agosto/2026</option>
+            <option value="2026-09">Setembro/2026</option>
+            <option value="2026-10">Outubro/2026</option>
+            <option value="2026-11">Novembro/2026</option>
+            <option value="2026-12">Dezembro/2026</option>
+        </select>
+
+        <label style="font-size: 0.8rem; font-weight: bold; color: var(--text-secondary); margin-top: 10px;">DADOS</label>
+        <button class="btn-system" onclick="exportarDados()" style="width: 100%; text-align: left;">📤 Exportar Backup</button>
+        <button class="btn-system" onclick="document.getElementById('inputImport').click()" style="width: 100%; text-align: left;">📥 Importar Backup</button>
+        <input type="file" id="inputImport" style="display:none" onchange="importarDados(event)">
     </div>
+
+    <div class="card" style="margin-top: 20px;">
+        <canvas id="graficoPizza"></canvas>
+    </div>
+</div>
 
     <div class="principal">
         <div class="secao-form">

@@ -1,0 +1,15 @@
+{
+  "name": "Gestão Financeira RE",
+  "short_name": "FinanceiroRE",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

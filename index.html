@@ -287,14 +287,9 @@
 // 1. Recupera os dados guardados
 let dadosPorMes = JSON.parse(localStorage.getItem('financeiroDados2026') || '{}');
 
-// 2. RECUPERA O MÊS SALVO (A mágica acontece aqui)
-// Ele tenta ler 'mesSelecionado'. Se não existir, usa '2026-01' como padrão.
+// Recupera o mês salvo e já aplica ao select
 let mesSalvo = localStorage.getItem('mesSelecionado') || '2026-01';
-
-// 3. Aplica o mês recuperado ao elemento <select> na tela
 document.getElementById('mes').value = mesSalvo;
-
-// 4. Define a variável global mesAtual com o valor que acabamos de recuperar
 let mesAtual = mesSalvo;
 
 let editandoIndex = null;
@@ -464,6 +459,12 @@ function importarDados(e) { const reader = new FileReader(); reader.onload = (ev
         document.querySelector('.lateral').classList.toggle('active');
         document.getElementById('overlay').classList.toggle('active');
     }
+        function atualizarLabelTopo() {
+    const select = document.getElementById('mes');
+    const nomeMesFull = select.selectedOptions[0].text;
+    const mesCurto = nomeMesFull.substring(0, 3).toUpperCase() + nomeMesFull.substring(nomeMesFull.indexOf('/'));
+    document.getElementById('labelMesAtivo').innerText = `— ${mesCurto}`;
+}
 }
 
 render();

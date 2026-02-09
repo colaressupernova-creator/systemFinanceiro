@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão Financeira Pro 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        :root {
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
+            --primary-color: #2563eb;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --transition: all 0.2s ease;
+        }
+
+        body.dark-mode {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --input-bg: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            transition: var(--transition);
+        }
+
+        /* HEADER */
+        .topo-titulo {
+            background-color: var(--bg-card);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        #tituloTopo { font-weight: 700; font-size: 1.1rem; color: var(--primary-color); }
+
+        .controles-topo { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+        /* BOTÕES DE SISTEMA */
+        .btn-system {
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-system:hover { background: rgba(0,0,0,0.05); }
+        body.dark-mode .btn-system:hover { background: rgba(255,255,255,0.05); }
+
+        /* FORMULÁRIO ALINHADO */
+        .secao-form {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .actions select, .actions input, .actions button {
+            height: 40px; 
+            padding: 0 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.85rem;
+            box-sizing: border-box;
+        }
+
+        #tipo { flex: 0 1 120px; }
+        #categoria { flex: 0 1 160px; }
+        #descricao { flex: 2 1 180px; }
+        #valor { flex: 1 1 90px; }
+        #data { flex: 0 1 130px; }
+        
+        #btnSalvar {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 0 0 110px;
+        }
+
+        /* LAYOUT */
+        .layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .lateral { display: flex; flex-direction: column; gap: 1rem; }
+
+        .card {
+            background: var(--bg-card);
+            padding: 1.2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .card span { display: block; font-size: 1.4rem; font-weight: 700; margin-top: 0.4rem; }
+        #totalRecebido { color: var(--success-color); }
+        #totalPago { color: var(--danger-color); }
+        #saldo { color: var(--primary-color); }
+
+        /* TABELAS */
+        .container-tabelas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .tabela-box {
+            background: var(--bg-card);
+            padding: 1.2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .tabela-box h3 { margin-top: 0; font-size: 0.9rem; border-left: 4px solid var(--primary-color); padding-left: 8px; margin-bottom: 10px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 10px; font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; border-bottom: 2px solid var(--border-color); }
+        td { padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+
+        .btn-edit { color: var(--warning-color); border: none; background: none; cursor: pointer; font-size: 1rem; }
+        .btn-del { color: var(--danger-color); border: none; background: none; cursor: pointer; font-size: 1rem; }
+
+        #btnDarkMode { font-size: 1.2rem; cursor: pointer; background: none; border: none; }
+
+        @media (max-width: 1100px) {
+            .actions { flex-wrap: wrap; }
+            .container-tabelas { grid-template-columns: 1fr; }
+            .layout { grid-template-columns: 1fr; }
+            #tituloTopo { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topo-titulo">
+    <span id="tituloTopo">GESTÃO FINANCEIRA — JAN/2026</span>
+    <div class="controles-topo">
+        <button class="btn-system" onclick="exportarDados()">📤 Exportar</button>
+        <button class="btn-system" onclick="document.getElementById('inputImport').click()">📥 Importar</button>
+        <input type="file" id="inputImport" style="display:none" onchange="importarDados(event)">
+        
+        <select id="mes" onchange="mudarMes()" style="height: 32px; border-radius: 8px;">
+            <option value="2026-01">Jan/2026</option>
+            <option value="2026-02">Fev/2026</option>
+            <option value="2026-03">Mar/2026</option>
+            <option value="2026-04">Abr/2026</option>
+            <option value="2026-05">Mai/2026</option>
+            <option value="2026-06">Jun/2026</option>
+            <option value="2026-07">Jul/2026</option>
+            <option value="2026-08">Ago/2026</option>
+            <option value="2026-09">Set/2026</option>
+            <option value="2026-10">Out/2026</option>
+            <option value="2026-11">Nov/2026</option>
+            <option value="2026-12">Dez/2026</option>
+        </select>
+        <button id="btnDarkMode" onclick="toggleDarkMode()">🌙</button>
+    </div>
+</div>
+
+<div class="layout">
+    <div class="lateral">
+        <div class="card">Recebido<span id="totalRecebido">R$ 0,00</span></div>
+        <div class="card">Pago<span id="totalPago">R$ 0,00</span></div>
+        <div class="card">Saldo<span id="saldo">R$ 0,00</span></div>
+        <div class="card">
+            <h3 style="font-size: 0.8rem; margin: 0 0 1rem 0;">Gastos</h3>
+            <canvas id="graficoPizza"></canvas>
+        </div>
+    </div>
+
+    <div class="principal">
+        <div class="secao-form">
+            <h2 id="formTitulo" style="margin: 0 0 1rem 0; font-size: 1rem;">Lançamento</h2>
+            <div class="actions">
+                <select id="tipo">
+                    <option value="receber">A Receber</option>
+                    <option value="pagar">A Pagar</option>
+                </select>
+                <select id="categoria">
+                    <option value="Supermercado">🛒 Supermercado</option>
+                    <option value="Alimentação">🍔 Alimentação</option>
+                    <option value="Transporte">🚗 Transporte</option>
+                    <option value="Lazer">🎉 Lazer</option>
+                    <option value="Gastos Pessoais">💆‍♂️ Gastos Pessoais</option>
+                    <option value="Saúde">🩺 Saúde e bem-estar</option>
+                    <option value="Presentes">🎁 Presentes</option>
+                    <option value="Filho">🧒 Filho</option>
+                    <option value="Moradia">🏠 Moradia</option>
+                    <option value="Assinaturas">📺 Assinaturas</option>
+                    <option value="Emprestimos">💸 Emprestimos</option>
+                    <option value="Parcelamentos">💳 Parcelamentos</option>
+                    <option value="Mensalidades">💪 Mensalidades</option>
+                    <option value="Reserva">🧾 Reserva</option>
+                    <option value="Salário">💰 Salário</option>
+                    <option value="Outros">⚙️ Outros</option>
+                </select>
+                <input id="descricao" placeholder="Descrição" />
+                <input id="valor" type="number" placeholder="Valor" />
+                <input id="data" type="date" />
+                <button id="btnSalvar" onclick="adicionar()">Adicionar</button>
+                <button id="btnCancelar" onclick="cancelarEdicao()" style="display:none; background:#64748b; flex: 0 0 80px;">Sair</button>
+            </div>
+        </div>
+
+        <div class="container-tabelas">
+            <div class="tabela-box">
+                <h3>A Receber</h3>
+                <table>
+                    <thead><tr><th>Desc.</th><th>Valor</th><th>Data</th><th>Ok</th><th></th></tr></thead>
+                    <tbody id="tabelaReceber"></tbody>
+                </table>
+            </div>
+
+            <div class="tabela-box">
+                <h3>A Pagar</h3>
+                <table>
+                    <thead><tr><th>Desc.</th><th>Valor</th><th>Data</th><th>Ok</th><th></th></tr></thead>
+                    <tbody id="tabelaPagar"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let dadosPorMes = JSON.parse(localStorage.getItem('financeiroDados2026') || '{}');
+let mesAtual = document.getElementById('mes').value;
+let editandoIndex = null;
+let editandoTipo = null;
+
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('btnDarkMode').innerText = '☀️';
+}
+
+function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    document.getElementById('btnDarkMode').innerText = isDark ? '☀️' : '🌙';
+    localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+    render(); 
+}
+
+function salvar(){ localStorage.setItem('financeiroDados2026', JSON.stringify(dadosPorMes)); }
+
+function garantirMes(){
+    if(!dadosPorMes[mesAtual]) dadosPorMes[mesAtual] = { receber: [], pagar: [] };
+}
+
+function formatar(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+
+function formatarDataBR(dataISO){
+    if(!dataISO) return "";
+    const [ano, mes, dia] = dataISO.split("-");
+    return `${dia}/${mes}`;
+}
+
+function mudarMes(){
+    mesAtual = document.getElementById('mes').value;
+    document.getElementById('tituloTopo').innerText = "GESTÃO FINANCEIRA — " + document.getElementById('mes').selectedOptions[0].text;
+    cancelarEdicao();
+    render();
+}
+
+function adicionar(){
+    const tipo = document.getElementById('tipo').value;
+    const descricao = document.getElementById('descricao').value;
+    const valor = Number(document.getElementById('valor').value);
+    const data = document.getElementById('data').value;
+    const categoria = document.getElementById('categoria').value;
+
+    if(!descricao || !valor) return alert("Preencha descrição e valor");
+
+    const item = {descricao, valor, data, categoria, marcado: false};
+
+    if(editandoIndex !== null){
+        item.marcado = dadosPorMes[mesAtual][editandoTipo][editandoIndex].marcado;
+        dadosPorMes[mesAtual][editandoTipo][editandoIndex] = item;
+    } else {
+        dadosPorMes[mesAtual][tipo].push(item);
+    }
+
+    cancelarEdicao();
+    salvar();
+    render();
+}
+
+function prepararEdicao(tipo, index){
+    editandoIndex = index;
+    editandoTipo = tipo;
+    const item = dadosPorMes[mesAtual][tipo][index];
+    document.getElementById('tipo').value = tipo;
+    document.getElementById('descricao').value = item.descricao;
+    document.getElementById('valor').value = item.valor;
+    document.getElementById('data').value = item.data;
+    document.getElementById('categoria').value = item.categoria;
+    document.getElementById('btnSalvar').innerText = "Salvar";
+    document.getElementById('btnSalvar').style.backgroundColor = "var(--warning-color)";
+    document.getElementById('btnCancelar').style.display = "inline-block";
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function cancelarEdicao(){
+    editandoIndex = null; editandoTipo = null;
+    document.getElementById('btnSalvar').innerText = "Adicionar";
+    document.getElementById('btnSalvar').style.backgroundColor = "";
+    document.getElementById('btnCancelar').style.display = "none";
+    document.getElementById('descricao').value = '';
+    document.getElementById('valor').value = '';
+    document.getElementById('data').value = '';
+}
+
+function render(){
+    garantirMes();
+    const tRec = document.getElementById('tabelaReceber');
+    const tPag = document.getElementById('tabelaPagar');
+    tRec.innerHTML = ''; tPag.innerHTML = '';
+    let totalRec = 0, totalPag = 0;
+
+    dadosPorMes[mesAtual].receber.sort((a,b) => new Date(a.data) - new Date(b.data));
+    dadosPorMes[mesAtual].pagar.sort((a,b) => new Date(a.data) - new Date(b.data));
+
+    dadosPorMes[mesAtual].receber.forEach((item, i) => {
+        if(item.marcado) totalRec += item.valor;
+        tRec.innerHTML += `<tr>
+            <td>${item.descricao}</td><td>${formatar(item.valor)}</td><td>${formatarDataBR(item.data)}</td>
+            <td><input type="checkbox" ${item.marcado?'checked':''} onchange="toggle('receber',${i})"></td>
+            <td><button class="btn-edit" onclick="prepararEdicao('receber',${i})">✎</button>
+                <button class="btn-del" onclick="remover('receber',${i})">✕</button></td>
+        </tr>`;
+    });
+
+    dadosPorMes[mesAtual].pagar.forEach((item, i) => {
+        if(item.marcado) totalPag += item.valor;
+        tPag.innerHTML += `<tr>
+            <td>${item.descricao}<br><small style="color:var(--text-secondary)">${item.categoria}</small></td>
+            <td>${formatar(item.valor)}</td><td>${formatarDataBR(item.data)}</td>
+            <td><input type="checkbox" ${item.marcado?'checked':''} onchange="toggle('pagar',${i})"></td>
+            <td><button class="btn-edit" onclick="prepararEdicao('pagar',${i})">✎</button>
+                <button class="btn-del" onclick="remover('pagar',${i})">✕</button></td>
+        </tr>`;
+    });
+
+    document.getElementById('totalRecebido').innerText = formatar(totalRec);
+    document.getElementById('totalPago').innerText = formatar(totalPag);
+    document.getElementById('saldo').innerText = formatar(totalRec - totalPag);
+    atualizarGrafico();
+}
+
+function toggle(tipo, i){ dadosPorMes[mesAtual][tipo][i].marcado = !dadosPorMes[mesAtual][tipo][i].marcado; salvar(); render(); }
+function remover(tipo, i){ if(confirm("Excluir item?")){ dadosPorMes[mesAtual][tipo].splice(i,1); salvar(); render(); } }
+
+function atualizarGrafico(){
+    const resumo = {};
+    dadosPorMes[mesAtual].pagar.forEach(item => {
+        if(item.marcado) resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
+    });
+    const ctx = document.getElementById('graficoPizza');
+    if(window.meuGrafico) window.meuGrafico.destroy();
+    window.meuGrafico = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(resumo),
+            datasets: [{ 
+                data: Object.values(resumo), 
+                backgroundColor: ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899','#06b6d4','#71717a'],
+                borderWidth: 2, borderColor: document.body.classList.contains('dark-mode') ? '#1e293b' : '#fff'
+            }]
+        },
+        options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => ` ${c.label}: ${formatar(c.raw)}` } } } }
+    });
+}
+
+// BACKUP: EXPORTAR E IMPORTAR
+function exportarDados() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dadosPorMes));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "meu_financeiro_2026.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
+function importarDados(event) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            if (confirm("Isso irá substituir todos os dados atuais. Continuar?")) {
+                dadosPorMes = importedData;
+                salvar();
+                location.reload();
+            }
+        } catch (err) { alert("Erro ao ler arquivo. Certifique-se que é o arquivo .json correto."); }
+    };
+    reader.readAsText(event.target.files[0]);
+}
+
+render();
+</script>
+</body>
+</html>

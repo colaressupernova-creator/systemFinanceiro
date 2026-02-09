@@ -9,7 +9,6 @@
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Re Solution">
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
 
@@ -27,7 +26,6 @@
             --primary-color: #2563eb;
             --success-color: #10b981;
             --danger-color: #ef4444;
-            --warning-color: #f59e0b;
             --transition: all 0.2s ease;
         }
 
@@ -40,124 +38,43 @@
             --input-bg: #1e293b;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            margin: 0;
-            transition: var(--transition);
-        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); margin: 0; }
 
+        /* Estilo do Seletor Dark */
         select {
-            height: 36px;
-            padding: 0 32px 0 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background-color: var(--input-bg);
-            color: var(--text-main);
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
+            height: 36px; padding: 0 32px 0 12px; border-radius: 8px; border: 1px solid var(--border-color);
+            background-color: var(--input-bg); color: var(--text-main); font-weight: 600;
+            appearance: none; -webkit-appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 8px center;
-            background-size: 14px;
+            background-repeat: no-repeat; background-position: right 8px center; background-size: 14px;
         }
 
-        select option { background-color: var(--bg-card); color: var(--text-main); }
-        
-        .topo-titulo {
-            background-color: var(--bg-card);
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border-bottom: 1px solid var(--border-color);
-            flex-wrap: wrap;
-            gap: 15px;
-        }
+        .topo-titulo { background: var(--bg-card); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 15px; }
+        #tituloTopo { font-weight: 700; color: var(--primary-color); }
+        .btn-system { background: none; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 8px; color: var(--text-main); cursor: pointer; }
 
-        #tituloTopo { font-weight: 700; font-size: 1.1rem; color: var(--primary-color); }
-
-        .controles-topo { display: flex; align-items: center; gap: 8px; }
-
-        .btn-system {
-            background: none;
-            border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            color: var(--text-main);
-        }
-
-        #bannerAlerta {
-            display: none;
-            background: var(--danger-color);
-            color: white;
-            text-align: center;
-            padding: 10px;
-            font-weight: bold;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.8; }
-            100% { opacity: 1; }
-        }
-
-        .secao-form {
-            background: var(--bg-card);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 1.5rem;
-        }
-
-        .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-
-        .actions input, .actions select, .actions button {
-            height: 40px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--border-color);
-            background-color: var(--input-bg); color: var(--text-main); font-size: 0.85rem;
-        }
-
-        #btnSalvar { background-color: var(--primary-color); color: white; border: none; font-weight: 600; cursor: pointer; flex: 1; min-width: 120px; }
+        #bannerAlerta { display: none; background: var(--danger-color); color: white; text-align: center; padding: 10px; font-weight: bold; }
 
         .layout { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; padding: 1.5rem; max-width: 1600px; margin: 0 auto; }
-
         .card { background: var(--bg-card); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 10px;}
         .card span { display: block; font-size: 1.4rem; font-weight: 700; margin-top: 0.4rem; }
 
+        .secao-form { background: var(--bg-card); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 1.5rem; }
+        .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+        .actions input, .actions select, .actions button { height: 40px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); }
+        #btnSalvar { background: var(--primary-color); color: white; border: none; flex: 1; font-weight: 600; cursor: pointer; }
+
         .container-tabelas { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        .tabela-box { background: var(--bg-card); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color); }
+        .tabela-box { background: var(--bg-card); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color); overflow-x: auto; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; padding: 10px; color: var(--text-secondary); text-transform: uppercase; border-bottom: 2px solid var(--border-color); font-size: 0.7rem; }
+        td { padding: 10px; border-bottom: 1px solid var(--border-color); }
 
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 10px; font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; border-bottom: 2px solid var(--border-color); }
-        td { padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
-
-        /* BOTÕES EDITAR E EXCLUIR EM VERMELHO */
-        .btn-action {
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-            color: var(--danger-color);
-            opacity: 0.8;
-            transition: opacity 0.2s;
-            padding: 5px;
-        }
-        .btn-action:hover { opacity: 1; }
-
+        .btn-action { border: none; background: none; cursor: pointer; font-size: 1.1rem; color: var(--danger-color); padding: 5px; }
         .vencendo-atrasado { color: var(--danger-color) !important; font-weight: bold; }
 
-        @media (max-width: 1100px) {
-            .container-tabelas { grid-template-columns: 1fr; }
-            .layout { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 1100px) { .container-tabelas { grid-template-columns: 1fr; } .layout { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -182,60 +99,51 @@
             <option value="2026-11">Nov/2026</option>
             <option value="2026-12">Dez/2026</option>
         </select>
-        <button id="btnDarkMode" onclick="toggleDarkMode()">🌙</button>
+        <button id="btnDarkMode" onclick="toggleDarkMode()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">🌙</button>
     </div>
 </div>
 
-<div id="bannerAlerta">🔔 ATENÇÃO: Você possui contas vencendo hoje ou atrasadas!</div>
+<div id="bannerAlerta">🔔 ATENÇÃO: Contas vencendo hoje ou atrasadas!</div>
 
 <div class="layout">
     <div class="lateral">
         <div class="card">Recebido<span id="totalRecebido" style="color:var(--success-color)">R$ 0,00</span></div>
         <div class="card">Pago<span id="totalPago" style="color:var(--danger-color)">R$ 0,00</span></div>
         <div class="card">Saldo<span id="saldo" style="color:var(--primary-color)">R$ 0,00</span></div>
-        <div class="card">
-            <h3 style="font-size: 0.8rem; margin-bottom: 1rem;">Gastos Pagos</h3>
-            <canvas id="graficoPizza"></canvas>
-        </div>
+        <div class="card"><canvas id="graficoPizza"></canvas></div>
     </div>
 
     <div class="principal">
         <div class="secao-form">
             <div class="actions">
-                <select id="tipo">
-                    <option value="receber">A Receber</option>
-                    <option value="pagar">A Pagar</option>
-                </select>
+                <select id="tipo"><option value="receber">Receber</option><option value="pagar">Pagar</option></select>
                 <select id="categoria">
                     <option value="Salário">💰 Salário</option>
                     <option value="Supermercado">🛒 Mercado</option>
                     <option value="Alimentação">🍔 Alimentação</option>
                     <option value="Transporte">🚗 Transporte</option>
                     <option value="Moradia">🏠 Moradia</option>
-                    <option value="Saúde">🩺 Saúde</option>
-                    <option value="Filho">🧒 Filho</option>
                     <option value="Outros">⚙️ Outros</option>
                 </select>
-                <input id="descricao" placeholder="Descrição" style="flex: 2;">
+                <input id="descricao" placeholder="Disc." style="flex:2">
                 <input id="valor" type="number" placeholder="R$">
                 <input id="data" type="date">
                 <button id="btnSalvar" onclick="adicionar()">Adicionar</button>
-                <button id="btnCancelar" onclick="cancelarEdicao()" style="display:none; background:#64748b;">Sair</button>
             </div>
         </div>
 
         <div class="container-tabelas">
             <div class="tabela-box">
-                <h3>📈 A Receber</h3>
+                <h3>📈 Recebimentos</h3>
                 <table>
-                    <thead><tr><th>Data</th><th>Desc.</th><th>Valor</th><th>Ok</th><th>Ação</th></tr></thead>
+                    <thead><tr><th>Disc.</th><th>Valor</th><th>Data</th><th>Ok</th><th></th></tr></thead>
                     <tbody id="tabelaReceber"></tbody>
                 </table>
             </div>
             <div class="tabela-box">
-                <h3>📉 A Pagar</h3>
+                <h3>📉 Pagamentos</h3>
                 <table>
-                    <thead><tr><th>Data</th><th>Desc.</th><th>Valor</th><th>Ok</th><th>Ação</th></tr></thead>
+                    <thead><tr><th>Disc.</th><th>Valor</th><th>Data</th><th>Ok</th><th></th></tr></thead>
                     <tbody id="tabelaPagar"></tbody>
                 </table>
             </div>
@@ -262,18 +170,13 @@ function toggleDarkMode() {
 }
 
 function salvar(){ localStorage.setItem('financeiroDados2026', JSON.stringify(dadosPorMes)); }
-
-function garantirMes(){
-    if(!dadosPorMes[mesAtual]) dadosPorMes[mesAtual] = { receber: [], pagar: [] };
-}
-
+function garantirMes(){ if(!dadosPorMes[mesAtual]) dadosPorMes[mesAtual] = { receber: [], pagar: [] }; }
 function formatar(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
 
 function mudarMes(){
     mesAtual = document.getElementById('mes').value;
     const textoMes = document.getElementById('mes').selectedOptions[0].text;
     document.getElementById('tituloTopo').innerHTML = `Re Solution - GESTÃO FINANCEIRA — ${textoMes.toUpperCase()}`;
-    cancelarEdicao();
     render();
 }
 
@@ -283,26 +186,22 @@ function adicionar(){
     const valor = Number(document.getElementById('valor').value);
     const data = document.getElementById('data').value;
     const categoria = document.getElementById('categoria').value;
-
     if(!descricao || !valor) return alert("Preencha descrição e valor");
 
     const item = {descricao, valor, data, categoria, marcado: false};
-
-    if(editandoIndex !== null){
+    if(editandoIndex !== null) {
         item.marcado = dadosPorMes[mesAtual][editandoTipo][editandoIndex].marcado;
         dadosPorMes[mesAtual][editandoTipo][editandoIndex] = item;
     } else {
         dadosPorMes[mesAtual][tipo].push(item);
     }
-
-    cancelarEdicao();
-    salvar();
-    render();
+    editandoIndex = null;
+    document.getElementById('descricao').value = ''; document.getElementById('valor').value = '';
+    salvar(); render();
 }
 
 function prepararEdicao(tipo, index){
-    editandoIndex = index;
-    editandoTipo = tipo;
+    editandoIndex = index; editandoTipo = tipo;
     const item = dadosPorMes[mesAtual][tipo][index];
     document.getElementById('tipo').value = tipo;
     document.getElementById('descricao').value = item.descricao;
@@ -310,16 +209,6 @@ function prepararEdicao(tipo, index){
     document.getElementById('data').value = item.data;
     document.getElementById('categoria').value = item.categoria;
     document.getElementById('btnSalvar').innerText = "Salvar";
-    document.getElementById('btnCancelar').style.display = "inline-block";
-}
-
-function cancelarEdicao(){
-    editandoIndex = null; editandoTipo = null;
-    document.getElementById('btnSalvar').innerText = "Adicionar";
-    document.getElementById('btnCancelar').style.display = "none";
-    document.getElementById('descricao').value = '';
-    document.getElementById('valor').value = '';
-    document.getElementById('data').value = '';
 }
 
 function render() {
@@ -332,41 +221,29 @@ function render() {
     let totalRec = 0, totalPag = 0, urgente = false;
     const hoje = new Date().toISOString().split('T')[0];
 
-    // ORDENAR POR DATA ANTES DE RENDERIZAR
-    dadosPorMes[mesAtual].receber.sort((a, b) => (a.data > b.data) ? 1 : -1);
-    dadosPorMes[mesAtual].pagar.sort((a, b) => (a.data > b.data) ? 1 : -1);
+    // Ordenação
+    dadosPorMes[mesAtual].receber.sort((a,b) => a.data > b.data ? 1 : -1);
+    dadosPorMes[mesAtual].pagar.sort((a,b) => a.data > b.data ? 1 : -1);
 
-    // Receber
-    dadosPorMes[mesAtual].receber.forEach((item, i) => {
-        if(item.marcado) totalRec += item.valor;
-        tRec.innerHTML += `<tr>
-            <td>${item.data.split('-').reverse().join('/')}</td>
-            <td>${item.descricao}</td>
-            <td>${formatar(item.valor)}</td>
-            <td><input type="checkbox" ${item.marcado?'checked':''} onchange="toggle('receber',${i})"></td>
-            <td>
-                <button class="btn-action" onclick="prepararEdicao('receber',${i})">✎</button>
-                <button class="btn-action" onclick="remover('receber',${i})">✕</button>
-            </td>
-        </tr>`;
-    });
+    // Renderizar Tabelas conforme colunas pedidas: Disc // Valor // Data // Ok
+    ['receber', 'pagar'].forEach(tipo => {
+        dadosPorMes[mesAtual][tipo].forEach((item, i) => {
+            if(item.marcado) { if(tipo === 'receber') totalRec += item.valor; else totalPag += item.valor; }
+            const atrasado = (tipo === 'pagar' && !item.marcado && item.data <= hoje && item.data !== "");
+            if(atrasado) urgente = true;
 
-    // Pagar
-    dadosPorMes[mesAtual].pagar.forEach((item, i) => {
-        if(item.marcado) totalPag += item.valor;
-        const atrasado = !item.marcado && item.data <= hoje && item.data !== "";
-        if(atrasado) urgente = true;
-
-        tPag.innerHTML += `<tr class="${atrasado ? 'vencendo-atrasado' : ''}">
-            <td>${item.data.split('-').reverse().join('/')}</td>
-            <td>${atrasado ? '⚠️ ' : ''}${item.descricao}<br><small style="color:var(--text-secondary)">${item.categoria}</small></td>
-            <td>${formatar(item.valor)}</td>
-            <td><input type="checkbox" ${item.marcado?'checked':''} onchange="toggle('pagar',${i})"></td>
-            <td>
-                <button class="btn-action" onclick="prepararEdicao('pagar',${i})">✎</button>
-                <button class="btn-action" onclick="remover('pagar',${i})">✕</button>
-            </td>
-        </tr>`;
+            const html = `<tr class="${atrasado ? 'vencendo-atrasado' : ''}">
+                <td>${atrasado ? '⚠️ ' : ''}${item.descricao}<br><small style="color:var(--text-secondary)">${item.categoria}</small></td>
+                <td>${formatar(item.valor)}</td>
+                <td>${item.data ? item.data.split('-').reverse().slice(0,2).join('/') : '--'}</td>
+                <td><input type="checkbox" ${item.marcado?'checked':''} onchange="toggle('${tipo}',${i})"></td>
+                <td>
+                    <button class="btn-action" onclick="prepararEdicao('${tipo}',${i})">✎</button>
+                    <button class="btn-action" onclick="remover('${tipo}',${i})">✕</button>
+                </td>
+            </tr>`;
+            if(tipo === 'receber') tRec.innerHTML += html; else tPag.innerHTML += html;
+        });
     });
 
     banner.style.display = urgente ? 'block' : 'none';
@@ -377,41 +254,19 @@ function render() {
 }
 
 function toggle(tipo, i){ dadosPorMes[mesAtual][tipo][i].marcado = !dadosPorMes[mesAtual][tipo][i].marcado; salvar(); render(); }
-function remover(tipo, i){ if(confirm("Excluir item permanentemente?")){ dadosPorMes[mesAtual][tipo].splice(i,1); salvar(); render(); } }
+function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].splice(i,1); salvar(); render(); } }
 
 function atualizarGrafico(){
     const resumo = {};
-    dadosPorMes[mesAtual].pagar.forEach(item => {
-        if(item.marcado) resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
-    });
+    dadosPorMes[mesAtual].pagar.forEach(item => { if(item.marcado) resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor; });
     const ctx = document.getElementById('graficoPizza');
     if(window.meuGrafico) window.meuGrafico.destroy();
     if(Object.keys(resumo).length === 0) return;
-    window.meuGrafico = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: Object.keys(resumo),
-            datasets: [{ 
-                data: Object.values(resumo), 
-                backgroundColor: ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899']
-            }]
-        },
-        options: { plugins: { legend: { display: false } } }
-    });
+    window.meuGrafico = new Chart(ctx, { type: 'pie', data: { labels: Object.keys(resumo), datasets: [{ data: Object.values(resumo), backgroundColor: ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899'] }] }, options: { plugins: { legend: { display: false } } } });
 }
 
-function exportarDados() {
-    const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = "financeiro_re_2026.json"; a.click();
-}
-
-function importarDados(e) {
-    const reader = new FileReader();
-    reader.onload = (ev) => { try { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); } catch(e){ alert("Erro ao importar!"); } };
-    reader.readAsText(e.target.files[0]);
-}
+function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_re.json"; a.click(); }
+function importarDados(e) { const reader = new FileReader(); reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); }; reader.readAsText(e.target.files[0]); }
 
 render();
 </script>

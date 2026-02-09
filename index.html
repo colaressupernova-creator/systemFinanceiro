@@ -55,7 +55,57 @@
 
         #bannerAlerta { display: none; background: var(--danger-color); color: white; text-align: center; padding: 10px; font-weight: bold; }
 
-        .layout { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; padding: 1.5rem; max-width: 1600px; margin: 0 auto; }
+        /* Layout para PC */
+.layout { 
+    display: grid; 
+    grid-template-columns: 280px 1fr; 
+    gap: 1.5rem; 
+    padding: 1.5rem; 
+}
+
+/* --- AJUSTE PARA CELULAR --- */
+@media (max-width: 1024px) {
+    .layout { grid-template-columns: 1fr; } /* No celular, vira uma coluna só */
+
+    .lateral {
+        position: fixed; 
+        top: 0; 
+        left: -300px; /* Esconde o menu na esquerda */
+        width: 260px; 
+        height: 100%; 
+        z-index: 1000;
+        background: var(--bg-card); 
+        padding: 20px;
+        transition: 0.3s ease; 
+        box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+    }
+
+    /* Classe que o JS vai ativar para mostrar o menu */
+    .lateral.active { left: 0; }
+
+    /* Estilo do botão que abre o menu no topo */
+    .btn-menu-mobile { display: block !important; }
+}
+
+/* Botão de abrir menu (escondido no PC) */
+.btn-menu-mobile { 
+    display: none; 
+    font-size: 1.5rem; 
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+}
+
+/* Overlay: Fundo escuro que aparece atrás do menu no celular */
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+}
+#overlay.active { display: block; }
         .card { background: var(--bg-card); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 10px;}
         .card span { display: block; font-size: 1.4rem; font-weight: 700; margin-top: 0.4rem; }
 
@@ -78,7 +128,9 @@
     </style>
 </head>
 <body>
+<div id="overlay" onclick="toggleMenu()"></div>
 
+<button class="btn-menu-mobile" onclick="toggleMenu()">📊</button>
 <div class="topo-titulo">
     <span id="tituloTopo">RE SOLUTION - GESTÃO FINANCEIRA — JAN/2026</span>
     <div class="controles-topo">
@@ -277,6 +329,13 @@ function atualizarGrafico(){
 
 function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_re.json"; a.click(); }
 function importarDados(e) { const reader = new FileReader(); reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); }; reader.readAsText(e.target.files[0]); }
+    function toggleMenu() {
+    // Verifica se a tela é de celular antes de agir
+    if (window.innerWidth <= 1024) {
+        document.querySelector('.lateral').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
+    }
+}
 
 render();
 </script>

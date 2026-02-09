@@ -273,7 +273,7 @@
     
     <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
 
-<div class="card" style="margin-top: 20px;">
+<div class="card" style="margin-top: 15px;">
         <canvas id="graficoPizza"></canvas>
     </div>
 
@@ -475,30 +475,45 @@ function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].
 function atualizarGrafico(){
     const resumo = {};
     // Soma apenas o que está marcado como pago
-    dadosPorMes[mesAtual].pagar.forEach(item => { 
-        if(item.marcado) {
-            resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
-        }
-    });
+    if (dadosPorMes[mesAtual] && dadosPorMes[mesAtual].pagar) {
+        dadosPorMes[mesAtual].pagar.forEach(item => { 
+            if(item.marcado) {
+                resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
+            }
+        });
+    }
 
     const ctx = document.getElementById('graficoPizza');
     if(window.meuGrafico) window.meuGrafico.destroy();
     
+    // Se não houver dados, não desenha nada
     if(Object.keys(resumo).length === 0) return;
 
     window.meuGrafico = new Chart(ctx, {
-        type: 'doughnut', // MUDANÇA: de 'pie' para 'doughnut'
+        type: 'doughnut', 
         data: {
             labels: Object.keys(resumo),
             datasets: [{ 
                 data: Object.values(resumo), 
                 backgroundColor: ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899'],
                 borderWidth: 2,
-                hoverOffset: 15 // Efeito de destaque ao passar o mouse
+                // Cor da borda se ajusta ao modo noturno para não "brilhar"
+                borderColor: document.body.classList.contains('dark-mode') ? '#1e293b' : '#ffffff',
+                hoverOffset: 15
             }]
         },
         options: {
-            cutout: '75%', // MUDANÇA: Deixa o centro vazio (formato de rosca)
+            cutout: '75%', // Deixa o buraco da rosca maior e mais elegante
+            maintainAspectRatio: true,
+            aspectRatio: 2, // Aumente para 2.5 se quiser que o gráfico diminua ainda mais
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 10,
+                    left: 20,
+                    right: 20
+                }
+            },
             plugins: {
                 legend: { display: false },
                 tooltip: {
@@ -510,6 +525,9 @@ function atualizarGrafico(){
                         }
                     }
                 }
+            },
+            animation: {
+                duration: 500 // Animação suave para evitar pulos de posição
             }
         }
     });

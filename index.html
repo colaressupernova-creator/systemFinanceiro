@@ -212,6 +212,34 @@ select option {
             .layout { grid-template-columns: 1fr; }
             #tituloTopo { width: 100%; text-align: center; }
         }
+        
+        /* Efeito de alerta para contas vencendo ou atrasadas */
+.vencendo-hoje {
+    color: var(--danger-color) !important;
+    font-weight: bold;
+    animation: glow 1.5s infinite alternate;
+}
+
+.atrasado {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+    border-left: 4px solid var(--danger-color);
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 2px rgba(239, 68, 68, 0.2); }
+    to { text-shadow: 0 0 8px rgba(239, 68, 68, 0.6); }
+}
+
+#bannerAlerta {
+    display: none;
+    background: var(--danger-color);
+    color: white;
+    text-align: center;
+    padding: 8px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
     </style>
 </head>
 <body>
@@ -242,7 +270,7 @@ select option {
         <button id="btnDarkMode" onclick="toggleDarkMode()">🌙</button>
     </div>
 </div>
-
+<div id="bannerAlerta">🔔 ATENÇÃO: Você possui contas vencendo hoje ou atrasadas!</div>
 <div class="layout">
     <div class="lateral">
         <div class="card">Recebido<span id="totalRecebido">R$ 0,00</span></div>
@@ -402,26 +430,59 @@ function cancelarEdicao(){
     document.getElementById('data').value = '';
 }
 
-function render(){
+function render() {
     garantirMes();
     const tRec = document.getElementById('tabelaReceber');
     const tPag = document.getElementById('tabelaPagar');
+    const banner = document.getElementById('bannerAlerta');
     tRec.innerHTML = ''; tPag.innerHTML = '';
+    
     let totalRec = 0, totalPag = 0;
+    let temPendenciaUrgente = false;
 
-    dadosPorMes[mesAtual].receber.sort((a,b) => new Date(a.data) - new Date(b.data));
-    dadosPorMes[mesAtual].pagar.sort((a,b) => new Date(a.data) - new Date(b.data));
+    // Pega a data de hoje no formato AAAA-MM-DD
+    const hoje = new Date().toISOString().split('T')[0];
 
+    // Renderizar Recebimentos
     dadosPorMes[mesAtual].receber.forEach((item, i) => {
         if(item.marcado) totalRec += item.valor;
         tRec.innerHTML += `<tr>
-            <td>${item.descricao}</td><td>${formatar(item.valor)}</td><td>${formatarDataBR(item.data)}</td>
+            <td>${item.descricao}</td>
+            <td>${formatar(item.valor)}</td>
             <td><input type="checkbox" ${item.marcado?'checked':''} onchange="toggle('receber',${i})"></td>
-            <td><button class="btn-edit" onclick="prepararEdicao('receber',${i})">✎</button>
-                <button class="btn-del" onclick="remover('receber',${i})">✕</button></td>
+            <td><button style="border:none;background:none" onclick="remover('receber',${i})">✕</button></td>
         </tr>`;
     });
 
+    // Renderizar Pagamentos com Alerta
+    dadosPorMes[mesAtual].pagar.forEach((item, i) => {
+        if(item.marcado) totalPag += item.valor;
+
+        // Lógica de alerta: Se não estiver pago E (data é hoje ou data já passou)
+        const ehHoje = item.data === hoje;
+        const estaAtrasado = item.data < hoje && item.data !== "";
+        const alertaClasse = (!item.marcado && (ehHoje || estaAtrasado)) ? 'vencendo-hoje atrasado' : '';
+        
+        if(!item.marcado && (ehHoje || estaAtrasado)) temPendenciaUrgente = true;
+
+        tPag.innerHTML += `<tr class="${alertaClasse}">
+            <td>
+                ${ehHoje || estaAtrasado ? '⚠️ ' : ''}${item.descricao}
+                <br><small>${item.categoria} ${item.data ? '- '+item.data.split('-').reverse().join('/') : ''}</small>
+            </td>
+            <td>${formatar(item.valor)}</td>
+            <td><input type="checkbox" ${item.marcado?'checked':''} onchange="toggle('pagar',${i})"></td>
+            <td><button style="border:none;background:none" onclick="remover('pagar',${i})">✕</button></td>
+        </tr>`;
+    });
+
+    // Mostrar ou esconder o banner de alerta
+    banner.style.display = temPendenciaUrgente ? 'block' : 'none';
+
+    document.getElementById('totalRecebido').innerText = formatar(totalRec);
+    document.getElementById('totalPago').innerText = formatar(totalPag);
+    document.getElementById('saldo').innerText = formatar(totalRec - totalPag);
+}
     dadosPorMes[mesAtual].pagar.forEach((item, i) => {
         if(item.marcado) totalPag += item.valor;
         tPag.innerHTML += `<tr>

@@ -1,447 +1,520 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Re Solution - Gestão Financeira</title>
-
     
-
     <link rel="manifest" href="manifest.json">
-
     <meta name="theme-color" content="#ffffff">
-
     <meta name="apple-mobile-web-app-capable" content="yes">
-
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
     <link rel="apple-touch-icon" href="logo.png">
-
     <link rel="icon" type="image/png" href="logo.png">
 
-
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
-
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
-
-
         :root {
-
             --bg-body: #f8fafc;
-
             --bg-card: #ffffff;
-
             --text-main: #1e293b;
-
             --text-secondary: #64748b;
-
             --border-color: #e2e8f0;
-
             --input-bg: #ffffff;
-
             --primary-color: #2563eb;
-
             --success-color: #10b981;
-
             --danger-color: #ef4444;
-
             --transition: all 0.2s ease;
-
         }
-
-
 
         body.dark-mode {
-
             --bg-body: #0f172a;
-
             --bg-card: #1e293b;
-
             --text-main: #f1f5f9;
-
             --text-secondary: #94a3b8;
-
             --border-color: #334155;
-
             --input-bg: #1e293b;
-
         }
-
-
 
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); margin: 0; }
 
-
-
+        /* Estilo do Seletor Dark */
         select {
-
             height: 36px; padding: 0 32px 0 12px; border-radius: 8px; border: 1px solid var(--border-color);
-
             background-color: var(--input-bg); color: var(--text-main); font-weight: 600;
-
             appearance: none; -webkit-appearance: none;
-
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-
             background-repeat: no-repeat; background-position: right 8px center; background-size: 14px;
-
         }
-
-
 
         .topo-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Alinha o conteúdo à esquerda */
+    gap: 15px; /* Espaço entre o botão, o título e os controles */
+    padding: 1rem 2rem;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+}
 
-            display: flex;
+/* Garante que os controles (Exportar/Mês) fiquem no canto direito */
+.controles-topo {
+    margin-left: auto; 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-            align-items: center;
+.btn-menu-mobile {
+    display: none; /* Escondido no PC */
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--primary-color);
+    padding: 0;
+    margin-right: 10px;
+}
 
-            justify-content: flex-start;
-
-            gap: 15px;
-
-            padding: 1rem 2rem;
-
-            background: var(--bg-card);
-
-            border-bottom: 1px solid var(--border-color);
-
-        }
-
-
-
-        .controles-topo {
-
-            margin-left: auto; 
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 8px;
-
-        }
-
-
-
-        .btn-menu-mobile {
-
-            display: none;
-
-            font-size: 1.5rem;
-
-            background: none;
-
-            border: none;
-
-            cursor: pointer;
-
-            color: var(--primary-color);
-
-            padding: 0;
-
-            margin-right: 10px;
-
-        }
-
-
-
-        @media (max-width: 1024px) {
-
-            .btn-menu-mobile {
-
-                display: block;
-
-            }
-
-        }
-
-
+/* Mostra o botão apenas no celular */
+@media (max-width: 1024px) {
+    .btn-menu-mobile {
+        display: block;
+    }
+}
+        #tituloTopo { font-weight: 700; color: var(--primary-color); }
+        .btn-system { background: none; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 8px; color: var(--text-main); cursor: pointer; }
 
         #bannerAlerta { display: none; background: var(--danger-color); color: white; text-align: center; padding: 10px; font-weight: bold; }
 
+        /* Layout para PC */
+.layout { 
+    display: grid; 
+    grid-template-columns: 280px 1fr; 
+    gap: 1.5rem; 
+    padding: 1.5rem; 
+}
 
+/* --- AJUSTE PARA CELULAR --- */
+@media (max-width: 1024px) {
+    .layout { grid-template-columns: 1fr; } /* No celular, vira uma coluna só */
 
-        .layout { 
+    .lateral {
+        position: fixed; 
+        top: 0; 
+        left: -300px; /* Esconde o menu na esquerda */
+        width: 260px; 
+        height: 100%; 
+        z-index: 1000;
+        background: var(--bg-card); 
+        padding: 20px;
+        transition: 0.3s ease; 
+        box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+    }
 
-            display: grid; 
+    /* Classe que o JS vai ativar para mostrar o menu */
+    .lateral.active { left: 0; }
 
-            grid-template-columns: 280px 1fr; 
+    /* Estilo do botão que abre o menu no topo */
+    .btn-menu-mobile { display: block !important; }
+}
 
-            gap: 1.5rem; 
+.lateral .btn-system {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 8px;
+    color: var(--text-main);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
 
-            padding: 1.5rem; 
+.lateral .btn-system:hover {
+    background: var(--primary-color);
+    color: white;
+}
 
-        }
+/* Botão de abrir menu (escondido no PC) */
+.btn-menu-mobile { 
+    display: none; 
+    font-size: 1.5rem; 
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+}
 
+/* Overlay: Fundo escuro que aparece atrás do menu no celular */
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+}
+#overlay.active { display: block; }
+        /* Card melhorado com bordas laterais e efeito hover */
+.card { 
+    background: var(--bg-card); 
+    padding: 1.2rem; 
+    border-radius: 12px; 
+    border: 1px solid var(--border-color); 
+    margin-bottom: 10px;
+    border-left: 5px solid var(--primary-color); /* Borda padrão */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
 
+.card:hover { 
+    transform: translateX(5px); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
 
-        @media (max-width: 1024px) {
+.card span { 
+    display: block; 
+    font-size: 1.6rem; /* Aumentei um pouco para destaque */
+    font-weight: 800; 
+    margin-top: 0.4rem; 
+}
 
-            .layout { grid-template-columns: 1fr; }
+/* Cores dinâmicas para as bordas dos cards */
+.card:has(#totalRecebido) { border-left-color: var(--success-color); }
+.card:has(#totalPago) { border-left-color: var(--danger-color); }
+.card:has(#saldo) { border-left-color: var(--primary-color); }
 
+        .secao-form { 
+    background: var(--bg-card); 
+    padding: 1.5rem; 
+    border-radius: 16px; /* Mais arredondado */
+    border: 1px solid var(--border-color); 
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
 
+.actions { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 10px; 
+}
 
-            .lateral {
+/* Inputs e Selects mais elegantes */
+.actions input, .actions select { 
+    height: 42px; 
+    padding: 0 12px; 
+    border-radius: 10px; 
+    border: 1px solid var(--border-color); 
+    background: var(--input-bg); 
+    color: var(--text-main); 
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
 
-                position: fixed; 
+.actions input:focus, .actions select:focus {
+    border-color: var(--primary-color);
+}
 
-                top: 0; 
+/* Botão Adicionar com destaque em gradiente */
+#btnSalvar { 
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8); 
+    color: white; 
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    flex: 1;
+    transition: filter 0.2s;
+}
 
-                left: -300px;
-
-                width: 260px; 
-
-                height: 100%; 
-
-                z-index: 1000;
-
-                background: var(--bg-card); 
-
-                padding: 20px;
-
-                transition: 0.3s ease; 
-
-                box-shadow: 5px 0 15px rgba(0,0,0,0.2);
-
-            }
-
-
-
-            .lateral.active { left: 0; }
-
-        }
-
-
-
-        .card { 
-
-            background: var(--bg-card); 
-
-            padding: 1.2rem; 
-
-            border-radius: 12px; 
-
-            border: 1px solid var(--border-color); 
-
-            margin-bottom: 10px;
-
-            border-left: 5px solid var(--primary-color);
-
-            transition: transform 0.2s, box-shadow 0.2s;
-
-        }
-
-
+#btnSalvar:hover {
+    filter: brightness(1.1);
+}
 
         .container-tabelas { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .tabela-box { background: var(--bg-card); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color); overflow-x: auto; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; padding: 10px; color: var(--text-secondary); text-transform: uppercase; border-bottom: 2px solid var(--border-color); font-size: 0.7rem; }
+        td { padding: 10px; border-bottom: 1px solid var(--border-color); }
 
+        .btn-action { border: none; background: none; cursor: pointer; font-size: 1.1rem; color: var(--danger-color); padding: 5px; }
+        .vencendo-atrasado { color: var(--danger-color) !important; font-weight: bold; }
 
-
-        @media (max-width: 1100px) { 
-
-            .container-tabelas { grid-template-columns: 1fr; } 
-
-            .layout { grid-template-columns: 1fr; } 
-
-        }
-
+        @media (max-width: 1100px) { .container-tabelas { grid-template-columns: 1fr; } .layout { grid-template-columns: 1fr; } }
     </style>
-
 </head>
-
 <body>
-
 <div id="overlay" onclick="toggleMenu()"></div>
 
-
-
 <div class="topo-titulo">
-
     <button class="btn-menu-mobile" onclick="toggleMenu()">☰</button>
-
     <div style="display: flex; align-items: center; gap: 5px;">
-
         <span style="font-weight: 800; color: var(--primary-color);">RE SOLUTION</span>
-
         <span id="labelMesAtivo" style="font-weight: 400; color: var(--text-secondary); font-size: 0.9rem; margin-left: 5px;">— JAN/2026</span>
-
     </div>
-
     <div class="controles-topo">
-
         <button id="btnDarkMode" onclick="toggleDarkMode()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">🌙</button>
-
     </div>
-
 </div>
-
-
 
 <div id="bannerAlerta">🔔 ATENÇÃO: Contas vencendo hoje ou atrasadas!</div>
 
-
-
 <div class="layout">
-
     <div class="lateral" id="menuLateral">
 
+    
+    <div class="card">Recebido<span id="totalRecebido" style="color:var(--success-color)">R$ 0,00</span></div>
+    <div class="card">Pago<span id="totalPago" style="color:var(--danger-color)">R$ 0,00</span></div>
+    <div class="card">Saldo<span id="saldo" style="color:var(--primary-color)">R$ 0,00</span></div>
+    
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
 
-
-        <div class="card">Recebido<span id="totalRecebido" style="color:var(--success-color)">R$ 0,00</span></div>
-
-        <div class="card">Pago<span id="totalPago" style="color:var(--danger-color)">R$ 0,00</span></div>
-
-        <div class="card">Saldo<span id="saldo" style="color:var(--primary-color)">R$ 0,00</span></div>
-
-
-
-        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
-
-
-
-        <!-- CORREÇÃO AQUI: um card para o gráfico -->
-
-        <div class="card" style="margin-top: 15px;">
-
-            <canvas id="graficoPizza"></canvas>
-
-        </div>
-
-
-
-        <!-- CORREÇÃO AQUI: card separado só para legenda -->
-
-        <div class="card" style="margin-top: 20px;">
-
-            <div id="legendaGrafico" style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
-
-        </div>
-
-
-
+<div class="card" style="margin-top: 15px;">
+        <canvas id="graficoPizza"></canvas>
     </div>
 
+<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+        
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-secondary); text-transform: uppercase;">Mês de Referência</label>
+        <select id="mes" onchange="mudarMes()" style="width: 100%;">
+            <option value="2026-01">Janeiro/2026</option>
+            <option value="2026-02">Fevereiro/2026</option>
+            <option value="2026-03">Março/2026</option>
+            <option value="2026-04">Abril/2026</option>
+            <option value="2026-05">Maio/2026</option>
+            <option value="2026-06">Junho/2026</option>
+            <option value="2026-07">Julho/2026</option>
+            <option value="2026-08">Agosto/2026</option>
+            <option value="2026-09">Setembro/2026</option>
+            <option value="2026-10">Outubro/2026</option>
+            <option value="2026-11">Novembro/2026</option>
+            <option value="2026-12">Dezembro/2026</option>
+        </select>
 
-
-    <div class="principal">
-
-        <div class="container-tabelas">
-
-            <div class="tabela-box">
-
-                <h3>📈 Recebimentos</h3>
-
-                <table>
-
-                    <thead><tr><th>Disc.</th><th>Valor</th><th>Data</th><th>Ok</th><th></th></tr></thead>
-
-                    <tbody id="tabelaReceber"></tbody>
-
-                </table>
-
-            </div>
-
-
-
-            <div class="tabela-box">
-
-                <h3>📉 Pagamentos</h3>
-
-                <table>
-
-                    <thead><tr><th>Disc.</th><th>Valor</th><th>Data</th><th>Ok</th><th></th></tr></thead>
-
-                    <tbody id="tabelaPagar"></tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
+        <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-secondary); text-transform: uppercase; margin-top: 10px;">Dados e Backup</label>
+        <button class="btn-system" onclick="exportarDados()" style="width: 100%; text-align: left;">📤 Exportar Backup</button>
+        <button class="btn-system" onclick="document.getElementById('inputImport').click()" style="width: 100%; text-align: left;">📥 Importar Backup</button>
+        <input type="file" id="inputImport" style="display:none" onchange="importarDados(event)">
     </div>
 
+    
 </div>
 
+    <div class="principal">
+        <div class="secao-form">
+            <div class="actions">
+                <select id="tipo"><option value="receber">Receber</option><option value="pagar">Pagar</option></select>
+                <select id="categoria">
+                    <option value="Supermercado">🛒 Supermercado</option>
+                    <option value="Alimentação">🍔 Alimentação</option>
+                    <option value="Transporte">🚗 Transporte</option>
+                    <option value="Lazer">🎉 Lazer</option>
+                    <option value="Gastos Pessoais">💆‍♂️ Gastos Pessoais</option>
+                    <option value="Saúde">🩺 Saúde e bem-estar</option>
+                    <option value="Credito">💲 Credito</option>
+                    <option value="Filho">🧒 Filho</option>
+                    <option value="Moradia">🏠 Moradia</option>
+                    <option value="Assinaturas">📺 Assinaturas</option>
+                    <option value="Emprestimos">💸 Emprestimos</option>
+                    <option value="Vale Alimentação">💳 Vale Alimentação</option>
+                    <option value="Mensalidades">💪 Mensalidades</option>
+                    <option value="Reserva">🧾 Reserva</option>
+                    <option value="Salário">💰 Salário</option>
+                    <option value="Outros">⚙️ Outros</option>
+                </select>
+                <input id="descricao" placeholder="Disc." style="flex:2">
+                <input id="valor" type="number" placeholder="R$">
+                <input id="data" type="date">
+                <button id="btnSalvar" onclick="adicionar()">Adicionar</button>
+            </div>
+        </div>
 
+        <div class="container-tabelas">
+            <div class="tabela-box">
+                <h3>📈 Recebimentos</h3>
+                <table>
+                    <thead><tr><th>Disc.</th><th>Valor</th><th>Data</th><th>Ok</th><th></th></tr></thead>
+                    <tbody id="tabelaReceber"></tbody>
+                </table>
+            </div>
+            <div class="tabela-box">
+                <h3>📉 Pagamentos</h3>
+                <table>
+                    <thead><tr><th>Disc.</th><th>Valor</th><th>Data</th><th>Ok</th><th></th></tr></thead>
+                    <tbody id="tabelaPagar"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
+// 1. Recupera os dados guardados
+let dadosPorMes = JSON.parse(localStorage.getItem('financeiroDados2026') || '{}');
 
-// (SEU JS ORIGINAL — só corrigi o erro do "ffunction")
+// Recupera o mês salvo e já aplica ao select
+let mesSalvo = localStorage.getItem('mesSelecionado') || '2026-01';
+document.getElementById('mes').value = mesSalvo;
+let mesAtual = mesSalvo;
 
-function atualizarGrafico(){
+let editandoIndex = null;
+let editandoTipo = null;
 
-    const resumo = {};
+// Verifica Dark Mode ao carregar
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('btnDarkMode').innerText = '☀️';
+}
 
-    const cores = ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899'];
+function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    document.getElementById('btnDarkMode').innerText = isDark ? '☀️' : '🌙';
+    localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+    render();
+}
 
-    const ctx = document.getElementById('graficoPizza');
+function salvar(){ localStorage.setItem('financeiroDados2026', JSON.stringify(dadosPorMes)); }
+function garantirMes(){ if(!dadosPorMes[mesAtual]) dadosPorMes[mesAtual] = { receber: [], pagar: [] }; }
+function formatar(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
 
-    const legendaContainer = document.getElementById('legendaGrafico');
+function atualizarLabelTopo() {
+    const select = document.getElementById('mes');
+    const nomeMesFull = select.selectedOptions[0].text;
+    const mesCurto = nomeMesFull.substring(0, 3).toUpperCase() + nomeMesFull.substring(nomeMesFull.indexOf('/'));
+    document.getElementById('labelMesAtivo').innerText = `— ${mesCurto}`;
+}
 
+function mudarMes() {
+    mesAtual = document.getElementById('mes').value;
+    localStorage.setItem('mesSelecionado', mesAtual);
+    atualizarLabelTopo();
+    if (window.innerWidth <= 1024) toggleMenu();
+    render();
+}
 
+function adicionar(){
+    const tipo = document.getElementById('tipo').value;
+    const descricao = document.getElementById('descricao').value;
+    const valor = Number(document.getElementById('valor').value);
+    const data = document.getElementById('data').value;
+    const categoria = document.getElementById('categoria').value;
+    if(!descricao || !valor) return alert("Preencha descrição e valor");
 
-    legendaContainer.innerHTML = '';
+    const item = {descricao, valor, data, categoria, marcado: false};
+    if(editandoIndex !== null) {
+        item.marcado = dadosPorMes[mesAtual][editandoTipo][editandoIndex].marcado;
+        dadosPorMes[mesAtual][editandoTipo][editandoIndex] = item;
+    } else {
+        dadosPorMes[mesAtual][tipo].push(item);
+    }
+    editandoIndex = null;
+    document.getElementById('btnSalvar').innerText = "Adicionar";
+    document.getElementById('descricao').value = ''; document.getElementById('valor').value = '';
+    salvar(); render();
+}
 
+function prepararEdicao(tipo, index){
+    editandoIndex = index; editandoTipo = tipo;
+    const item = dadosPorMes[mesAtual][tipo][index];
+    document.getElementById('tipo').value = tipo;
+    document.getElementById('descricao').value = item.descricao;
+    document.getElementById('valor').value = item.valor;
+    document.getElementById('data').value = item.data;
+    document.getElementById('categoria').value = item.categoria;
+    document.getElementById('btnSalvar').innerText = "Salvar";
+}
 
+function render() {
+    garantirMes();
+    const tRec = document.getElementById('tabelaReceber');
+    const tPag = document.getElementById('tabelaPagar');
+    const banner = document.getElementById('bannerAlerta');
+    tRec.innerHTML = ''; tPag.innerHTML = '';
+    
+    let totalRec = 0, totalPag = 0, urgente = false;
+    const hoje = new Date().toISOString().split('T')[0];
 
-    if(window.meuGrafico) window.meuGrafico.destroy();
+    dadosPorMes[mesAtual].receber.sort((a,b) => a.data > b.data ? 1 : -1);
+    dadosPorMes[mesAtual].pagar.sort((a,b) => a.data > b.data ? 1 : -1);
 
+    ['receber', 'pagar'].forEach(tipo => {
+        dadosPorMes[mesAtual][tipo].forEach((item, i) => {
+            if(item.marcado) { if(tipo === 'receber') totalRec += item.valor; else totalPag += item.valor; }
+            const atrasado = (tipo === 'pagar' && !item.marcado && item.data <= hoje && item.data !== "");
+            if(atrasado) urgente = true;
 
-
-    window.meuGrafico = new Chart(ctx, {
-
-        type: 'doughnut',
-
-        data: {
-
-            labels: [],
-
-            datasets: [{
-
-                data: [],
-
-                backgroundColor: cores
-
-            }]
-
-        }
-
+            const html = `<tr class="${atrasado ? 'vencendo-atrasado' : ''}">
+                <td>${atrasado ? '⚠️ ' : ''}${item.descricao}<br><small style="color:var(--text-secondary)">${item.categoria}</small></td>
+                <td>${formatar(item.valor)}</td>
+                <td>${item.data ? item.data.split('-').reverse().slice(0,2).join('/') : '--'}</td>
+                <td><input type="checkbox" ${item.marcado?'checked':''} onchange="toggle('${tipo}',${i})"></td>
+                <td>
+                    <button class="btn-action" onclick="prepararEdicao('${tipo}',${i})">✎</button>
+                    <button class="btn-action" onclick="remover('${tipo}',${i})">✕</button>
+                </td>
+            </tr>`;
+            if(tipo === 'receber') tRec.innerHTML += html; else tPag.innerHTML += html;
+        });
     });
 
+    banner.style.display = urgente ? 'block' : 'none';
+    document.getElementById('totalRecebido').innerText = formatar(totalRec);
+    document.getElementById('totalPago').innerText = formatar(totalPag);
+    document.getElementById('saldo').innerText = formatar(totalRec - totalPag);
+    atualizarGrafico();
 }
 
+function toggle(tipo, i){ dadosPorMes[mesAtual][tipo][i].marcado = !dadosPorMes[mesAtual][tipo][i].marcado; salvar(); render(); }
+function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].splice(i,1); salvar(); render(); } }
 
+function atualizarGrafico(){
+    const resumo = {};
+    dadosPorMes[mesAtual].pagar.forEach(item => { 
+        if(item.marcado) {
+            resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
+        }
+    });
 
-// (RESTO DO SEU CÓDIGO ORIGINAL FUNCIONANDO)
+    const ctx = document.getElementById('graficoPizza');
+    if(window.meuGrafico) window.meuGrafico.destroy();
+    if(Object.keys(resumo).length === 0) return;
+
+    window.meuGrafico = new Chart(ctx, {
+        type: 'pie', // Volta para Pizza
+        data: {
+            labels: Object.keys(resumo),
+            datasets: [{ 
+                data: Object.values(resumo), 
+                backgroundColor: ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
+function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_re.json"; a.click(); }
+function importarDados(e) { const reader = new FileReader(); reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); }; reader.readAsText(e.target.files[0]); }
 
 function toggleMenu() {
-
     if (window.innerWidth <= 1024) {
-
         document.querySelector('.lateral').classList.toggle('active');
-
         document.getElementById('overlay').classList.toggle('active');
-
     }
-
 }
 
-
-
+// Execução inicial ao abrir a página
+atualizarLabelTopo();
 render();
-
 </script>
-
+</script>
 </body>
-
 </html>

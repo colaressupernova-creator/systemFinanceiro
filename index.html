@@ -112,9 +112,6 @@
         padding: 20px;
         transition: 0.3s ease; 
         box-shadow: 5px 0 15px rgba(0,0,0,0.2);
-
-        overflow-y: auto;
-        max-height: 100vh;
     }
 
     /* Classe que o JS vai ativar para mostrar o menu */
@@ -279,26 +276,6 @@
 <div class="card" style="margin-top: 15px;">
         <canvas id="graficoPizza"></canvas>
     </div>
-
-        <div class="card" style="margin-top: 15px;">
-    <h4 style="margin: 0 0 10px 0; color: var(--text-main);">Resumo de Gastos</h4>
-
-    <div id="listaResumo"
-         style="
-         max-height: 220px;
-         overflow-y: auto;
-         display: flex;
-         flex-direction: column;
-         gap: 8px;
-         ">
-    </div>
-</div>
-
-        <div class="card" style="margin-top: 15px;">
-    <div id="legendaGrafico"
-         style="margin-top: 5px; display: flex; flex-direction: column; gap: 8px;">
-    </div>
-</div>
 
 <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
         
@@ -497,7 +474,6 @@ function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].
 
 function atualizarGrafico(){
     const resumo = {};
-
     dadosPorMes[mesAtual].pagar.forEach(item => { 
         if(item.marcado) {
             resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
@@ -505,40 +481,11 @@ function atualizarGrafico(){
     });
 
     const ctx = document.getElementById('graficoPizza');
-    const listaResumo = document.getElementById('listaResumo'); // 👈 NOVO
-
-    // Limpa a lista toda vez que atualizar o gráfico
-    listaResumo.innerHTML = ''; // 👈 NOVO
-
     if(window.meuGrafico) window.meuGrafico.destroy();
     if(Object.keys(resumo).length === 0) return;
 
-    // Monta a lista resumida abaixo do gráfico
-    Object.keys(resumo).forEach(categoria => { // 👈 NOVO
-        const valor = resumo[categoria];
-
-        const itemLista = document.createElement('div');
-        itemLista.style.cssText = `
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 6px 8px;
-          border-radius: 8px;
-          background: var(--bg-body);
-          font-size: 0.85rem;
-        `;
-
-        itemLista.innerHTML = `
-          <span style="color: var(--text-main);">${categoria}</span>
-          <span style="font-weight: 700;">${formatar(valor)}</span>
-        `;
-
-        listaResumo.appendChild(itemLista);
-    });
-
-    // Mantém SEU gráfico exatamente como você quer (pizza)
     window.meuGrafico = new Chart(ctx, {
-        type: 'pie',
+        type: 'pie', // Volta para Pizza
         data: {
             labels: Object.keys(resumo),
             datasets: [{ 
@@ -554,7 +501,6 @@ function atualizarGrafico(){
         }
     });
 }
-
 function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_re.json"; a.click(); }
 function importarDados(e) { const reader = new FileReader(); reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); }; reader.readAsText(e.target.files[0]); }
 

@@ -275,6 +275,10 @@
 
 <div class="card" style="margin-top: 15px;">
         <canvas id="graficoPizza"></canvas>
+    <div class="card" style="margin-top: 20px;">
+    <canvas id="graficoPizza"></canvas>
+    <div id="legendaGrafico" style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+</div>
     </div>
 
 <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
@@ -380,7 +384,9 @@ function toggleDarkMode() {
 
 function salvar(){ localStorage.setItem('financeiroDados2026', JSON.stringify(dadosPorMes)); }
 function garantirMes(){ if(!dadosPorMes[mesAtual]) dadosPorMes[mesAtual] = { receber: [], pagar: [] }; }
-function formatar(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function formatar(v) {
+    return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
 
 function atualizarLabelTopo() {
     const select = document.getElementById('mes');
@@ -472,33 +478,70 @@ function render() {
 function toggle(tipo, i){ dadosPorMes[mesAtual][tipo][i].marcado = !dadosPorMes[mesAtual][tipo][i].marcado; salvar(); render(); }
 function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].splice(i,1); salvar(); render(); } }
 
-function atualizarGrafico(){
+ffunction atualizarGrafico(){
     const resumo = {};
-    dadosPorMes[mesAtual].pagar.forEach(item => { 
-        if(item.marcado) {
-            resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
-        }
-    });
+    const cores = ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899'];
+    
+    // Soma apenas o que está marcado como pago
+    if (dadosPorMes[mesAtual] && dadosPorMes[mesAtual].pagar) {
+        dadosPorMes[mesAtual].pagar.forEach(item => { 
+            if(item.marcado) {
+                resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
+            }
+        });
+    }
 
     const ctx = document.getElementById('graficoPizza');
+    const legendaContainer = document.getElementById('legendaGrafico');
+    
     if(window.meuGrafico) window.meuGrafico.destroy();
+    
+    // LIMPEZA E AJUSTE DE ESPAÇO
+    legendaContainer.innerHTML = ''; 
+    legendaContainer.style.marginTop = "15px"; // Adicionada agora para dar o respiro visual
+
     if(Object.keys(resumo).length === 0) return;
 
+    // Renderiza o Gráfico
     window.meuGrafico = new Chart(ctx, {
-        type: 'pie', // Volta para Pizza
+        type: 'doughnut', 
         data: {
             labels: Object.keys(resumo),
             datasets: [{ 
                 data: Object.values(resumo), 
-                backgroundColor: ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899']
+                backgroundColor: cores,
+                borderWidth: 2,
+                borderColor: document.body.classList.contains('dark-mode') ? '#1e293b' : '#ffffff'
             }]
         },
         options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false }
-            }
+            cutout: '75%',
+            maintainAspectRatio: true,
+            aspectRatio: 2,
+            plugins: { legend: { display: false } }
         }
+    });
+
+    // CRIA A LEGENDA ABAIXO DO GRÁFICO
+    Object.keys(resumo).forEach((categoria, index) => {
+        const valor = resumo[categoria];
+        const cor = cores[index % cores.length];
+
+        const itemLegenda = document.createElement('div');
+        itemLegenda.style.display = 'flex';
+        itemLegenda.style.alignItems = 'center';
+        itemLegenda.style.justifyContent = 'space-between';
+        itemLegenda.style.fontSize = '0.8rem';
+        itemLegenda.style.marginBottom = '5px'; // Espaço entre cada linha da legenda
+
+        itemLegenda.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 12px; height: 12px; border-radius: 3px; background-color: ${cor};"></div>
+                <span style="color: var(--text-secondary);">${categoria}</span>
+            </div>
+            <span style="font-weight: 600;">${formatar(valor)}</span>
+        `;
+        legendaContainer.appendChild(itemLegenda);
     });
 }
 function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_re.json"; a.click(); }

@@ -494,13 +494,17 @@ function atualizarGrafico(){
             }]
         },
         options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false }
+    responsive: true,
+    plugins: {
+        legend: { display: false },
+        tooltip: {
+            callbacks: {
+                label: ctx => formatar(ctx.raw)   // ← COLOCA AQUI
             }
         }
-    });
+    }
 }
+
 function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_re.json"; a.click(); }
 function importarDados(e) { const reader = new FileReader(); reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); }; reader.readAsText(e.target.files[0]); }
 

@@ -474,7 +474,6 @@ function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].
 
 function atualizarGrafico(){
     const resumo = {};
-
     dadosPorMes[mesAtual].pagar.forEach(item => { 
         if(item.marcado) {
             resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
@@ -482,65 +481,27 @@ function atualizarGrafico(){
     });
 
     const ctx = document.getElementById('graficoPizza');
-    const listaResumo = document.getElementById('listaResumo');
-
-    listaResumo.innerHTML = '';
-
     if(window.meuGrafico) window.meuGrafico.destroy();
     if(Object.keys(resumo).length === 0) return;
 
-    // Mantém sua lista abaixo do gráfico
-    Object.keys(resumo).forEach(categoria => {
-        const valor = resumo[categoria];
-
-        const itemLista = document.createElement('div');
-        itemLista.style.cssText = `
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 6px 8px;
-          border-radius: 8px;
-          background: var(--bg-body);
-          font-size: 0.85rem;
-        `;
-
-        itemLista.innerHTML = `
-          <span style="color: var(--text-main);">${categoria}</span>
-          <span style="font-weight: 700;">${formatar(valor)}</span>
-        `;
-
-        listaResumo.appendChild(itemLista);
-    });
-
-    // ✅ GRÁFICO EM ROSCA + VALORES EM R$
     window.meuGrafico = new Chart(ctx, {
-        type: 'doughnut',   // ← mudou aqui
+        type: 'pie', // Volta para Pizza
         data: {
             labels: Object.keys(resumo),
             datasets: [{ 
                 data: Object.values(resumo), 
-                backgroundColor: ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899'],
-                borderWidth: 2,
-                borderColor: document.body.classList.contains('dark-mode') ? '#1e293b' : '#ffffff'
+                backgroundColor: ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899']
             }]
         },
         options: {
             responsive: true,
-            cutout: '70%', // ← controla o tamanho do “buraco” da rosca
             plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const valor = context.raw;
-                            return formatar(valor); // ← mostra em R$
-                        }
-                    }
-                }
+                legend: { display: false }
             }
         }
     });
 }
+
 
     const ctx = document.getElementById('graficoPizza');
     if(window.meuGrafico) window.meuGrafico.destroy();

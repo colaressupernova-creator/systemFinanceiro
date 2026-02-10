@@ -33,15 +33,16 @@
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); margin: 0; }
 
         .topo-titulo {
-            display: flex; align-items: center; padding: 1rem 2rem;
+            display: flex; align-items: center; gap: 15px; padding: 1rem 2rem;
             background: var(--bg-card); border-bottom: 1px solid var(--border-color);
         }
 
         .controles-topo { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 
-        .layout { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; padding: 1.5rem; }
+        .btn-menu-mobile { display: none; font-size: 1.5rem; background: none; border: none; cursor: pointer; color: var(--primary-color); }
 
         @media (max-width: 1024px) {
+            .btn-menu-mobile { display: block; }
             .layout { grid-template-columns: 1fr; }
             .lateral {
                 position: fixed; top: 0; left: -300px; width: 260px; height: 100%;
@@ -49,10 +50,9 @@
                 transition: 0.3s ease; box-shadow: 5px 0 15px rgba(0,0,0,0.2);
             }
             .lateral.active { left: 0; }
-            .btn-menu-mobile { display: block !important; }
         }
 
-        .btn-menu-mobile { display: none; font-size: 1.5rem; background: none; border: none; cursor: pointer; color: var(--primary-color); }
+        .layout { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; padding: 1.5rem; }
 
         .card { 
             background: var(--bg-card); padding: 1.2rem; border-radius: 12px; 
@@ -68,18 +68,17 @@
         #btnSalvar { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; flex: 1; }
 
         .container-tabelas { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        .tabela-box { background: var(--bg-card); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color); }
+        .tabela-box { background: var(--bg-card); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color); overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th { text-align: left; padding: 10px; color: var(--text-secondary); border-bottom: 2px solid var(--border-color); font-size: 0.7rem; }
         td { padding: 10px; border-bottom: 1px solid var(--border-color); }
+
+        .btn-action { border: none; background: none; cursor: pointer; font-size: 1.1rem; color: var(--danger-color); padding: 5px; }
+        .btn-system { background: var(--input-bg); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; color: var(--text-main); cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
         
         #bannerAlerta { display: none; background: var(--danger-color); color: white; text-align: center; padding: 10px; font-weight: bold; }
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
         #overlay.active { display: block; }
-
-        /* Estilo para a legenda personalizada */
-        .legenda-item { display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px; }
-        .legenda-cor { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
     </style>
 </head>
 <body>
@@ -89,7 +88,7 @@
     <button class="btn-menu-mobile" onclick="toggleMenu()">☰</button>
     <div style="display: flex; align-items: center; gap: 5px;">
         <span style="font-weight: 800; color: var(--primary-color);">RE SOLUTION</span>
-        <span id="labelMesAtivo" style="color: var(--text-secondary); font-size: 0.9rem;">— JAN/2026</span>
+        <span id="labelMesAtivo" style="font-weight: 400; color: var(--text-secondary); font-size: 0.9rem; margin-left: 5px;">— JAN/2026</span>
     </div>
     <div class="controles-topo">
         <button id="btnDarkMode" onclick="toggleDarkMode()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">🌙</button>
@@ -104,12 +103,14 @@
         <div class="card" style="border-left-color: var(--danger-color);">Pago<span id="totalPago" style="color:var(--danger-color)">R$ 0,00</span></div>
         <div class="card" style="border-left-color: var(--primary-color);">Saldo<span id="saldo" style="color:var(--primary-color)">R$ 0,00</span></div>
         
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+
         <div class="card" style="margin-top: 15px; border-left: none;">
             <canvas id="graficoPizza"></canvas>
             <div id="legendaGrafico" style="margin-top: 15px;"></div>
         </div>
 
-        <select id="mes" onchange="mudarMes()" style="width: 100%; margin-top: 20px;">
+        <select id="mes" onchange="mudarMes()" style="width: 100%; margin-top: 20px; height: 36px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-weight: 600;">
             <option value="2026-01">Janeiro/2026</option>
             <option value="2026-02">Fevereiro/2026</option>
             <option value="2026-03">Março/2026</option>
@@ -123,6 +124,8 @@
             <option value="2026-11">Novembro/2026</option>
             <option value="2026-12">Dezembro/2026</option>
         </select>
+        
+        <button class="btn-system" onclick="exportarDados()" style="width: 100%; margin-top: 15px;">📤 Exportar Backup</button>
     </div>
 
     <div class="principal">
@@ -135,7 +138,7 @@
                     <option value="Transporte">🚗 Transporte</option>
                     <option value="Lazer">🎉 Lazer</option>
                     <option value="Gastos Pessoais">💆‍♂️ Gastos Pessoais</option>
-                    <option value="Saúde">🩺 Saúde e bem-estar</option>
+                    <option value="Saúde">🩺 Saúde</option>
                     <option value="Credito">💲 Credito</option>
                     <option value="Filho">🧒 Filho</option>
                     <option value="Moradia">🏠 Moradia</option>
@@ -158,14 +161,14 @@
             <div class="tabela-box">
                 <h3>📈 Recebimentos</h3>
                 <table>
-                    <thead><tr><th>Disc.</th><th>Valor</th><th>Ok</th></tr></thead>
+                    <thead><tr><th>Disc.</th><th>Valor</th><th>Data</th><th>Ok</th><th></th></tr></thead>
                     <tbody id="tabelaReceber"></tbody>
                 </table>
             </div>
             <div class="tabela-box">
                 <h3>📉 Pagamentos</h3>
                 <table>
-                    <thead><tr><th>Disc.</th><th>Valor</th><th>Ok</th></tr></thead>
+                    <thead><tr><th>Disc.</th><th>Valor</th><th>Data</th><th>Ok</th><th></th></tr></thead>
                     <tbody id="tabelaPagar"></tbody>
                 </table>
             </div>
@@ -177,6 +180,12 @@
 let dadosPorMes = JSON.parse(localStorage.getItem('financeiroDados2026') || '{}');
 let mesAtual = localStorage.getItem('mesSelecionado') || '2026-01';
 document.getElementById('mes').value = mesAtual;
+let editandoIndex = null; let editandoTipo = null;
+
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('btnDarkMode').innerText = '☀️';
+}
 
 function salvar(){ localStorage.setItem('financeiroDados2026', JSON.stringify(dadosPorMes)); }
 function garantirMes(){ if(!dadosPorMes[mesAtual]) dadosPorMes[mesAtual] = { receber: [], pagar: [] }; }
@@ -185,6 +194,8 @@ function formatar(v) { return v.toLocaleString('pt-BR', { style: 'currency', cur
 function mudarMes() {
     mesAtual = document.getElementById('mes').value;
     localStorage.setItem('mesSelecionado', mesAtual);
+    const sel = document.getElementById('mes');
+    document.getElementById('labelMesAtivo').innerText = "— " + sel.options[sel.selectedIndex].text.substring(0,3).toUpperCase() + "/2026";
     render();
 }
 
@@ -201,12 +212,33 @@ function adicionar(){
     const valor = Number(document.getElementById('valor').value);
     const data = document.getElementById('data').value;
     const categoria = document.getElementById('categoria').value;
-    if(!descricao || !valor) return alert("Preencha os campos!");
+    if(!descricao || !valor) return alert("Preencha!");
 
     garantirMes();
-    dadosPorMes[mesAtual][tipo].push({descricao, valor, data, categoria, marcado: false});
+    const item = {descricao, valor, data, categoria, marcado: false};
+    if(editandoIndex !== null) {
+        item.marcado = dadosPorMes[mesAtual][editandoTipo][editandoIndex].marcado;
+        dadosPorMes[mesAtual][editandoTipo][editandoIndex] = item;
+        editandoIndex = null; document.getElementById('btnSalvar').innerText = "Adicionar";
+    } else {
+        dadosPorMes[mesAtual][tipo].push(item);
+    }
     salvar(); render();
+    document.getElementById('descricao').value = ''; document.getElementById('valor').value = '';
 }
+
+function prepararEdicao(tipo, index){
+    editandoIndex = index; editandoTipo = tipo;
+    const item = dadosPorMes[mesAtual][tipo][index];
+    document.getElementById('tipo').value = tipo;
+    document.getElementById('descricao').value = item.descricao;
+    document.getElementById('valor').value = item.valor;
+    document.getElementById('data').value = item.data;
+    document.getElementById('categoria').value = item.categoria;
+    document.getElementById('btnSalvar').innerText = "Salvar";
+}
+
+function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].splice(i,1); salvar(); render(); } }
 
 function render() {
     garantirMes();
@@ -219,14 +251,21 @@ function render() {
     const hoje = new Date().toISOString().split('T')[0];
 
     ['receber', 'pagar'].forEach(tipo => {
+        dadosPorMes[mesAtual][tipo].sort((a,b) => a.data > b.data ? 1 : -1);
         dadosPorMes[mesAtual][tipo].forEach((item, i) => {
             if(item.marcado) { if(tipo === 'receber') totalRec += item.valor; else totalPag += item.valor; }
-            if(tipo === 'pagar' && !item.marcado && item.data <= hoje && item.data !== "") urgente = true;
+            const atrasado = (tipo === 'pagar' && !item.marcado && item.data <= hoje && item.data !== "");
+            if(atrasado) urgente = true;
 
             const html = `<tr>
                 <td>${item.descricao}<br><small style="color:var(--text-secondary)">${item.categoria}</small></td>
                 <td>${formatar(item.valor)}</td>
+                <td>${item.data ? item.data.split('-').reverse().slice(0,2).join('/') : '--'}</td>
                 <td><input type="checkbox" ${item.marcado?'checked':''} onchange="toggle('${tipo}',${i})"></td>
+                <td>
+                    <button class="btn-action" onclick="prepararEdicao('${tipo}',${i})">✎</button>
+                    <button class="btn-action" onclick="remover('${tipo}',${i})">✕</button>
+                </td>
             </tr>`;
             if(tipo === 'receber') tRec.innerHTML += html; else tPag.innerHTML += html;
         });
@@ -244,39 +283,29 @@ function toggle(tipo, i){ dadosPorMes[mesAtual][tipo][i].marcado = !dadosPorMes[
 function atualizarGrafico(){
     const resumo = {};
     const cores = ['#2563eb','#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899'];
-    
     if (dadosPorMes[mesAtual].pagar) {
-        dadosPorMes[mesAtual].pagar.forEach(item => { 
-            if(item.marcado) { resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor; }
-        });
+        dadosPorMes[mesAtual].pagar.forEach(item => { if(item.marcado) resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor; });
     }
-
     const ctx = document.getElementById('graficoPizza');
     const legendaContainer = document.getElementById('legendaGrafico');
     if(window.meuGrafico) window.meuGrafico.destroy();
     legendaContainer.innerHTML = '';
-
     if(Object.keys(resumo).length === 0) return;
 
     window.meuGrafico = new Chart(ctx, {
         type: 'doughnut', 
         data: {
             labels: Object.keys(resumo),
-            datasets: [{ 
-                data: Object.values(resumo), 
-                backgroundColor: cores, 
-                borderWidth: 2,
-                borderColor: document.body.classList.contains('dark-mode') ? '#1e293b' : '#ffffff' 
-            }]
+            datasets: [{ data: Object.values(resumo), backgroundColor: cores, borderWidth: 2, borderColor: document.body.classList.contains('dark-mode') ? '#1e293b' : '#ffffff' }]
         },
         options: { cutout: '75%', maintainAspectRatio: true, aspectRatio: 2, plugins: { legend: { display: false } } }
     });
 
     Object.keys(resumo).forEach((cat, i) => {
-        const item = document.createElement('div');
-        item.className = 'legenda-item';
-        item.innerHTML = `<div><i class="legenda-cor" style="background:${cores[i%cores.length]}"></i>${cat}</div><b>${formatar(resumo[cat])}</b>`;
-        legendaContainer.appendChild(item);
+        const div = document.createElement('div');
+        div.style = "display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; margin-bottom:5px";
+        div.innerHTML = `<span><i style="background:${cores[i%6]}; width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:8px"></i>${cat}</span><b>${formatar(resumo[cat])}</b>`;
+        legendaContainer.appendChild(div);
     });
 }
 
@@ -284,6 +313,8 @@ function toggleMenu() {
     document.getElementById('menuLateral').classList.toggle('active');
     document.getElementById('overlay').classList.toggle('active');
 }
+
+function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "backup.json"; a.click(); }
 
 render();
 </script>

@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>RE Solution - Financeiro Blush</title>
+<title>RE Solution - Gestão Financeira</title>
 
 <meta name="theme-color" content="#6366f1">
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="icon" type="image/png" href="logo.png">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -136,98 +138,49 @@
   .btn-outline { background: transparent; border: 1px solid var(--text-light); color: var(--text-light); width: 100%; margin-bottom: 5px; }
   .btn-outline:hover { background: rgba(255,255,255,0.2); border-color: var(--text-dark); color: var(--text-dark); }
   
-  .btn-action { width: 32px; height: 32px; padding: 0; border-radius: 8px; font-size: 0.9rem; }
+  .btn-action { width: 32px; height: 32px; padding: 0; border-radius: 8px; font-size: 0.9rem; margin-left: 2px; }
   .btn-edit { color: var(--warning); background: rgba(245, 158, 11, 0.1); }
   .btn-del { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
 
- /* --- TABELA AJUSTADA PARA NÃO ROLAR --- */
-  .table-box { 
-      width: 100%; 
-      overflow-x: hidden; /* Remove a rolagem lateral forçada */
+  /* --- PERFIL / AVATAR --- */
+  .perfil-wrapper { position: relative; display: flex; align-items: center; }
+  .perfil-avatar {
+      width: 45px; height: 45px; border-radius: 50%; overflow: hidden;
+      cursor: pointer; border: 2px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s; background: #e2e8f0;
   }
+  .perfil-avatar:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3); border-color: #a855f7; }
+  .perfil-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-  table { 
-      width: 100%; 
-      border-collapse: collapse; 
-      table-layout: fixed; /* OBRIGATÓRIO: Força a tabela a caber na largura disponível */
-  }
-
-  th { 
-      text-align: left; 
-      padding: 10px 5px; /* Menos padding */
-      color: #8b5cf6; 
-      font-size: 0.7rem; 
-      text-transform: uppercase; 
-      font-weight: 700; 
-      border-bottom: 2px solid rgba(0,0,0,0.05); 
-  }
-
-  td { 
-      padding: 10px 5px; /* Menos padding */
-      border-bottom: 1px solid rgba(0,0,0,0.05); 
-      color: var(--text-dark); 
-      font-size: 0.85rem;
-      vertical-align: middle;
-  }
+  /* --- TABELA OTIMIZADA (SEM ROLAGEM LATERAL) --- */
+  .table-box { width: 100%; overflow-x: hidden; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
   
-  /* --- LARGURAS DAS COLUNAS --- */
+  th { text-align: left; padding: 10px 5px; color: #8b5cf6; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; border-bottom: 2px solid rgba(0,0,0,0.05); }
+  td { padding: 10px 5px; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--text-dark); font-size: 0.85rem; vertical-align: middle; }
   
-  /* 1. Descrição (Ganha o espaço que sobrar) */
-  th:nth-child(1), td:nth-child(1) {
-      width: auto; 
-  }
+  /* Coluna Descrição */
+  th:nth-child(1), td:nth-child(1) { width: auto; }
+  td:nth-child(1) span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; }
+  @media (min-width: 500px) { td:nth-child(1) span { max-width: 200px; } }
+
+  /* Coluna Valor */
+  th:nth-child(2), td:nth-child(2) { width: 25%; text-align: right; }
   
-  /* Texto da descrição cortado com "..." se for muito longo */
-  td:nth-child(1) span {
-      display: block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 120px; /* Limite de largura no celular */
-  }
+  /* Coluna Data */
+  th:nth-child(3), td:nth-child(3) { width: 18%; text-align: center; }
+  @media (max-width: 400px) { th:nth-child(3), td:nth-child(3) { display: none; } } /* Some no mobile pequeno */
 
-  /* 2. Valor (Fixo) */
-  th:nth-child(2), td:nth-child(2) {
-      width: 25%; 
-      text-align: right;
-  }
+  /* Coluna Check */
+  th:nth-child(4), td:nth-child(4) { width: 35px; text-align: center; }
 
-  /* 3. Data (Esconder em celulares pequenos para caber os botões) */
-  th:nth-child(3), td:nth-child(3) {
-      width: 15%;
-      text-align: center;
-  }
-  
-  @media (max-width: 400px) {
-      th:nth-child(3), td:nth-child(3) {
-          display: none; /* Some com a data em telas muito pequenas */
-      }
-  }
+  /* Coluna Ações */
+  th:nth-child(5), td:nth-child(5) { width: 75px; text-align: right; }
 
-  /* 4. Checkbox (Bem pequeno) */
-  th:nth-child(4), td:nth-child(4) {
-      width: 40px;
-      text-align: center;
-  }
-
-  /* 5. Ações (Botões) */
-  th:nth-child(5), td:nth-child(5) {
-      width: 70px; /* Espaço suficiente para os 2 botões */
-      text-align: right;
-  }
-
-  /* Botões de Ação menores */
-  .btn-action { 
-      width: 28px; 
-      height: 28px; 
-      font-size: 0.8rem; 
-      margin-left: 2px;
-  }
-  
   /* Checkbox customizado */
-  .custom-check { appearance: none; width: 20px; height: 20px; border: 2px solid var(--text-light); border-radius: 6px; cursor: pointer; position: relative; }
+  .custom-check { appearance: none; width: 18px; height: 18px; border: 2px solid var(--text-light); border-radius: 6px; cursor: pointer; position: relative; margin: 0; }
   .custom-check:checked { background: var(--success); border-color: var(--success); }
-  .custom-check:checked::after { content: '✔'; color: white; position: absolute; font-size: 14px; top: -2px; left: 3px; }
+  .custom-check:checked::after { content: '✔'; color: white; position: absolute; font-size: 12px; top: -1px; left: 2px; }
 
   /* --- MODAL --- */
   .modal-overlay { 
@@ -256,7 +209,7 @@
   }
 
   /* =========================================
-     MOBILE (BARRA INFERIOR)
+      MOBILE (BARRA INFERIOR)
      ========================================= */
   @media (max-width: 1024px) {
     body { flex-direction: column; }
@@ -355,9 +308,13 @@
       <h2 style="margin:0; font-size: 1.5rem;">Visão Geral</h2>
       <span id="labelMesAtivo" style="color: var(--text-light); font-weight: 500;">Carregando...</span>
     </div>
-    <button class="btn-action" style="background: var(--glass-bg); width: 40px; height: 40px;" onclick="abrirConfigMobile()" id="btnMobileMenu">
-      <i class="fas fa-cog"></i>
-    </button>
+    
+    <div class="perfil-wrapper">
+        <div class="perfil-avatar" onclick="document.getElementById('inputFotoPerfil').click()">
+            <img id="imgPerfil" src="https://ui-avatars.com/api/?name=User&background=random" alt="Perfil">
+        </div>
+        <input type="file" id="inputFotoPerfil" accept="image/*" style="display:none" onchange="carregarFotoPerfil(event)">
+    </div>
   </div>
 
   <div class="grid-3">
@@ -431,7 +388,8 @@
     </div>
   </div>
 
-  <div style="height: 50px;"></div> </main>
+  <div style="height: 50px;"></div> 
+</main>
 
 <nav class="bottom-nav" id="navMobile">
   <button class="nav-btn" onclick="scrollToId('top')">
@@ -456,24 +414,24 @@
 <div id="modalConfig" class="modal-overlay" onclick="fecharModalConfig(event)">
   <div class="modal-content">
     <div class="modal-header">
-      <h3 style="margin:0">Configurações</h3>
+      <h3 style="margin:0">Selecionar Período</h3>
       <button onclick="document.getElementById('modalConfig').style.display='none'" style="background:none; border:none; color:white; font-size:1.2rem;">✕</button>
     </div>
     <div class="modal-body">
       <label>Selecionar Mês</label>
       <select id="mesMobile" onchange="mudarMesMobile()" style="margin-bottom: 20px;">
         <option value="2026-01">Janeiro/2026</option>
-         <option value="2026-02">Fevereiro/2026</option>
-         <option value="2026-03">Março/2026</option>
-         <option value="2026-04">Abril/2026</option>
-         <option value="2026-05">Maio/2026</option>
-         <option value="2026-06">Junho/2026</option>
-         <option value="2026-07">Julho/2026</option>
-         <option value="2026-08">Agosto/2026</option>
-         <option value="2026-09">Setembro/2026</option>
-         <option value="2026-10">Outubro/2026</option>
-         <option value="2026-11">Novembro/2026</option>
-         <option value="2026-12">Dezembro/2026</option>
+        <option value="2026-02">Fevereiro/2026</option>
+        <option value="2026-03">Março/2026</option>
+        <option value="2026-04">Abril/2026</option>
+        <option value="2026-05">Maio/2026</option>
+        <option value="2026-06">Junho/2026</option>
+        <option value="2026-07">Julho/2026</option>
+        <option value="2026-08">Agosto/2026</option>
+        <option value="2026-09">Setembro/2026</option>
+        <option value="2026-10">Outubro/2026</option>
+        <option value="2026-11">Novembro/2026</option>
+        <option value="2026-12">Dezembro/2026</option>
       </select>
 
       <label>Dados</label>
@@ -494,26 +452,24 @@
 </div>
 
 <script>
-// --- LÓGICA DO SISTEMA ---
+// --- VARIÁVEIS GLOBAIS ---
 let dadosPorMes = JSON.parse(localStorage.getItem('financeiroDados2026') || '{}');
 let mesSalvo = localStorage.getItem('mesSelecionado') || '2026-01';
 let mesAtual = mesSalvo;
 let editandoIndex = null;
 let editandoTipo = null;
 
-// Sincroniza selects de mês
+// Inicialização
 document.getElementById('mes').value = mesAtual;
 if(document.getElementById('mesMobile')) document.getElementById('mesMobile').value = mesAtual;
-
-// Dark Mode Check
 if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
 
-// Init
 window.onload = () => {
   render();
   atualizarLabelTopo();
-  
-  // Controle de visibilidade do menu inferior
+  const fotoSalva = localStorage.getItem('fotoPerfilUsuario');
+  if (fotoSalva) document.getElementById('imgPerfil').src = fotoSalva;
+
   const isMobile = window.innerWidth <= 1024;
   if(!isMobile) document.getElementById('navMobile').style.display = 'none';
 };
@@ -524,14 +480,13 @@ window.onresize = () => {
    document.querySelector('.sidebar').classList.toggle('d-lg-flex', !isMobile);
 }
 
-function scrollToId(id) {
-  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-}
+// --- FUNÇÕES DE INTERFACE ---
+function scrollToId(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
 
 function toggleDarkMode() {
   document.body.classList.toggle('dark-mode');
   localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
-  atualizarGrafico(); // Atualiza cores do gráfico
+  atualizarGrafico();
 }
 
 function salvar(){ localStorage.setItem('financeiroDados2026', JSON.stringify(dadosPorMes)); }
@@ -547,7 +502,6 @@ function atualizarLabelTopo() {
 function mudarMes() {
     mesAtual = document.getElementById('mes').value;
     localStorage.setItem('mesSelecionado', mesAtual);
-    // Sincroniza mobile
     if(document.getElementById('mesMobile')) document.getElementById('mesMobile').value = mesAtual;
     atualizarLabelTopo();
     render();
@@ -563,6 +517,20 @@ function mudarMesMobile() {
 function abrirConfigMobile() { document.getElementById('modalConfig').style.display = 'flex'; }
 function fecharModalConfig(e) { if(e.target.id === 'modalConfig') e.target.style.display = 'none'; }
 function fecharModalRelatorio(e) { if(e.target.id === 'modalRelatorio') e.target.style.display = 'none'; }
+
+// --- FOTO DE PERFIL ---
+function carregarFotoPerfil(event) {
+    const arquivo = event.target.files[0];
+    if (arquivo) {
+        const leitor = new FileReader();
+        leitor.onload = function(e) {
+            const resultado = e.target.result;
+            document.getElementById('imgPerfil').src = resultado;
+            localStorage.setItem('fotoPerfilUsuario', resultado);
+        }
+        leitor.readAsDataURL(arquivo);
+    }
+}
 
 // --- CRUD ---
 function adicionar(){
@@ -610,7 +578,7 @@ function toggle(tipo, i) {
     salvar(); render(); 
 }
 
-// --- RENDER ---
+// --- RENDERIZAR TABELAS E GRÁFICOS ---
 function render() {
     garantirMes();
     const tRec = document.getElementById('tabelaReceber');
@@ -621,6 +589,7 @@ function render() {
     const hoje = new Date().toISOString().split('T')[0];
 
     ['receber', 'pagar'].forEach(tipo => {
+        // Ordena por data
         const lista = dadosPorMes[mesAtual][tipo].map((item, idx) => ({...item, idxOriginal: idx}))
                       .sort((a,b) => (a.data > b.data ? 1 : -1));
 
@@ -634,33 +603,21 @@ function render() {
             const atrasado = (tipo === 'pagar' && !item.marcado && item.data && item.data < hoje);
             if(atrasado) urgente = true;
 
-            // Dentro do loop forEach na função render():
-
-const html = `
-    <tr>
-        <td>
-            <span class="${atrasado ? 'vencido' : ''}" style="display:block; width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                ${atrasado ? '⚠️ ' : ''}${item.descricao}
-            </span>
-            <div style="font-size:0.7rem; color:var(--text-light);">${item.categoria}</div>
-        </td>
-        
-        <td style="font-weight:600; text-align:right;">${formatar(item.valor)}</td>
-        
-        <td style="font-size:0.75rem; text-align:center;">
-            ${item.data ? item.data.split('-').reverse().slice(0,2).join('/') : '-'}
-        </td>
-        
-        <td style="text-align:center;">
-            <input type="checkbox" class="custom-check" ${item.marcado ? 'checked' : ''} onclick="toggle('${tipo}', ${i})">
-        </td>
-        
-        <td style="text-align:right;">
-            <button class="btn-action btn-edit" onclick="prepararEdicao('${tipo}', ${i})"><i class="fas fa-pen"></i></button>
-            <button class="btn-action btn-del" onclick="remover('${tipo}', ${i})"><i class="fas fa-trash"></i></button>
-        </td>
-    </tr>
-`;
+            const html = `
+                <tr>
+                    <td>
+                        <span class="${atrasado ? 'vencido' : ''}" style="display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${atrasado ? '⚠️ ' : ''}${item.descricao}</span>
+                        <div style="font-size:0.75rem; color:var(--text-light);">${item.categoria}</div>
+                    </td>
+                    <td style="font-weight:600; text-align:right;">${formatar(item.valor)}</td>
+                    <td style="font-size:0.85rem; text-align:center;">${item.data ? item.data.split('-').reverse().slice(0,2).join('/') : '-'}</td>
+                    <td style="text-align:center;"><input type="checkbox" class="custom-check" ${item.marcado ? 'checked' : ''} onclick="toggle('${tipo}', ${i})"></td>
+                    <td style="text-align:right;">
+                        <button class="btn-action btn-edit" onclick="prepararEdicao('${tipo}', ${i})"><i class="fas fa-pen"></i></button>
+                        <button class="btn-action btn-del" onclick="remover('${tipo}', ${i})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
             if(tipo === 'receber') tRec.innerHTML += html; else tPag.innerHTML += html;
         });
     });
@@ -673,7 +630,6 @@ const html = `
     atualizarGrafico();
 }
 
-// --- CHART.JS ---
 let meuGrafico = null;
 function atualizarGrafico(){
     const resumo = {};
@@ -683,9 +639,7 @@ function atualizarGrafico(){
 
     const ctx = document.getElementById('graficoPizza');
     if(meuGrafico) meuGrafico.destroy();
-    
-    // Cores Blush Theme
-    const cores = ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#14b8a6'];
+    if(Object.keys(resumo).length === 0) return;
 
     meuGrafico = new Chart(ctx, {
         type: 'doughnut', 
@@ -693,7 +647,7 @@ function atualizarGrafico(){
             labels: Object.keys(resumo),
             datasets: [{
                 data: Object.values(resumo),
-                backgroundColor: cores,
+                backgroundColor: ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#14b8a6'],
                 borderWidth: 0
             }]
         },
@@ -701,13 +655,101 @@ function atualizarGrafico(){
             responsive: true,
             maintainAspectRatio: false,
             plugins: { 
-                legend: { display: false }
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) label += ': ';
+                            if (context.raw !== null) label += context.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                            return label;
+                        }
+                    }
+                }
             }
         }
     });
 }
 
-// --- EXPORT/IMPORT ---
+// --- RELATÓRIO COMPLETO ---
+function gerarRelatorioDiario() {
+    garantirMes();
+    
+    let totalEntradasOk = 0, totalSaidasOk = 0;
+    let totalEntradasGeral = 0, totalSaidasGeral = 0;
+    const resumoGastos = {}; 
+
+    dadosPorMes[mesAtual].receber.forEach(item => {
+        totalEntradasGeral += item.valor;
+        if (item.marcado) totalEntradasOk += item.valor;
+    });
+
+    dadosPorMes[mesAtual].pagar.forEach(item => {
+        totalSaidasGeral += item.valor; 
+        if (item.marcado) totalSaidasOk += item.valor;
+        if (item.data) resumoGastos[item.data] = (resumoGastos[item.data] || 0) + item.valor;
+    });
+
+    const saldoGeral = totalEntradasGeral - totalSaidasGeral;
+    const diferencaOk = totalEntradasOk - totalSaidasOk;
+    
+    const corBalanco = saldoGeral >= 0 ? '#10b981' : '#ef4444'; 
+    const corRealizado = diferencaOk >= 0 ? '#10b981' : '#ef4444';
+
+    let msgMotivacional = "";
+    if (diferencaOk > 2000) msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente. Pense em investir.";
+    else if (diferencaOk > 500) msgMotivacional = "👏 <strong>No Azul!</strong> Você tem dinheiro em caixa. Continue assim.";
+    else if (diferencaOk > 0) msgMotivacional = "😅 <strong>Positivo, mas cuidado!</strong> Evite gastos não planejados.";
+    else if (diferencaOk === 0) msgMotivacional = "⚖️ <strong>Zerado.</strong> Cuidado, qualquer imprevisto te leva para o vermelho.";
+    else msgMotivacional = "⚠️ <strong>Alerta de Caixa!</strong> Você gastou mais do que recebeu. Segure as pontas!";
+
+    const corpo = document.getElementById('corpoRelatorio');
+    corpo.innerHTML = `
+        <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corBalanco}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
+            <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">📊 Balanço Geral (Previsto)</h4>
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px;">
+                <span>Total Lançado:</span><span style="font-weight: bold;">${formatar(totalEntradasGeral)}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px;">
+                <span>Saídas Lançadas:</span><span style="font-weight: bold; color: var(--danger);">${formatar(totalSaidasGeral)}</span>
+            </div>
+            <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 8px; display: flex; justify-content: space-between; font-weight: bold;">
+                <span>Saldo Final Previsto:</span><span style="color: ${corBalanco}">${formatar(saldoGeral)}</span>
+            </div>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
+            <h4 style="margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">💡 Realizado até agora</h4>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--text-dark);">
+                ${diferencaOk >= 0 ? '✅ Seu caixa está positivo em ' : '⚠️ Você gastou ' + formatar(Math.abs(diferencaOk)) + ' a mais do que recebeu '} 
+                <strong>${formatar(diferencaOk)}</strong>.
+            </p>
+        </div>
+
+        <div style="background: ${corRealizado}15; border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+            <p style="margin: 0; font-size: 0.9rem; color: var(--text-dark); line-height: 1.4;">${msgMotivacional}</p>
+        </div>
+        
+        <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">📅 Todos os Lançamentos por Dia</h4>
+    `;
+
+    const datasOrdenadas = Object.keys(resumoGastos).sort();
+    if (datasOrdenadas.length === 0) {
+        corpo.innerHTML += '<p style="text-align:center; color:var(--text-light); font-size: 0.9rem;">Nenhum gasto lançado para este mês.</p>';
+    } else {
+        datasOrdenadas.forEach(data => {
+            corpo.innerHTML += `
+                <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed rgba(0,0,0,0.1);">
+                    <span style="font-weight:600; color:var(--text-light);">${data.split('-').reverse().join('/')}</span>
+                    <span style="font-weight:700; color:var(--danger);">${formatar(resumoGastos[data])}</span>
+                </div>
+            `;
+        });
+    }
+
+    document.getElementById('modalRelatorio').style.display = 'flex';
+}
+
 function exportarDados() { 
   const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); 
   const url = URL.createObjectURL(blob); 
@@ -717,127 +759,6 @@ function importarDados(e) {
   const reader = new FileReader(); 
   reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); alert("Restaurado!"); }; 
   reader.readAsText(e.target.files[0]); 
-}
-
-// --- RELATÓRIO ---
-// --- RELATÓRIO COMPLETO ---
-function gerarRelatorioDiario() {
-    garantirMes();
-    
-    // 1. Variáveis para o Realizado (Marcado/Pago)
-    let totalEntradasOk = 0;
-    let totalSaidasOk = 0;
-    
-    // 2. Variáveis para o Planejado (Tudo lançado)
-    let totalEntradasGeral = 0;
-    let totalSaidasGeral = 0;
-    
-    const resumoGastos = {}; 
-
-    // Processar Recebimentos
-    dadosPorMes[mesAtual].receber.forEach(item => {
-        totalEntradasGeral += item.valor;
-        if (item.marcado) totalEntradasOk += item.valor;
-    });
-
-    // Processar Pagamentos
-    dadosPorMes[mesAtual].pagar.forEach(item => {
-        totalSaidasGeral += item.valor; 
-        
-        // Soma no Realizado APENAS se estiver marcado
-        if (item.marcado) {
-            totalSaidasOk += item.valor;
-        }
-
-        // Soma na Lista por Dia INDEPENDENTE de estar marcado (Mostra tudo)
-        if (item.data) {
-            resumoGastos[item.data] = (resumoGastos[item.data] || 0) + item.valor;
-        }
-    });
-
-    const saldoGeral = totalEntradasGeral - totalSaidasGeral;
-    const diferencaOk = totalEntradasOk - totalSaidasOk; // Saldo Realizado
-
-    // --- DEFINIÇÃO DE CORES ---
-    const corBalanco = saldoGeral >= 0 ? '#10b981' : '#ef4444'; 
-    const corRealizado = diferencaOk >= 0 ? '#10b981' : '#ef4444'; // Cor que a motivação vai seguir
-
-    // --- LÓGICA DA MENSAGEM (Baseada no Realizado) ---
-    let msgMotivacional = "";
-    
-    if (diferencaOk > 2000) {
-        msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente. É um ótimo momento para separar uma parte para investimentos.";
-    } else if (diferencaOk > 500) {
-        msgMotivacional = "👏 <strong>No Azul!</strong> Você tem dinheiro em caixa sobrando. Continue controlando para manter essa tranquilidade.";
-    } else if (diferencaOk > 0) {
-        msgMotivacional = "😅 <strong>Positivo, mas cuidado!</strong> Tem dinheiro na conta, mas a margem é pequena. Evite gastos não planejados agora.";
-    } else if (diferencaOk === 0) {
-        msgMotivacional = "⚖️ <strong>Zerado.</strong> Tudo o que entrou, saiu. Cuidado, qualquer imprevisto pode te levar para o vermelho.";
-    } else {
-        msgMotivacional = "⚠️ <strong>Alerta de Caixa!</strong> Você gastou mais do que recebeu até agora. Segure as pontas nos próximos dias!";
-    }
-
-    const corpo = document.getElementById('corpoRelatorio');
-    corpo.innerHTML = '';
-
-    // Bloco 1: Balanço Geral (Previsto)
-    corpo.innerHTML += `
-        <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corBalanco}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
-            <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">📊 Balanço Geral (Previsto)</h4>
-            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px;">
-                <span>Total Lançado:</span>
-                <span style="font-weight: bold;">${formatar(totalEntradasGeral)}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px;">
-                <span>Saídas Lançadas:</span>
-                <span style="font-weight: bold; color: var(--danger);">${formatar(totalSaidasGeral)}</span>
-            </div>
-            <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 8px; display: flex; justify-content: space-between; font-weight: bold;">
-                <span>Saldo Final Previsto:</span>
-                <span style="color: ${corBalanco}">${formatar(saldoGeral)}</span>
-            </div>
-        </div>
-    `;
-
-    // Bloco 2: Realizado até agora
-    corpo.innerHTML += `
-        <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
-            <h4 style="margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">💡 Realizado até agora</h4>
-            <p style="margin: 0; font-size: 0.95rem; color: var(--text-dark);">
-                ${diferencaOk >= 0 ? '✅ Seu caixa está positivo em ' : '⚠️ Você gastou ' + formatar(Math.abs(diferencaOk)) + ' a mais do que recebeu '} 
-                <strong>${formatar(diferencaOk)}</strong>.
-            </p>
-        </div>
-    `;
-
-    // Bloco 3: Mensagem Motivacional (Segue corRealizado)
-    corpo.innerHTML += `
-        <div style="background: ${corRealizado}15; border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
-            <p style="margin: 0; font-size: 0.9rem; color: var(--text-dark); line-height: 1.4;">
-                ${msgMotivacional}
-            </p>
-        </div>
-        
-        <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">📅 Todos os Lançamentos por Dia</h4>
-    `;
-
-    // Bloco 4: Detalhamento Diário
-    const datasOrdenadas = Object.keys(resumoGastos).sort();
-    if (datasOrdenadas.length === 0) {
-        corpo.innerHTML += '<p style="text-align:center; color:var(--text-light); font-size: 0.9rem;">Nenhum gasto lançado para este mês.</p>';
-    } else {
-        datasOrdenadas.forEach(data => {
-            const dataFormatada = data.split('-').reverse().join('/');
-            corpo.innerHTML += `
-                <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed rgba(0,0,0,0.1);">
-                    <span style="font-weight:600; color:var(--text-light);">${dataFormatada}</span>
-                    <span style="font-weight:700; color:var(--danger);">${formatar(resumoGastos[data])}</span>
-                </div>
-            `;
-        });
-    }
-
-    document.getElementById('modalRelatorio').style.display = 'flex';
 }
 </script>
 </body>

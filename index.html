@@ -382,36 +382,68 @@ function render() {
     const tPag = document.getElementById('tabelaPagar');
     const banner = document.getElementById('bannerAlerta');
     tRec.innerHTML = ''; tPag.innerHTML = '';
-  
+
     let totalRec = 0, totalPag = 0, urgente = false;
     const hoje = new Date().toISOString().split('T')[0];
-    dadosPorMes[mesAtual].receber.sort((a,b) => a.data > b.data ? 1 : -1);
-    dadosPorMes[mesAtual].pagar.sort((a,b) => a.data > b.data ? 1 : -1);
+
     ['receber', 'pagar'].forEach(tipo => {
-        dadosPorMes[mesAtual][tipo].forEach((item, i) => {
-            if(item.marcado) { if(tipo === 'receber') totalRec += item.valor; else totalPag += item.valor; }
+        // Criamos uma lista mapeada com o índice original ANTES de qualquer ordenação
+        const itensOrdenados = dadosPorMes[mesAtual][tipo]
+            .map((item, index) => ({ ...item, indexOriginal: index }))
+            .sort((a, b) => {
+                if (a.data === b.data) return 0;
+                return a.data > b.data ? 1 : -1;
+            });
+
+        itensOrdenados.forEach((item) => {
+            const i = item.indexOriginal;
+            
+            // Soma apenas se estiver marcado
+            if (item.marcado) { 
+                if (tipo === 'receber') totalRec += item.valor; 
+                else totalPag += item.valor; 
+            }
+
             const atrasado = (tipo === 'pagar' && !item.marcado && item.data <= hoje && item.data !== "");
-            if(atrasado) urgente = true;
-            const html = `<tr class="${atrasado ? 'vencendo-atrasado' : ''}">
-                <td>${atrasado ? '⚠️ ' : ''}${item.descricao}<br><small style="color:var(--text-secondary)">${item.categoria}</small></td>
-                <td>${formatar(item.valor)}</td>
-                <td>${item.data ? item.data.split('-').reverse().slice(0,2).join('/') : '--'}</td>
-                <td><input type="checkbox" ${item.marcado?'checked':''} onchange="toggle('${tipo}',${i})"></td>
-                <td>
-                    <button class="btn-action" onclick="prepararEdicao('${tipo}',${i})">✎</button>
-                    <button class="btn-action" onclick="remover('${tipo}',${i})">✕</button>
-                </td>
-            </tr>`;
-            if(tipo === 'receber') tRec.innerHTML += html; else tPag.innerHTML += html;
+            if (atrasado) urgente = true;
+
+            const html = `
+                <tr class="${atrasado ? 'vencendo-atrasado' : ''}">
+                    <td>${atrasado ? '⚠️ ' : ''}${item.descricao}<br>
+                        <small style="color:var(--text-secondary)">${item.categoria}</small>
+                    </td>
+                    <td>${formatar(item.valor)}</td>
+                    <td>${item.data ? item.data.split('-').reverse().slice(0, 2).join('/') : '--'}</td>
+                    <td>
+                        <input type="checkbox" ${item.marcado ? 'checked' : ''} 
+                        onclick="toggle('${tipo}', ${i})">
+                    </td>
+                    <td>
+                        <button class="btn-action" onclick="prepararEdicao('${tipo}', ${i})">✎</button>
+                        <button class="btn-action" onclick="remover('${tipo}', ${i})">✕</button>
+                    </td>
+                </tr>`;
+            
+            if (tipo === 'receber') tRec.innerHTML += html; 
+            else tPag.innerHTML += html;
         });
     });
+
     banner.style.display = urgente ? 'block' : 'none';
     document.getElementById('totalRecebido').innerText = formatar(totalRec);
     document.getElementById('totalPago').innerText = formatar(totalPag);
     document.getElementById('saldo').innerText = formatar(totalRec - totalPag);
     atualizarGrafico();
 }
-function toggle(tipo, i){ dadosPorMes[mesAtual][tipo][i].marcado = !dadosPorMes[mesAtual][tipo][i].marcado; salvar(); render(); }
+function toggle(tipo, i) {
+    // Inverte o status
+    dadosPorMes[mesAtual][tipo][i].marcado = !dadosPorMes[mesAtual][tipo][i].marcado;
+    salvar();
+    
+    // Em vez de renderizar tudo de novo e disparar o SORT, 
+    // apenas atualizamos os totais e o gráfico para não perder o foco visual
+    render(); 
+}
 function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].splice(i,1); salvar(); render(); } }
 function atualizarGrafico(){
     const resumo = {};

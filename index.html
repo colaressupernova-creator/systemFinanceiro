@@ -444,75 +444,53 @@ window.onclick = function(event) {
 function gerarRelatorioDiario() {
     garantirMes();
     
-    // 1. Variáveis para o Realizado (Marcado)
-    let totalEntradasOk = 0;
-    let totalSaidasOk = 0;
-    
-    // 2. Variáveis para o Planejado (Tudo lançado)
     let totalEntradasGeral = 0;
     let totalSaidasGeral = 0;
-    
-    const resumoGastos = {}; 
+    const resumoGastos = {}; // Vai guardar TUDO que foi lançado por dia
 
-    // Processar Recebimentos
+    // 1. Soma todas as Entradas (marcadas ou não)
     dadosPorMes[mesAtual].receber.forEach(item => {
         totalEntradasGeral += item.valor;
-        if (item.marcado) totalEntradasOk += item.valor;
     });
 
-    // Processar Pagamentos
+    // 2. Soma todas as Saídas e Agrupa por Data (marcadas ou não)
     dadosPorMes[mesAtual].pagar.forEach(item => {
         totalSaidasGeral += item.valor;
-        if (item.marcado) {
-            totalSaidasOk += item.valor;
-            if (item.data) {
-                resumoGastos[item.data] = (resumoGastos[item.data] || 0) + item.valor;
-            }
+        if (item.data) {
+            // Aqui a mágica acontece: ele soma independentemente do "marcado"
+            resumoGastos[item.data] = (resumoGastos[item.data] || 0) + item.valor;
         }
     });
 
-    const saldoGeral = totalEntradasGeral - totalSaidasGeral;
+    const saldoPrevisto = totalEntradasGeral - totalSaidasGeral;
     const corpo = document.getElementById('corpoRelatorio');
     corpo.innerHTML = '';
 
-    // Bloco 1: Balanço Geral (TUDO LANÇADO)
+    // Bloco de Resumo Superior
     corpo.innerHTML += `
-        <div style="background: var(--bg-body); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-color);">
-            <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">📊 Balanço Geral (Previsto)</h4>
-            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px;">
-                <span>Total Lançado:</span>
-                <span style="font-weight: bold;">${formatar(totalEntradasGeral)}</span>
+        <div style="background: var(--bg-body); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid var(--border-color);">
+            <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">📊 Balanço do Período (Tudo Lançado)</h4>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span>Total Entradas:</span>
+                <span style="font-weight: bold; color: var(--success-color);">${formatar(totalEntradasGeral)}</span>
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px;">
-                <span>Saídas Lançadas:</span>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span>Total Saídas:</span>
                 <span style="font-weight: bold; color: var(--danger-color);">${formatar(totalSaidasGeral)}</span>
             </div>
             <div style="border-top: 1px solid var(--border-color); padding-top: 8px; display: flex; justify-content: space-between; font-weight: bold;">
-                <span>Saldo Final Previsto:</span>
-                <span style="color: ${saldoGeral >= 0 ? 'var(--success-color)' : 'var(--danger-color)'}">${formatar(saldoGeral)}</span>
+                <span>Saldo Final:</span>
+                <span style="color: ${saldoPrevisto >= 0 ? 'var(--success-color)' : 'var(--danger-color)'}">${formatar(saldoPrevisto)}</span>
             </div>
         </div>
+        <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">📅 Detalhamento de Gastos Lançados</h4>
     `;
 
-    // Bloco 2: Análise de Fluxo (APENAS O QUE ESTÁ PAGO)
-    const diferencaOk = totalEntradasOk - totalSaidasOk;
-    let statusCor = diferencaOk >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
-    
-    corpo.innerHTML += `
-        <div style="background: rgba(0,0,0,0.03); border-radius: 12px; padding: 15px; margin-bottom: 20px; border-left: 5px solid ${statusCor};">
-            <h4 style="margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">💡 Realizado até agora</h4>
-            <p style="margin: 0; font-size: 0.95rem;">
-                ${diferencaOk >= 0 ? '✅ Seu caixa está positivo em ' : '⚠️ Você gastou ' + formatar(Math.abs(diferencaOk)) + ' a mais do que recebeu '} 
-                <strong>${formatar(diferencaOk)}</strong>.
-            </p>
-        </div>
-        <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">📅 Gastos Confirmados por Dia</h4>
-    `;
-
-    // Bloco 3: Detalhamento Diário
+    // 3. Lista de Gastos por Dia (Ordenada por data)
     const datasOrdenadas = Object.keys(resumoGastos).sort();
+
     if (datasOrdenadas.length === 0) {
-        corpo.innerHTML += '<p style="text-align:center; color:var(--text-secondary); font-size: 0.9rem;">Nenhum gasto confirmado (Ok) ainda.</p>';
+        corpo.innerHTML += '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">Nenhum gasto lançado para este período.</p>';
     } else {
         datasOrdenadas.forEach(data => {
             const dataFormatada = data.split('-').reverse().join('/');
@@ -527,6 +505,7 @@ function gerarRelatorioDiario() {
 
     document.getElementById('modalRelatorio').style.display = 'flex';
 }
+
 
 function fecharModal() {
     document.getElementById('modalRelatorio').style.display = 'none';

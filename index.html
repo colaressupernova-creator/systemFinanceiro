@@ -345,14 +345,22 @@
       <div>
         <label>Categoria</label>
         <select id="categoria">
-          <option value="Alimentação">🍔 Alimentação</option>
-          <option value="Transporte">🚗 Transporte</option>
-          <option value="Moradia">🏠 Moradia</option>
-          <option value="Contas">💡 Contas (Luz/Água)</option>
-          <option value="Saúde">🩺 Saúde</option>
-          <option value="Lazer">🎉 Lazer</option>
-          <option value="Salário">💰 Salário</option>
-          <option value="Outros">⚙️ Outros</option>
+            <option value="Supermercado">🛒 Supermercado</option>
+            <option value="Alimentação">🍔 Alimentação</option>
+            <option value="Transporte">🚗 Transporte</option>
+            <option value="Lazer">🎉 Lazer</option>
+            <option value="Gastos Pessoais">💆‍♂️ Gastos Pessoais</option>
+            <option value="Saúde">🩺 Saúde e bem-estar</option>
+            <option value="Credito">💲 Credito</option>
+            <option value="Filho">🧒 Filho</option>
+            <option value="Moradia">🏠 Moradia</option>
+            <option value="Assinaturas">📺 Assinaturas</option>
+            <option value="Emprestimos">💸 Emprestimos</option>
+            <option value="Vale Alimentação">💳 Vale Alimentação</option>
+            <option value="Mensalidades">💪 Mensalidades</option>
+            <option value="Reserva">🧾 Reserva</option>
+            <option value="Salário">💰 Salário</option>
+            <option value="Outros">⚙️ Outros</option>
         </select>
       </div>
     </div>
@@ -686,22 +694,34 @@ function gerarRelatorioDiario() {
 
     dadosPorMes[mesAtual].pagar.forEach(item => {
         totalSaidasGeral += item.valor; 
-        if (item.marcado) totalSaidasOk += item.valor;
-        if (item.data) resumoGastos[item.data] = (resumoGastos[item.data] || 0) + item.valor;
+        if (item.marcado) {
+            totalSaidasOk += item.valor;
+        }
+        if (item.data) {
+            resumoGastos[item.data] = (resumoGastos[item.data] || 0) + item.valor;
+        }
     });
 
     const saldoGeral = totalEntradasGeral - totalSaidasGeral;
-    const diferencaOk = totalEntradasOk - totalSaidasOk;
+    const diferencaOk = totalEntradasOk - totalSaidasOk; // Saldo Realizado
     
+    // --- CORES BASEADAS NO REALIZADO ---
     const corBalanco = saldoGeral >= 0 ? '#10b981' : '#ef4444'; 
-    const corRealizado = diferencaOk >= 0 ? '#10b981' : '#ef4444';
+    const corRealizado = diferencaOk >= 0 ? '#10b981' : '#ef4444'; 
 
+    // --- MENSAGEM MOTIVACIONAL (BASEADA NO REALIZADO) ---
     let msgMotivacional = "";
-    if (diferencaOk > 2000) msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente. Pense em investir.";
-    else if (diferencaOk > 500) msgMotivacional = "👏 <strong>No Azul!</strong> Você tem dinheiro em caixa. Continue assim.";
-    else if (diferencaOk > 0) msgMotivacional = "😅 <strong>Positivo, mas cuidado!</strong> Evite gastos não planejados.";
-    else if (diferencaOk === 0) msgMotivacional = "⚖️ <strong>Zerado.</strong> Cuidado, qualquer imprevisto te leva para o vermelho.";
-    else msgMotivacional = "⚠️ <strong>Alerta de Caixa!</strong> Você gastou mais do que recebeu. Segure as pontas!";
+    if (diferencaOk > 2000) {
+        msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente. É um ótimo momento para separar uma parte para investimentos.";
+    } else if (diferencaOk > 500) {
+        msgMotivacional = "👏 <strong>No Azul!</strong> Você tem dinheiro em caixa sobrando. Continue controlando para manter essa tranquilidade.";
+    } else if (diferencaOk > 0) {
+        msgMotivacional = "😅 <strong>Positivo, mas cuidado!</strong> Tem dinheiro na conta, mas a margem é pequena. Evite gastos não planejados agora.";
+    } else if (diferencaOk === 0) {
+        msgMotivacional = "⚖️ <strong>Zerado.</strong> Tudo o que entrou, saiu. Cuidado, qualquer imprevisto pode te levar para o vermelho.";
+    } else {
+        msgMotivacional = "⚠️ <strong>Alerta de Caixa!</strong> Você gastou mais do que recebeu até agora. Segure as pontas nos próximos dias!";
+    }
 
     const corpo = document.getElementById('corpoRelatorio');
     corpo.innerHTML = `

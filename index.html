@@ -325,7 +325,7 @@ function render() {
     const hoje = new Date().toISOString().split('T')[0];
 
     ['receber', 'pagar'].forEach(tipo => {
-        // Ordena por data
+        // Ordenação por data para manter a organização visual
         const itensOrdenados = dadosPorMes[mesAtual][tipo]
             .map((item, index) => ({ ...item, indexOriginal: index }))
             .sort((a, b) => {
@@ -336,11 +336,13 @@ function render() {
         itensOrdenados.forEach((item) => {
             const i = item.indexOriginal;
             
+            // Soma apenas o que está marcado como "Ok" para os cards da lateral
             if (item.marcado) { 
                 if (tipo === 'receber') totalRec += item.valor; 
                 else totalPag += item.valor; 
             }
 
+            // Lógica de alerta de atraso
             const atrasado = (tipo === 'pagar' && !item.marcado && item.data <= hoje && item.data !== "");
             if (atrasado) urgente = true;
 
@@ -366,10 +368,13 @@ function render() {
         });
     });
 
+    // Atualiza os elementos da interface
     banner.style.display = urgente ? 'block' : 'none';
     document.getElementById('totalRecebido').innerText = formatar(totalRec);
     document.getElementById('totalPago').innerText = formatar(totalPag);
     document.getElementById('saldo').innerText = formatar(totalRec - totalPag);
+    
+    // Atualiza o gráfico de pizza automaticamente
     atualizarGrafico();
 }
 

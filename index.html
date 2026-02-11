@@ -455,14 +455,18 @@ function gerarRelatorioDiario() {
         if (item.marcado) totalEntradasOk += item.valor;
     });
 
-    // Processar Pagamentos
+    // Processar Pagamentos (LÓGICA ALTERADA AQUI)
     dadosPorMes[mesAtual].pagar.forEach(item => {
-        totalSaidasGeral += item.valor;
+        totalSaidasGeral += item.valor; // Soma no Geral
+        
+        // Soma no Realizado APENAS se estiver marcado
         if (item.marcado) {
             totalSaidasOk += item.valor;
-            if (item.data) {
-                resumoGastos[item.data] = (resumoGastos[item.data] || 0) + item.valor;
-            }
+        }
+
+        // Soma na Lista por Dia INDEPENDENTE de estar marcado
+        if (item.data) {
+            resumoGastos[item.data] = (resumoGastos[item.data] || 0) + item.valor;
         }
     });
 
@@ -501,13 +505,13 @@ function gerarRelatorioDiario() {
                 <strong>${formatar(diferencaOk)}</strong>.
             </p>
         </div>
-        <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">📅 Gastos Confirmados por Dia</h4>
+        <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">📅 Todos os Lançamentos por Dia</h4>
     `;
 
-    // Bloco 3: Detalhamento Diário
+    // Bloco 3: Detalhamento Diário (Agora mostra tudo)
     const datasOrdenadas = Object.keys(resumoGastos).sort();
     if (datasOrdenadas.length === 0) {
-        corpo.innerHTML += '<p style="text-align:center; color:var(--text-secondary); font-size: 0.9rem;">Nenhum gasto confirmado (Ok) ainda.</p>';
+        corpo.innerHTML += '<p style="text-align:center; color:var(--text-secondary); font-size: 0.9rem;">Nenhum gasto lançado para este mês.</p>';
     } else {
         datasOrdenadas.forEach(data => {
             const dataFormatada = data.split('-').reverse().join('/');
@@ -522,6 +526,7 @@ function gerarRelatorioDiario() {
 
     document.getElementById('modalRelatorio').style.display = 'flex';
 }
+
 
 
 function fecharModal() {

@@ -35,7 +35,8 @@
             --input-bg: #1e293b;
         }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); margin: 0; }
-        /* Estilo do Seletor Dark */
+        
+        /* Estilos Gerais */
         select {
             height: 36px; padding: 0 32px 0 12px; border-radius: 8px; border: 1px solid var(--border-color);
             background-color: var(--input-bg); color: var(--text-main); font-weight: 600;
@@ -44,170 +45,71 @@
             background-repeat: no-repeat; background-position: right 8px center; background-size: 14px;
         }
         .topo-titulo {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start; /* Alinha o conteúdo à esquerda */
-    gap: 15px; /* Espaço entre o botão, o título e os controles */
-    padding: 1rem 2rem;
-    background: var(--bg-card);
-    border-bottom: 1px solid var(--border-color);
-}
-/* Garante que os controles (Exportar/Mês) fiquem no canto direito */
-.controles-topo {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.btn-menu-mobile {
-    display: none; /* Escondido no PC */
-    font-size: 1.5rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--primary-color);
-    padding: 0;
-    margin-right: 10px;
-}
-/* Mostra o botão apenas no celular */
-@media (max-width: 1024px) {
-    .btn-menu-mobile {
-        display: block;
-    }
-}
-        #tituloTopo { font-weight: 700; color: var(--primary-color); }
+            display: flex; align-items: center; justify-content: flex-start; gap: 15px;
+            padding: 1rem 2rem; background: var(--bg-card); border-bottom: 1px solid var(--border-color);
+        }
+        .controles-topo { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+        .btn-menu-mobile { display: none; font-size: 1.5rem; background: none; border: none; cursor: pointer; color: var(--primary-color); padding: 0; margin-right: 10px; }
+        
+        @media (max-width: 1024px) { .btn-menu-mobile { display: block; } }
+
         .btn-system { background: none; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 8px; color: var(--text-main); cursor: pointer; }
         #bannerAlerta { display: none; background: var(--danger-color); color: white; text-align: center; padding: 10px; font-weight: bold; }
-        /* Layout para PC */
-.layout {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 1.5rem;
-    padding: 1.5rem;
-}
-/* --- AJUSTE PARA CELULAR --- */
-@media (max-width: 1024px) {
-    .layout { grid-template-columns: 1fr; } /* No celular, vira uma coluna só */
-    .lateral {
-        position: fixed;
-        top: 0;
-        left: -300px; /* Esconde o menu na esquerda */
-        width: 260px;
-        height: 100%;
-        z-index: 1000;
-        background: var(--bg-card);
-        padding: 20px;
-        transition: 0.3s ease;
-        box-shadow: 5px 0 15px rgba(0,0,0,0.2);
-    }
-    /* Classe que o JS vai ativar para mostrar o menu */
-    .lateral.active { left: 0; }
-    /* Estilo do botão que abre o menu no topo */
-    .btn-menu-mobile { display: block !important; }
-}
-.lateral .btn-system {
-    background: var(--input-bg);
-    border: 1px solid var(--border-color);
-    padding: 10px;
-    border-radius: 8px;
-    color: var(--text-main);
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: 0.2s;
-}
-.lateral .btn-system:hover {
-    background: var(--primary-color);
-    color: white;
-}
-/* Botão de abrir menu (escondido no PC) */
-.btn-menu-mobile {
-    display: none;
-    font-size: 1.5rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-/* Overlay: Fundo escuro que aparece atrás do menu no celular */
-#overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 999;
-}
-#overlay.active { display: block; }
-        /* Card melhorado com bordas laterais e efeito hover */
-.card {
-    background: var(--bg-card);
-    padding: 1.2rem;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    margin-bottom: 10px;
-    border-left: 5px solid var(--primary-color); /* Borda padrão */
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-.card:hover {
-    transform: translateX(5px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-.card span {
-    display: block;
-    font-size: 1.6rem; /* Aumentei um pouco para destaque */
-    font-weight: 800;
-    margin-top: 0.4rem;
-}
-/* Cores dinâmicas para as bordas dos cards */
-.card:has(#totalRecebido) { border-left-color: var(--success-color); }
-.card:has(#totalPago) { border-left-color: var(--danger-color); }
-.card:has(#saldo) { border-left-color: var(--primary-color); }
-        .secao-form {
-    background: var(--bg-card);
-    padding: 1.5rem;
-    border-radius: 16px; /* Mais arredondado */
-    border: 1px solid var(--border-color);
-    margin-bottom: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-.actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-/* Inputs e Selects mais elegantes */
-.actions input, .actions select {
-    height: 42px;
-    padding: 0 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    background: var(--input-bg);
-    color: var(--text-main);
-    font-size: 0.9rem;
-    outline: none;
-    transition: border-color 0.2s;
-}
-.actions input:focus, .actions select:focus {
-    border-color: var(--primary-color);
-}
-/* Botão Adicionar com destaque em gradiente */
-#btnSalvar {
-    height: 42px;
-    padding: 0 20px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: white;
-    border: none;
-    font-weight: 700;
-    cursor: pointer;
-    flex: 1;
-    transition: filter 0.2s;
-}
-#btnSalvar:hover {
-    filter: brightness(1.1);
-}
+        
+        /* Layout */
+        .layout { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; padding: 1.5rem; }
+        
+        @media (max-width: 1024px) {
+            .layout { grid-template-columns: 1fr; }
+            .lateral {
+                position: fixed; top: 0; left: -300px; width: 260px; height: 100%; z-index: 1000;
+                background: var(--bg-card); padding: 20px; transition: 0.3s ease; box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+            }
+            .lateral.active { left: 0; }
+        }
+        
+        .lateral .btn-system { background: var(--input-bg); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; color: var(--text-main); cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
+        .lateral .btn-system:hover { background: var(--primary-color); color: white; }
+        
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
+        #overlay.active { display: block; }
+        
+        /* Cards */
+        .card { background: var(--bg-card); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 10px; border-left: 5px solid var(--primary-color); transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateX(5px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .card span { display: block; font-size: 1.6rem; font-weight: 800; margin-top: 0.4rem; }
+        .card:has(#totalRecebido) { border-left-color: var(--success-color); }
+        .card:has(#totalPago) { border-left-color: var(--danger-color); }
+        .card:has(#saldo) { border-left-color: var(--primary-color); }
+        
+        /* Formulário */
+        .secao-form { background: var(--bg-card); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+        .actions input, .actions select { height: 42px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+        .actions input:focus, .actions select:focus { border-color: var(--primary-color); }
+        
+        /* Dropdown Menu */
+        .dropdown { position: relative; display: inline-block; }
+        .btn-dropdown { background: none; border: 1px solid var(--border-color); font-size: 1.4rem; cursor: pointer; color: var(--text-main); padding: 4px 12px; border-radius: 8px; }
+        .dropdown-content { display: none; position: absolute; right: 0; background-color: var(--bg-card); min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 1001; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 5px; }
+        .dropdown-content a { color: var(--text-main); padding: 12px 16px; text-decoration: none; display: block; font-size: 0.9rem; }
+        .dropdown-content a:hover { background-color: var(--border-color); }
+        .dropdown-content.show { display: block; }
+
+        /* Modal Glassmorphism */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { background: var(--bg-card); width: 90%; max-width: 400px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 20px; max-height: 50vh; overflow-y: auto; }
+        .linha-relatorio { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed var(--border-color); }
+        .data-rel { font-weight: 600; color: var(--text-secondary); }
+        .valor-rel { font-weight: 700; color: var(--danger-color); }
+        
+        /* Botões e Tabelas */
+        #btnSalvar { height: 42px; padding: 0 20px; border-radius: 10px; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border: none; font-weight: 700; cursor: pointer; flex: 1; transition: filter 0.2s; }
+        #btnSalvar:hover { filter: brightness(1.1); }
         .container-tabelas { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
         .tabela-box { background: var(--bg-card); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color); overflow-x: auto; }
-      
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th { text-align: left; padding: 10px; color: var(--text-secondary); text-transform: uppercase; border-bottom: 2px solid var(--border-color); font-size: 0.7rem; }
         td { padding: 10px; border-bottom: 1px solid var(--border-color); }
@@ -217,7 +119,9 @@
     </style>
 </head>
 <body>
+    
 <div id="overlay" onclick="toggleMenu()"></div>
+
 <div class="topo-titulo">
     <button class="btn-menu-mobile" onclick="toggleMenu()">☰</button>
     <div style="display: flex; align-items: center; gap: 5px;">
@@ -225,46 +129,57 @@
         <span id="labelMesAtivo" style="font-weight: 400; color: var(--text-secondary); font-size: 0.9rem; margin-left: 5px;">— JAN/2026</span>
     </div>
     <div class="controles-topo">
-        <button id="btnDarkMode" onclick="toggleDarkMode()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">🌙</button>
+        <div class="dropdown">
+            <button class="btn-dropdown" onclick="toggleDropdown()">⋮</button>
+            <div id="menuDropdown" class="dropdown-content">
+                <a href="javascript:void(0)" onclick="toggleDarkMode()">
+                    <span id="iconLua">🌙</span> Alternar Tema
+                </a>
+                <a href="javascript:void(0)" onclick="gerarRelatorioDiario()">
+                    📊 Relatório Diário
+                </a>
+            </div>
+        </div>
     </div>
 </div>
+
 <div id="bannerAlerta">🔔 ATENÇÃO: Contas vencendo hoje ou atrasadas!</div>
+
 <div class="layout">
     <div class="lateral" id="menuLateral">
-  
-    <div class="card">Recebido<span id="totalRecebido" style="color:var(--success-color)">R$ 0,00</span></div>
-    <div class="card">Pago<span id="totalPago" style="color:var(--danger-color)">R$ 0,00</span></div>
-    <div class="card">Saldo<span id="saldo" style="color:var(--primary-color)">R$ 0,00</span></div>
-  
-    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
-<div class="card" style="margin-top: 15px;">
-        <canvas id="graficoPizza"></canvas>
+        <div class="card">Recebido<span id="totalRecebido" style="color:var(--success-color)">R$ 0,00</span></div>
+        <div class="card">Pago<span id="totalPago" style="color:var(--danger-color)">R$ 0,00</span></div>
+        <div class="card">Saldo<span id="saldo" style="color:var(--primary-color)">R$ 0,00</span></div>
+    
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+        <div class="card" style="margin-top: 15px;">
+            <canvas id="graficoPizza"></canvas>
+        </div>
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-secondary); text-transform: uppercase;">Mês de Referência</label>
+            <select id="mes" onchange="mudarMes()" style="width: 100%;">
+                <option value="2026-01">Janeiro/2026</option>
+                <option value="2026-02">Fevereiro/2026</option>
+                <option value="2026-03">Março/2026</option>
+                <option value="2026-04">Abril/2026</option>
+                <option value="2026-05">Maio/2026</option>
+                <option value="2026-06">Junho/2026</option>
+                <option value="2026-07">Julho/2026</option>
+                <option value="2026-08">Agosto/2026</option>
+                <option value="2026-09">Setembro/2026</option>
+                <option value="2026-10">Outubro/2026</option>
+                <option value="2026-11">Novembro/2026</option>
+                <option value="2026-12">Dezembro/2026</option>
+            </select>
+            <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-secondary); text-transform: uppercase; margin-top: 10px;">Dados e Backup</label>
+            <button class="btn-system" onclick="exportarDados()" style="width: 100%; text-align: left;">📤 Exportar Backup</button>
+            <button class="btn-system" onclick="document.getElementById('inputImport').click()" style="width: 100%; text-align: left;">📥 Importar Backup</button>
+            <input type="file" id="inputImport" style="display:none" onchange="importarDados(event)">
+        </div>
     </div>
-<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
-      
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-        <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-secondary); text-transform: uppercase;">Mês de Referência</label>
-        <select id="mes" onchange="mudarMes()" style="width: 100%;">
-            <option value="2026-01">Janeiro/2026</option>
-            <option value="2026-02">Fevereiro/2026</option>
-            <option value="2026-03">Março/2026</option>
-            <option value="2026-04">Abril/2026</option>
-            <option value="2026-05">Maio/2026</option>
-            <option value="2026-06">Junho/2026</option>
-            <option value="2026-07">Julho/2026</option>
-            <option value="2026-08">Agosto/2026</option>
-            <option value="2026-09">Setembro/2026</option>
-            <option value="2026-10">Outubro/2026</option>
-            <option value="2026-11">Novembro/2026</option>
-            <option value="2026-12">Dezembro/2026</option>
-        </select>
-        <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-secondary); text-transform: uppercase; margin-top: 10px;">Dados e Backup</label>
-        <button class="btn-system" onclick="exportarDados()" style="width: 100%; text-align: left;">📤 Exportar Backup</button>
-        <button class="btn-system" onclick="document.getElementById('inputImport').click()" style="width: 100%; text-align: left;">📥 Importar Backup</button>
-        <input type="file" id="inputImport" style="display:none" onchange="importarDados(event)">
-    </div>
-  
-</div>
+    
     <div class="principal">
         <div class="secao-form">
             <div class="actions">
@@ -311,6 +226,21 @@
         </div>
     </div>
 </div>
+
+<div id="modalRelatorio" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 style="margin:0">📊 Resumo de Gastos</h3>
+            <button onclick="fecharModal()" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:var(--text-secondary)">✕</button>
+        </div>
+        <div id="corpoRelatorio" class="modal-body">
+            </div>
+        <div style="padding: 15px;">
+            <button onclick="fecharModal()" id="btnSalvar" style="width: 100%;">Fechar</button>
+        </div>
+    </div>
+</div>
+
 <script>
 // 1. Recupera os dados guardados
 let dadosPorMes = JSON.parse(localStorage.getItem('financeiroDados2026') || '{}');
@@ -320,26 +250,31 @@ document.getElementById('mes').value = mesSalvo;
 let mesAtual = mesSalvo;
 let editandoIndex = null;
 let editandoTipo = null;
+
 // Verifica Dark Mode ao carregar
 if (localStorage.getItem('darkMode') === 'enabled') {
     document.body.classList.add('dark-mode');
-    document.getElementById('btnDarkMode').innerText = '☀️';
+    document.getElementById('iconLua').innerText = '☀️';
 }
+
 function toggleDarkMode() {
     const isDark = document.body.classList.toggle('dark-mode');
-    document.getElementById('btnDarkMode').innerText = isDark ? '☀️' : '🌙';
+    document.getElementById('iconLua').innerText = isDark ? '☀️' : '🌙';
     localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
     render();
 }
+
 function salvar(){ localStorage.setItem('financeiroDados2026', JSON.stringify(dadosPorMes)); }
 function garantirMes(){ if(!dadosPorMes[mesAtual]) dadosPorMes[mesAtual] = { receber: [], pagar: [] }; }
 function formatar(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+
 function atualizarLabelTopo() {
     const select = document.getElementById('mes');
     const nomeMesFull = select.selectedOptions[0].text;
     const mesCurto = nomeMesFull.substring(0, 3).toUpperCase() + nomeMesFull.substring(nomeMesFull.indexOf('/'));
     document.getElementById('labelMesAtivo').innerText = `— ${mesCurto}`;
 }
+
 function mudarMes() {
     mesAtual = document.getElementById('mes').value;
     localStorage.setItem('mesSelecionado', mesAtual);
@@ -347,6 +282,7 @@ function mudarMes() {
     if (window.innerWidth <= 1024) toggleMenu();
     render();
 }
+
 function adicionar(){
     const tipo = document.getElementById('tipo').value;
     const descricao = document.getElementById('descricao').value;
@@ -366,6 +302,7 @@ function adicionar(){
     document.getElementById('descricao').value = ''; document.getElementById('valor').value = '';
     salvar(); render();
 }
+
 function prepararEdicao(tipo, index){
     editandoIndex = index; editandoTipo = tipo;
     const item = dadosPorMes[mesAtual][tipo][index];
@@ -376,6 +313,7 @@ function prepararEdicao(tipo, index){
     document.getElementById('categoria').value = item.categoria;
     document.getElementById('btnSalvar').innerText = "Salvar";
 }
+
 function render() {
     garantirMes();
     const tRec = document.getElementById('tabelaReceber');
@@ -387,7 +325,7 @@ function render() {
     const hoje = new Date().toISOString().split('T')[0];
 
     ['receber', 'pagar'].forEach(tipo => {
-        // Criamos uma lista mapeada com o índice original ANTES de qualquer ordenação
+        // Ordena por data
         const itensOrdenados = dadosPorMes[mesAtual][tipo]
             .map((item, index) => ({ ...item, indexOriginal: index }))
             .sort((a, b) => {
@@ -398,7 +336,6 @@ function render() {
         itensOrdenados.forEach((item) => {
             const i = item.indexOriginal;
             
-            // Soma apenas se estiver marcado
             if (item.marcado) { 
                 if (tipo === 'receber') totalRec += item.valor; 
                 else totalPag += item.valor; 
@@ -435,16 +372,15 @@ function render() {
     document.getElementById('saldo').innerText = formatar(totalRec - totalPag);
     atualizarGrafico();
 }
+
 function toggle(tipo, i) {
-    // Inverte o status
     dadosPorMes[mesAtual][tipo][i].marcado = !dadosPorMes[mesAtual][tipo][i].marcado;
     salvar();
-    
-    // Em vez de renderizar tudo de novo e disparar o SORT, 
-    // apenas atualizamos os totais e o gráfico para não perder o foco visual
     render(); 
 }
+
 function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].splice(i,1); salvar(); render(); } }
+
 function atualizarGrafico(){
     const resumo = {};
     dadosPorMes[mesAtual].pagar.forEach(item => {
@@ -456,7 +392,7 @@ function atualizarGrafico(){
     if(window.meuGrafico) window.meuGrafico.destroy();
     if(Object.keys(resumo).length === 0) return;
     window.meuGrafico = new Chart(ctx, {
-        type: 'doughnut', // Alterado para Rosca
+        type: 'doughnut', 
         data: {
             labels: Object.keys(resumo),
             datasets: [{
@@ -466,38 +402,134 @@ function atualizarGrafico(){
         },
         options: {
             responsive: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.raw !== null) {
-                                label += context.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                            }
-                            return label;
-                        }
-                    }
-                }
-            }
+            plugins: { legend: { display: false } }
         }
     });
 }
+
 function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_re.json"; a.click(); }
 function importarDados(e) { const reader = new FileReader(); reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); }; reader.readAsText(e.target.files[0]); }
+
 function toggleMenu() {
     if (window.innerWidth <= 1024) {
         document.querySelector('.lateral').classList.toggle('active');
         document.getElementById('overlay').classList.toggle('active');
     }
 }
-// Execução inicial ao abrir a página
+
+// Controle do Menu Suspenso
+function toggleDropdown() {
+    document.getElementById("menuDropdown").classList.toggle("show");
+}
+
+window.onclick = function(event) {
+    // Fecha dropdown se clicar fora
+    if (!event.target.matches('.btn-dropdown')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
+        }
+    }
+    // Fecha modal se clicar fora da área branca
+    const modal = document.getElementById('modalRelatorio');
+    if (event.target === modal) fecharModal();
+}
+
+// Funções do Relatório Diário (Modal)
+function gerarRelatorioDiario() {
+    garantirMes();
+    
+    // 1. Variáveis para o Realizado (Marcado)
+    let totalEntradasOk = 0;
+    let totalSaidasOk = 0;
+    
+    // 2. Variáveis para o Planejado (Tudo lançado)
+    let totalEntradasGeral = 0;
+    let totalSaidasGeral = 0;
+    
+    const resumoGastos = {}; 
+
+    // Processar Recebimentos
+    dadosPorMes[mesAtual].receber.forEach(item => {
+        totalEntradasGeral += item.valor;
+        if (item.marcado) totalEntradasOk += item.valor;
+    });
+
+    // Processar Pagamentos
+    dadosPorMes[mesAtual].pagar.forEach(item => {
+        totalSaidasGeral += item.valor;
+        if (item.marcado) {
+            totalSaidasOk += item.valor;
+            if (item.data) {
+                resumoGastos[item.data] = (resumoGastos[item.data] || 0) + item.valor;
+            }
+        }
+    });
+
+    const saldoGeral = totalEntradasGeral - totalSaidasGeral;
+    const corpo = document.getElementById('corpoRelatorio');
+    corpo.innerHTML = '';
+
+    // Bloco 1: Balanço Geral (TUDO LANÇADO)
+    corpo.innerHTML += `
+        <div style="background: var(--bg-body); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-color);">
+            <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">📊 Balanço Geral (Previsto)</h4>
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px;">
+                <span>Total Lançado:</span>
+                <span style="font-weight: bold;">${formatar(totalEntradasGeral)}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px;">
+                <span>Saídas Lançadas:</span>
+                <span style="font-weight: bold; color: var(--danger-color);">${formatar(totalSaidasGeral)}</span>
+            </div>
+            <div style="border-top: 1px solid var(--border-color); padding-top: 8px; display: flex; justify-content: space-between; font-weight: bold;">
+                <span>Saldo Final Previsto:</span>
+                <span style="color: ${saldoGeral >= 0 ? 'var(--success-color)' : 'var(--danger-color)'}">${formatar(saldoGeral)}</span>
+            </div>
+        </div>
+    `;
+
+    // Bloco 2: Análise de Fluxo (APENAS O QUE ESTÁ PAGO)
+    const diferencaOk = totalEntradasOk - totalSaidasOk;
+    let statusCor = diferencaOk >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
+    
+    corpo.innerHTML += `
+        <div style="background: rgba(0,0,0,0.03); border-radius: 12px; padding: 15px; margin-bottom: 20px; border-left: 5px solid ${statusCor};">
+            <h4 style="margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">💡 Realizado até agora</h4>
+            <p style="margin: 0; font-size: 0.95rem;">
+                ${diferencaOk >= 0 ? '✅ Seu caixa está positivo em ' : '⚠️ Você gastou ' + formatar(Math.abs(diferencaOk)) + ' a mais do que recebeu '} 
+                <strong>${formatar(diferencaOk)}</strong>.
+            </p>
+        </div>
+        <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">📅 Gastos Confirmados por Dia</h4>
+    `;
+
+    // Bloco 3: Detalhamento Diário
+    const datasOrdenadas = Object.keys(resumoGastos).sort();
+    if (datasOrdenadas.length === 0) {
+        corpo.innerHTML += '<p style="text-align:center; color:var(--text-secondary); font-size: 0.9rem;">Nenhum gasto confirmado (Ok) ainda.</p>';
+    } else {
+        datasOrdenadas.forEach(data => {
+            const dataFormatada = data.split('-').reverse().join('/');
+            corpo.innerHTML += `
+                <div class="linha-relatorio">
+                    <span class="data-rel">${dataFormatada}</span>
+                    <span class="valor-rel">${formatar(resumoGastos[data])}</span>
+                </div>
+            `;
+        });
+    }
+
+    document.getElementById('modalRelatorio').style.display = 'flex';
+}
+
+function fecharModal() {
+    document.getElementById('modalRelatorio').style.display = 'none';
+}
+
+// Execução inicial
 atualizarLabelTopo();
 render();
-</script>
 </script>
 </body>
 </html>

@@ -140,11 +140,89 @@
   .btn-edit { color: var(--warning); background: rgba(245, 158, 11, 0.1); }
   .btn-del { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
 
-  /* --- TABELA --- */
-  .table-box { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; min-width: 500px; }
-  th { text-align: left; padding: 12px; color: #8b5cf6; font-size: 0.8rem; text-transform: uppercase; font-weight: 700; border-bottom: 2px solid rgba(0,0,0,0.05); }
-  td { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--text-dark); font-size: 0.9rem; }
+ /* --- TABELA AJUSTADA PARA NÃO ROLAR --- */
+  .table-box { 
+      width: 100%; 
+      overflow-x: hidden; /* Remove a rolagem lateral forçada */
+  }
+
+  table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      table-layout: fixed; /* OBRIGATÓRIO: Força a tabela a caber na largura disponível */
+  }
+
+  th { 
+      text-align: left; 
+      padding: 10px 5px; /* Menos padding */
+      color: #8b5cf6; 
+      font-size: 0.7rem; 
+      text-transform: uppercase; 
+      font-weight: 700; 
+      border-bottom: 2px solid rgba(0,0,0,0.05); 
+  }
+
+  td { 
+      padding: 10px 5px; /* Menos padding */
+      border-bottom: 1px solid rgba(0,0,0,0.05); 
+      color: var(--text-dark); 
+      font-size: 0.85rem;
+      vertical-align: middle;
+  }
+  
+  /* --- LARGURAS DAS COLUNAS --- */
+  
+  /* 1. Descrição (Ganha o espaço que sobrar) */
+  th:nth-child(1), td:nth-child(1) {
+      width: auto; 
+  }
+  
+  /* Texto da descrição cortado com "..." se for muito longo */
+  td:nth-child(1) span {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 120px; /* Limite de largura no celular */
+  }
+
+  /* 2. Valor (Fixo) */
+  th:nth-child(2), td:nth-child(2) {
+      width: 25%; 
+      text-align: right;
+  }
+
+  /* 3. Data (Esconder em celulares pequenos para caber os botões) */
+  th:nth-child(3), td:nth-child(3) {
+      width: 15%;
+      text-align: center;
+  }
+  
+  @media (max-width: 400px) {
+      th:nth-child(3), td:nth-child(3) {
+          display: none; /* Some com a data em telas muito pequenas */
+      }
+  }
+
+  /* 4. Checkbox (Bem pequeno) */
+  th:nth-child(4), td:nth-child(4) {
+      width: 40px;
+      text-align: center;
+  }
+
+  /* 5. Ações (Botões) */
+  th:nth-child(5), td:nth-child(5) {
+      width: 70px; /* Espaço suficiente para os 2 botões */
+      text-align: right;
+  }
+
+  /* Botões de Ação menores */
+  .btn-action { 
+      width: 28px; 
+      height: 28px; 
+      font-size: 0.8rem; 
+      margin-left: 2px;
+  }
   
   /* Checkbox customizado */
   .custom-check { appearance: none; width: 20px; height: 20px; border: 2px solid var(--text-light); border-radius: 6px; cursor: pointer; position: relative; }

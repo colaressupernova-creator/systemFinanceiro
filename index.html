@@ -383,14 +383,20 @@ function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].
 
 function atualizarGrafico(){
     const resumo = {};
+    
+    // Agrupa os gastos por categoria (somente os marcados)
     dadosPorMes[mesAtual].pagar.forEach(item => {
         if(item.marcado) {
             resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor;
         }
     });
+
     const ctx = document.getElementById('graficoPizza');
     if(window.meuGrafico) window.meuGrafico.destroy();
+    
+    // Se não tiver dados, não desenha nada
     if(Object.keys(resumo).length === 0) return;
+
     window.meuGrafico = new Chart(ctx, {
         type: 'doughnut', 
         data: {
@@ -402,10 +408,27 @@ function atualizarGrafico(){
         },
         options: {
             responsive: true,
-            plugins: { legend: { display: false } }
+            plugins: { 
+                legend: { display: false },
+                // Configuração para formatar o valor em R$ no Tooltip
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.raw !== null) {
+                                label += context.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
         }
     });
-}
+}''
 
 function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_re.json"; a.click(); }
 function importarDados(e) { const reader = new FileReader(); reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); }; reader.readAsText(e.target.files[0]); }
@@ -455,28 +478,47 @@ function gerarRelatorioDiario() {
         if (item.marcado) totalEntradasOk += item.valor;
     });
 
-    // Processar Pagamentos (LÓGICA ALTERADA AQUI)
+    // Processar Pagamentos
     dadosPorMes[mesAtual].pagar.forEach(item => {
-        totalSaidasGeral += item.valor; // Soma no Geral
+        totalSaidasGeral += item.valor; 
         
-        // Soma no Realizado APENAS se estiver marcado
         if (item.marcado) {
             totalSaidasOk += item.valor;
         }
 
-        // Soma na Lista por Dia INDEPENDENTE de estar marcado
         if (item.data) {
             resumoGastos[item.data] = (resumoGastos[item.data] || 0) + item.valor;
         }
     });
 
     const saldoGeral = totalEntradasGeral - totalSaidasGeral;
+    const diferencaOk = totalEntradasOk - totalSaidasOk; // Saldo Realizado
+
+    // --- DEFINIÇÃO DE CORES ---
+    const corBalanco = saldoGeral >= 0 ? '#10b981' : '#ef4444'; 
+    const corRealizado = diferencaOk >= 0 ? '#10b981' : '#ef4444'; // Cor que a motivação vai seguir
+
+    // --- LÓGICA DA MENSAGEM (Agora baseada no Realizado/diferencaOk) ---
+    let msgMotivacional = "";
+    
+    if (diferencaOk > 2000) {
+        msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente. É um ótimo momento para separar uma parte para investimentos.";
+    } else if (diferencaOk > 500) {
+        msgMotivacional = "👏 <strong>No Azul!</strong> Você tem dinheiro em caixa sobrando. Continue controlando para manter essa tranquilidade.";
+    } else if (diferencaOk > 0) {
+        msgMotivacional = "😅 <strong>Positivo, mas cuidado!</strong> Tem dinheiro na conta, mas a margem é pequena. Evite gastos não planejados agora.";
+    } else if (diferencaOk === 0) {
+        msgMotivacional = "⚖️ <strong>Zerado.</strong> Tudo o que entrou, saiu. Cuidado, qualquer imprevisto pode te levar para o vermelho.";
+    } else {
+        msgMotivacional = "⚠️ <strong>Alerta de Caixa!</strong> Você gastou mais do que recebeu até agora. Segure as pontas nos próximos dias!";
+    }
+
     const corpo = document.getElementById('corpoRelatorio');
     corpo.innerHTML = '';
 
-    // Bloco 1: Balanço Geral (TUDO LANÇADO)
+    // Bloco 1: Balanço Geral (Previsto) - Cor Própria (corBalanco)
     corpo.innerHTML += `
-        <div style="background: var(--bg-body); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-color);">
+        <div style="background: var(--bg-body); border-left: 5px solid ${corBalanco}; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
             <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">📊 Balanço Geral (Previsto)</h4>
             <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px;">
                 <span>Total Lançado:</span>
@@ -488,27 +530,34 @@ function gerarRelatorioDiario() {
             </div>
             <div style="border-top: 1px solid var(--border-color); padding-top: 8px; display: flex; justify-content: space-between; font-weight: bold;">
                 <span>Saldo Final Previsto:</span>
-                <span style="color: ${saldoGeral >= 0 ? 'var(--success-color)' : 'var(--danger-color)'}">${formatar(saldoGeral)}</span>
+                <span style="color: ${corBalanco}">${formatar(saldoGeral)}</span>
             </div>
         </div>
     `;
 
-    // Bloco 2: Análise de Fluxo (APENAS O QUE ESTÁ PAGO)
-    const diferencaOk = totalEntradasOk - totalSaidasOk;
-    let statusCor = diferencaOk >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
-    
+    // Bloco 2: Realizado até agora - Cor Própria (corRealizado)
     corpo.innerHTML += `
-        <div style="background: rgba(0,0,0,0.03); border-radius: 12px; padding: 15px; margin-bottom: 20px; border-left: 5px solid ${statusCor};">
+        <div style="background: var(--bg-body); border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
             <h4 style="margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">💡 Realizado até agora</h4>
             <p style="margin: 0; font-size: 0.95rem;">
                 ${diferencaOk >= 0 ? '✅ Seu caixa está positivo em ' : '⚠️ Você gastou ' + formatar(Math.abs(diferencaOk)) + ' a mais do que recebeu '} 
                 <strong>${formatar(diferencaOk)}</strong>.
             </p>
         </div>
+    `;
+
+    // Bloco 3: Mensagem Motivacional - Agora segue a corRealizado
+    corpo.innerHTML += `
+        <div style="background: ${corRealizado}15; border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+            <p style="margin: 0; font-size: 0.95rem; color: var(--text-main); line-height: 1.4;">
+                ${msgMotivacional}
+            </p>
+        </div>
+        
         <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">📅 Todos os Lançamentos por Dia</h4>
     `;
 
-    // Bloco 3: Detalhamento Diário (Agora mostra tudo)
+    // Bloco 4: Detalhamento Diário
     const datasOrdenadas = Object.keys(resumoGastos).sort();
     if (datasOrdenadas.length === 0) {
         corpo.innerHTML += '<p style="text-align:center; color:var(--text-secondary); font-size: 0.9rem;">Nenhum gasto lançado para este mês.</p>';
@@ -526,8 +575,6 @@ function gerarRelatorioDiario() {
 
     document.getElementById('modalRelatorio').style.display = 'flex';
 }
-
-
 
 function fecharModal() {
     document.getElementById('modalRelatorio').style.display = 'none';

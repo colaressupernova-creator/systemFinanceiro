@@ -325,7 +325,7 @@ function render() {
     const hoje = new Date().toISOString().split('T')[0];
 
     ['receber', 'pagar'].forEach(tipo => {
-        // Ordenação por data para manter a organização visual
+        // Ordena por data
         const itensOrdenados = dadosPorMes[mesAtual][tipo]
             .map((item, index) => ({ ...item, indexOriginal: index }))
             .sort((a, b) => {
@@ -336,13 +336,11 @@ function render() {
         itensOrdenados.forEach((item) => {
             const i = item.indexOriginal;
             
-            // Soma apenas o que está marcado como "Ok" para os cards da lateral
             if (item.marcado) { 
                 if (tipo === 'receber') totalRec += item.valor; 
                 else totalPag += item.valor; 
             }
 
-            // Lógica de alerta de atraso
             const atrasado = (tipo === 'pagar' && !item.marcado && item.data <= hoje && item.data !== "");
             if (atrasado) urgente = true;
 
@@ -368,13 +366,10 @@ function render() {
         });
     });
 
-    // Atualiza os elementos da interface
     banner.style.display = urgente ? 'block' : 'none';
     document.getElementById('totalRecebido').innerText = formatar(totalRec);
     document.getElementById('totalPago').innerText = formatar(totalPag);
     document.getElementById('saldo').innerText = formatar(totalRec - totalPag);
-    
-    // Atualiza o gráfico de pizza automaticamente
     atualizarGrafico();
 }
 
@@ -442,80 +437,30 @@ window.onclick = function(event) {
 
 // Funções do Relatório Diário (Modal)
 function gerarRelatorioDiario() {
-function gerarRelatorioDiario() {
     garantirMes();
-    
-    let totalEntradasGeral = 0;
-    let totalSaidasGeral = 0;
-    const resumoGastos = {}; 
+    const resumo = {};
 
-    dadosPorMes[mesAtual].receber.forEach(item => totalEntradasGeral += item.valor);
+    // Somente contas PAGAS e marcadas entram no relatório
     dadosPorMes[mesAtual].pagar.forEach(item => {
-        totalSaidasGeral += item.valor;
-        if (item.data) resumoGastos[item.data] = (resumoGastos[item.data] || 0) + item.valor;
+        if (item.marcado && item.data) {
+            resumo[item.data] = (resumo[item.data] || 0) + item.valor;
+        }
     });
 
-    const saldoPrevisto = totalEntradasGeral - totalSaidasGeral;
-    
-    // --- LÓGICA DE MOTIVAÇÃO ---
-    let msgMotivacional = "";
-    if (saldoPrevisto > 2000) {
-        msgMotivacional = "🚀 <strong>Impressionante!</strong> Sua disciplina está construindo sua liberdade financeira. Continue protegendo esse patrimônio!";
-    } else if (saldoPrevisto > 500) {
-        msgMotivacional = "🌟 <strong>Muito bem!</strong> Ver o saldo positivo é melhor do que qualquer compra por impulso. Mantenha o foco!";
-    } else if (saldoPrevisto > 0) {
-        msgMotivacional = "🌱 <strong>No caminho certo!</strong> Sobrou um pouco? Que tal guardar para sua reserva de emergência?";
-    } else if (saldoPrevisto === 0) {
-        msgMotivacional = "⚖️ <strong>Equilíbrio total.</strong> Que tal tentar reduzir um gasto pequeno para terminar o mês no azul na próxima?";
-    } else {
-        msgMotivacional = "💪 <strong>Não desanime!</strong> Meses difíceis acontecem. O importante é que agora você tem o controle dos dados para virar esse jogo.";
-    }
-
-    // Cores para o Card de Balanço
-    const corAnalise = saldoPrevisto >= 0 ? "#10b981" : "#ef4444";
     const corpo = document.getElementById('corpoRelatorio');
     corpo.innerHTML = '';
 
-    // RENDERIZAÇÃO
-    corpo.innerHTML += `
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
-            <p style="margin: 0; color: #475569; font-size: 0.9rem; line-height: 1.4;">
-                ${msgMotivacional}
-            </p>
-        </div>
+    const datasOrdenadas = Object.keys(resumo).sort();
 
-        <div style="background: ${corAnalise}15; border-left: 5px solid ${corAnalise}; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <p style="margin: 0; color: var(--text-main); font-size: 0.95rem;">
-                ${saldoPrevisto >= 0 ? '✅' : '⚠️'} Seu balanço geral está <strong>${formatar(saldoPrevisto)}</strong>.
-            </p>
-        </div>
-
-        <div style="background: var(--bg-body); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid var(--border-color);">
-            <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">📊 Resumo do Mês</h4>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span>Total Entradas:</span>
-                <span style="font-weight: bold;">${formatar(totalEntradasGeral)}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span>Total Saídas:</span>
-                <span style="font-weight: bold; color: var(--danger-color);">${formatar(totalSaidasGeral)}</span>
-            </div>
-        </div>
-
-        <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">📅 Gastos por Dia (Lançados)</h4>
-    `;
-
-    // Listagem diária (mantida igual)
-    const datasOrdenadas = Object.keys(resumoGastos).sort();
     if (datasOrdenadas.length === 0) {
-        corpo.innerHTML += '<p style="text-align:center; color:var(--text-secondary); padding: 20px;">Nenhum gasto lançado.</p>';
+        corpo.innerHTML = '<p style="text-align:center; color:var(--text-secondary); margin-top:20px;">Nenhum gasto confirmado para este mês.</p>';
     } else {
         datasOrdenadas.forEach(data => {
             const dataFormatada = data.split('-').reverse().join('/');
             corpo.innerHTML += `
                 <div class="linha-relatorio">
                     <span class="data-rel">${dataFormatada}</span>
-                    <span class="valor-rel">${formatar(resumoGastos[data])}</span>
+                    <span class="valor-rel">${formatar(resumo[data])}</span>
                 </div>
             `;
         });
@@ -523,8 +468,6 @@ function gerarRelatorioDiario() {
 
     document.getElementById('modalRelatorio').style.display = 'flex';
 }
-
-
 
 function fecharModal() {
     document.getElementById('modalRelatorio').style.display = 'none';

@@ -634,21 +634,33 @@ function render() {
             const atrasado = (tipo === 'pagar' && !item.marcado && item.data && item.data < hoje);
             if(atrasado) urgente = true;
 
-            const html = `
-                <tr>
-                    <td>
-                        <span class="${atrasado ? 'vencido' : ''}">${atrasado ? '⚠️ ' : ''}${item.descricao}</span>
-                        <div style="font-size:0.75rem; color:var(--text-light);">${item.categoria}</div>
-                    </td>
-                    <td style="font-weight:600">${formatar(item.valor)}</td>
-                    <td style="font-size:0.85rem">${item.data ? item.data.split('-').reverse().slice(0,2).join('/') : '-'}</td>
-                    <td><input type="checkbox" class="custom-check" ${item.marcado ? 'checked' : ''} onclick="toggle('${tipo}', ${i})"></td>
-                    <td>
-                        <button class="btn-action btn-edit" onclick="prepararEdicao('${tipo}', ${i})"><i class="fas fa-pen"></i></button>
-                        <button class="btn-action btn-del" onclick="remover('${tipo}', ${i})"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `;
+            // Dentro do loop forEach na função render():
+
+const html = `
+    <tr>
+        <td>
+            <span class="${atrasado ? 'vencido' : ''}" style="display:block; width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                ${atrasado ? '⚠️ ' : ''}${item.descricao}
+            </span>
+            <div style="font-size:0.7rem; color:var(--text-light);">${item.categoria}</div>
+        </td>
+        
+        <td style="font-weight:600; text-align:right;">${formatar(item.valor)}</td>
+        
+        <td style="font-size:0.75rem; text-align:center;">
+            ${item.data ? item.data.split('-').reverse().slice(0,2).join('/') : '-'}
+        </td>
+        
+        <td style="text-align:center;">
+            <input type="checkbox" class="custom-check" ${item.marcado ? 'checked' : ''} onclick="toggle('${tipo}', ${i})">
+        </td>
+        
+        <td style="text-align:right;">
+            <button class="btn-action btn-edit" onclick="prepararEdicao('${tipo}', ${i})"><i class="fas fa-pen"></i></button>
+            <button class="btn-action btn-del" onclick="remover('${tipo}', ${i})"><i class="fas fa-trash"></i></button>
+        </td>
+    </tr>
+`;
             if(tipo === 'receber') tRec.innerHTML += html; else tPag.innerHTML += html;
         });
     });

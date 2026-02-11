@@ -169,7 +169,7 @@
   
   /* Coluna Data */
   th:nth-child(3), td:nth-child(3) { width: 18%; text-align: center; }
-  @media (max-width: 400px) { th:nth-child(3), td:nth-child(3) { display: none; } } /* Some no mobile pequeno */
+  @media (max-width: 400px) { th:nth-child(3), td:nth-child(3) { display: none; } } 
 
   /* Coluna Check */
   th:nth-child(4), td:nth-child(4) { width: 35px; text-align: center; }
@@ -284,13 +284,6 @@
     </select>
   </div>
 
-  <div class="sidebar-section">
-    <div class="sidebar-label">Resumo Visual</div>
-    <div style="height: 180px; position: relative;">
-      <canvas id="graficoPizza"></canvas>
-    </div>
-  </div>
-
   <div class="sidebar-section" style="margin-top:auto;">
     <div class="sidebar-label">Sistema</div>
     <button class="btn-outline" onclick="gerarRelatorioDiario()"><i class="fas fa-chart-line"></i> Relatório</button>
@@ -329,6 +322,13 @@
     <div class="card border-l border-primary">
       <label>Saldo</label>
       <div class="dash-value" id="saldo" style="color:#6366f1">R$ 0,00</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 20px;">
+    <h3 style="margin-top:0; margin-bottom: 15px; font-size: 1rem; color: var(--text-light); text-transform: uppercase;">📊 Resumo de Gastos</h3>
+    <div style="height: 250px; position: relative;">
+      <canvas id="graficoPizza"></canvas>
     </div>
   </div>
 
@@ -705,11 +705,9 @@ function gerarRelatorioDiario() {
     const saldoGeral = totalEntradasGeral - totalSaidasGeral;
     const diferencaOk = totalEntradasOk - totalSaidasOk; // Saldo Realizado
     
-    // --- CORES BASEADAS NO REALIZADO ---
     const corBalanco = saldoGeral >= 0 ? '#10b981' : '#ef4444'; 
     const corRealizado = diferencaOk >= 0 ? '#10b981' : '#ef4444'; 
 
-    // --- MENSAGEM MOTIVACIONAL (BASEADA NO REALIZADO) ---
     let msgMotivacional = "";
     if (diferencaOk > 2000) {
         msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente. É um ótimo momento para separar uma parte para investimentos.";

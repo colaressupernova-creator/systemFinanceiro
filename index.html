@@ -136,7 +136,6 @@
   td { padding: 10px 5px; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--text-dark); font-size: 0.85rem; vertical-align: middle; }
   th:nth-child(1), td:nth-child(1) { width: auto; }
   
-  /* CLASSE CORRIGIDA PARA AS DESCRIÇÕES (EVITA A QUEBRA NA CATEGORIA) */
   .desc-text { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
   @media (min-width: 500px) { .desc-text { max-width: 200px; } }
 
@@ -155,10 +154,8 @@
   body.dark-mode .row-category { background: rgba(255,255,255,0.03); }
   body.dark-mode .row-category:hover { background: rgba(255,255,255,0.06); }
 
-  /* NOVO WRAPPER PARA ALINHAR LADO A LADO */
   .cat-title-wrapper { display: flex; align-items: center; gap: 6px; }
 
-  /* NOTIFICAÇÃO SUTIL */
   .badge-pendente {
       font-size: 0.65rem; background: rgba(245, 158, 11, 0.15); color: var(--warning); 
       padding: 3px 8px; border-radius: 12px; margin-left: 8px; vertical-align: middle; 
@@ -167,6 +164,23 @@
   }
   .dot-pendente { color: var(--warning); font-size: 0.5rem; animation: pulseDot 2s infinite; }
   @keyframes pulseDot { 0% { opacity: 0.6; } 50% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0.6; } }
+
+  /* ESTILOS DO SLIDER DE DICAS */
+  .tip-card {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+      border: 1px dashed rgba(168, 85, 247, 0.5);
+      border-radius: 16px; padding: 12px 20px; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 15px;
+  }
+  body.dark-mode .tip-card { background: rgba(255, 255, 255, 0.03); }
+  .tip-icon { font-size: 1.4rem; color: #a855f7; animation: bounceTip 2s infinite ease-in-out; }
+  @keyframes bounceTip { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  .tip-text-container { flex: 1; overflow: hidden; display: flex; align-items: center; }
+  .tip-text {
+      font-size: 0.85rem; color: var(--text-dark); font-weight: 500;
+      transition: opacity 0.5s ease, transform 0.5s ease; width: 100%;
+  }
+  .tip-hidden { opacity: 0; transform: translateY(5px); }
 
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; }
   .modal-content { background: #fff; width: 90%; max-width: 500px; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: 85vh; }
@@ -177,7 +191,7 @@
   .insight-card { padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; }
   .insight-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
   .item-list { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed rgba(0,0,0,0.1); font-size: 0.9rem; }
-  
+
   #bannerAlerta { display: none; background: rgba(239, 68, 68, 0.9); backdrop-filter: blur(5px); color: white; text-align: center; padding: 10px; font-weight: 600; font-size: 0.9rem; position: fixed; top: 0; left: 0; right: 0; z-index: 200; }
 
   .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); border-top: 1px solid rgba(255,255,255,0.5); z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
@@ -275,7 +289,14 @@
     </div>
   </div>
 
-  <div class="card mobile-only" style="margin-top: 20px;">
+  <div class="tip-card">
+      <i class="fas fa-lightbulb tip-icon"></i>
+      <div class="tip-text-container">
+          <div id="tipText" class="tip-text">Carregando dica...</div>
+      </div>
+  </div>
+
+  <div class="card mobile-only" style="margin-top: 0px;">
     <h3 style="margin-top:0; margin-bottom: 15px; font-size: 1rem; color: var(--text-light); text-transform: uppercase;">📊 Resumo de Gastos</h3>
     <div style="height: 250px; position: relative;">
       <canvas id="graficoMobile"></canvas>
@@ -369,7 +390,7 @@
   </button>
 </nav>
 
-<div id="modalConfig" class="modal-overlay" onclick="fecharModalConfig(event)">
+<div id="modalConfig" class="modal-overlay" onclick="fecharModalGeral(event, 'modalConfig')">
   <div class="modal-content">
     <div class="modal-header">
       <h3 style="margin:0">Selecionar Período</h3>
@@ -399,7 +420,7 @@
   </div>
 </div>
 
-<div id="modalRelatorio" class="modal-overlay" onclick="fecharModalRelatorio(event)">
+<div id="modalRelatorio" class="modal-overlay" onclick="fecharModalGeral(event, 'modalRelatorio')">
   <div class="modal-content">
     <div class="modal-header">
       <h3 style="margin:0" id="modalRelatorioTitulo">📊 Relatório</h3>
@@ -418,12 +439,46 @@ let editandoTipo = null;
 
 let categoriasExpandidas = { receber: {}, pagar: {} };
 
+// --- ARRAY DE DICAS FINANCEIRAS ---
+const dicasFinanceiras = [
+    "<strong>Regra 50/30/20:</strong> Tente usar 50% da renda no essencial, 30% em lazer e 20% para investir.",
+    "<strong>Economia:</strong> Antes de compras impulsivas, espere 48h. A vontade quase sempre passa!",
+    "<strong>Segurança:</strong> Construa sua Reserva de Emergência. O ideal é ter 6 meses de seus gastos fixos guardados.",
+    "<strong>Pague-se primeiro:</strong> Separe o dinheiro do seu investimento no mesmo dia que o salário cair na conta.",
+    "<strong>Investimentos:</strong> Juros compostos são mágicos! O tempo é mais importante que o valor inicial. Comece hoje.",
+    "<strong>Organização:</strong> Revise suas assinaturas (streaming, apps). Cancele tudo o que não usou nos últimos 30 dias.",
+    "<strong>Dívidas:</strong> Evite ao máximo o rotativo do cartão de crédito. Os juros podem destruir o seu planejamento mensal.",
+    "<strong>Supermercado:</strong> Evite fazer compras com fome. Estudos mostram que isso reduz os gastos por impulso em até 20%!"
+];
+let dicaAtual = 0;
+
+function iniciarSliderDicas() {
+    const tipEl = document.getElementById('tipText');
+    if(!tipEl) return;
+    
+    tipEl.innerHTML = dicasFinanceiras[dicaAtual];
+    
+    setInterval(() => {
+        tipEl.classList.add('tip-hidden'); // Animação de saída
+        
+        setTimeout(() => {
+            dicaAtual = (dicaAtual + 1) % dicasFinanceiras.length;
+            tipEl.innerHTML = dicasFinanceiras[dicaAtual];
+            tipEl.classList.remove('tip-hidden'); // Animação de entrada
+        }, 500); // Espera a opacidade zerar antes de trocar o texto
+        
+    }, 7000); // Troca a dica a cada 7 segundos
+}
+
 document.getElementById('mes').value = mesAtual;
 if(document.getElementById('mesMobile')) document.getElementById('mesMobile').value = mesAtual;
 if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
 
 window.onload = () => {
-  render(); atualizarLabelTopo();
+  render(); 
+  atualizarLabelTopo(); 
+  iniciarSliderDicas(); // INICIA AS DICAS
+  
   const fotoSalva = localStorage.getItem('fotoPerfilUsuario');
   if (fotoSalva) document.getElementById('imgPerfil').src = fotoSalva;
   const isMobile = window.innerWidth <= 1024;
@@ -468,8 +523,7 @@ function mudarMesMobile() {
 }
 
 function abrirConfigMobile() { document.getElementById('modalConfig').style.display = 'flex'; }
-function fecharModalConfig(e) { if(e.target.id === 'modalConfig') e.target.style.display = 'none'; }
-function fecharModalRelatorio(e) { if(e.target.id === 'modalRelatorio') e.target.style.display = 'none'; }
+function fecharModalGeral(e, id) { if(e.target.id === id) e.target.style.display = 'none'; }
 
 function carregarFotoPerfil(event) {
     const arquivo = event.target.files[0];
@@ -582,7 +636,6 @@ function render() {
             
             const badgeCategoria = categoriasGroup[cat].pendentes > 0 ? `<i class="fas fa-circle dot-pendente" title="Há itens pendentes"></i>` : '';
 
-            // MODIFICADO AQUI: Usando .cat-title-wrapper para alinhar perfeitamente lado a lado
             html += `
                 <tr class="row-category" onclick="toggleCategoriaRow('${tipo}', '${idSafe}')" style="border-left: 3px solid ${corBorda};">
                     <td style="font-weight:600; color:var(--text-dark);">
@@ -643,12 +696,12 @@ function atualizarGrafico(){
 }
 
 const msgsCategoria = {
-    'Filho': "Os gastos com os pequenos estão no topo! Cuidar deles é prioridade, mas tentar planejar compras de itens em atacado ou focar em promoções pode aliviar o caixa.",
+    'Filho': "Os gastos com os pequenos estão no topo! Cuidar deles é prioridade, mas tentar planejar compras em atacado ou focar em promoções pode aliviar o caixa.",
     'Supermercado': "O supermercado levou a maior fatia do orçamento. Fazer uma lista rigorosa antes de sair e evitar ir às compras com fome são dicas de ouro!",
     'Alimentação': "Comer fora ou pedir delivery pesou bastante. Que tal separar uns dias na semana para cozinhar em casa? Faz bem pro bolso!",
     'Lazer': "Você curtiu bastante esse mês! Lazer é fundamental, mas defina um teto máximo para não comprometer as contas essenciais.",
     'Transporte': "Gastos com transporte estão altos. Avalie se o uso de apps de corrida está excessivo ou se é possível otimizar rotas.",
-    'Saúde': "A saúde cobrou seu preço. Lembre-se que bem-estar é investimento, mas sempre vale pesquisar preços de farmácias.",
+    'Saúde': "A saúde cobrou seu preço. Lembre-se que bem-estar é investimento, mas sempre vale pesquisar preços em diferentes redes de farmácias.",
     'Moradia': "Sua casa é o maior custo. Contas fixas são difíceis de cortar, mas tente revisar planos de internet, luz e água para economizar.",
     'Credito': "Cartão de crédito/empréstimos dominaram as saídas! Muito cuidado com os juros, tente sempre abater o máximo possível dessas dívidas.",
     'Assinaturas': "Muitos streamings e assinaturas? Faça uma limpa! Cancele temporariamente aqueles que você não usou nos últimos 30 dias.",
@@ -665,7 +718,6 @@ function abrirRelatorioCard(tipo) {
     
     if (tipo === 'receber') {
         titulo.innerText = "🟢 Resumo de Recebimentos";
-        
         const recebidos = dadosPorMes[mesAtual].receber.filter(i => i.marcado);
         recebidos.forEach(i => total += i.valor);
         
@@ -690,17 +742,12 @@ function abrirRelatorioCard(tipo) {
         
     } else if (tipo === 'pagar') {
         titulo.innerText = "🔴 Resumo de Saídas e Hábitos";
-        
         const totaisCat = {};
         const pagos = dadosPorMes[mesAtual].pagar.filter(i => i.marcado);
-        pagos.forEach(i => {
-            total += i.valor;
-            totaisCat[i.categoria] = (totaisCat[i.categoria] || 0) + i.valor;
-        });
+        pagos.forEach(i => { total += i.valor; totaisCat[i.categoria] = (totaisCat[i.categoria] || 0) + i.valor; });
 
         let topCat = ''; let maxVal = 0;
         for(let c in totaisCat) { if(totaisCat[c] > maxVal) { maxVal = totaisCat[c]; topCat = c; } }
-        
         let msgPersonalizada = msgsCategoria[topCat] || msgsCategoria['default'];
 
         if (maxVal > 0) {
@@ -716,7 +763,6 @@ function abrirRelatorioCard(tipo) {
                 </div>
             `;
         }
-
         corpo.innerHTML += `<h4 style="margin-bottom:10px; color: var(--text-light); text-transform:uppercase; font-size:0.8rem;">Todas as Saídas Realizadas</h4>`;
         
         if (pagos.length === 0) corpo.innerHTML += '<p style="text-align:center; font-size:0.9rem;">Nenhum pagamento confirmado ainda.</p>';
@@ -727,15 +773,12 @@ function abrirRelatorioCard(tipo) {
         
     } else if (tipo === 'saldo') {
         titulo.innerText = "⚖️ Resumo de Balanço Realizado";
-        
         let totalRec = 0; dadosPorMes[mesAtual].receber.filter(i=>i.marcado).forEach(i=>totalRec += i.valor);
         let totalPag = 0; dadosPorMes[mesAtual].pagar.filter(i=>i.marcado).forEach(i=>totalPag += i.valor);
         let saldoFinal = totalRec - totalPag;
         
         let corSaldo = saldoFinal >= 0 ? 'var(--success)' : 'var(--danger)';
-        let msgSaldo = saldoFinal >= 0 
-            ? "Tudo sob controle! Você gastou menos do que ganhou até o momento. Mantenha o ritmo." 
-            : "Atenção máxima! Suas saídas já ultrapassaram suas entradas neste mês. Tente frear os gastos.";
+        let msgSaldo = saldoFinal >= 0 ? "Tudo sob controle! Você gastou menos do que ganhou até o momento. Mantenha o ritmo." : "Atenção máxima! Suas saídas já ultrapassaram suas entradas neste mês. Tente frear os gastos.";
 
         corpo.innerHTML += `
             <div class="insight-card" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3);">
@@ -759,46 +802,24 @@ function abrirRelatorioCard(tipo) {
             </div>
         `;
     }
-    
     document.getElementById('modalRelatorio').style.display = 'flex';
 }
 
 function gerarRelatorioDiario() {
     garantirMes();
-    
-    let totalEntradasOk = 0, totalSaidasOk = 0;
-    let totalEntradasGeral = 0, totalSaidasGeral = 0;
+    let totalEntradasOk = 0, totalSaidasOk = 0, totalEntradasGeral = 0, totalSaidasGeral = 0;
+    dadosPorMes[mesAtual].receber.forEach(item => { totalEntradasGeral += item.valor; if (item.marcado) totalEntradasOk += item.valor; });
+    dadosPorMes[mesAtual].pagar.forEach(item => { totalSaidasGeral += item.valor; if (item.marcado) totalSaidasOk += item.valor; });
 
-    dadosPorMes[mesAtual].receber.forEach(item => {
-        totalEntradasGeral += item.valor;
-        if (item.marcado) totalEntradasOk += item.valor;
-    });
-
-    dadosPorMes[mesAtual].pagar.forEach(item => {
-        totalSaidasGeral += item.valor; 
-        if (item.marcado) {
-            totalSaidasOk += item.valor;
-        }
-    });
-
-    const saldoGeral = totalEntradasGeral - totalSaidasGeral;
-    const diferencaOk = totalEntradasOk - totalSaidasOk; 
-    
-    const corBalanco = saldoGeral >= 0 ? '#10b981' : '#ef4444'; 
-    const corRealizado = diferencaOk >= 0 ? '#10b981' : '#ef4444'; 
+    const saldoGeral = totalEntradasGeral - totalSaidasGeral; const diferencaOk = totalEntradasOk - totalSaidasOk; 
+    const corBalanco = saldoGeral >= 0 ? '#10b981' : '#ef4444'; const corRealizado = diferencaOk >= 0 ? '#10b981' : '#ef4444'; 
 
     let msgMotivacional = "";
-    if (diferencaOk > 2000) {
-        msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente. É um ótimo momento para separar uma parte para investimentos.";
-    } else if (diferencaOk > 500) {
-        msgMotivacional = "👏 <strong>No Azul!</strong> Você tem dinheiro em caixa sobrando. Continue controlando para manter essa tranquilidade.";
-    } else if (diferencaOk > 0) {
-        msgMotivacional = "😅 <strong>Positivo, mas cuidado!</strong> Tem dinheiro na conta, mas a margem é pequena. Evite gastos não planejados agora.";
-    } else if (diferencaOk === 0) {
-        msgMotivacional = "⚖️ <strong>Zerado.</strong> Tudo o que entrou, saiu. Cuidado, qualquer imprevisto pode te levar para o vermelho.";
-    } else {
-        msgMotivacional = "⚠️ <strong>Alerta de Caixa!</strong> Você gastou mais do que recebeu até agora. Segure as pontas nos próximos dias!";
-    }
+    if (diferencaOk > 2000) msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente. É um ótimo momento para separar uma parte para investimentos.";
+    else if (diferencaOk > 500) msgMotivacional = "👏 <strong>No Azul!</strong> Você tem dinheiro em caixa sobrando. Continue controlando para manter essa tranquilidade.";
+    else if (diferencaOk > 0) msgMotivacional = "😅 <strong>Positivo, mas cuidado!</strong> Tem dinheiro na conta, mas a margem é pequena. Evite gastos não planejados agora.";
+    else if (diferencaOk === 0) msgMotivacional = "⚖️ <strong>Zerado.</strong> Tudo o que entrou, saiu. Cuidado, qualquer imprevisto pode te levar para o vermelho.";
+    else msgMotivacional = "⚠️ <strong>Alerta de Caixa!</strong> Você gastou mais do que recebeu até agora. Segure as pontas nos próximos dias!";
 
     const corpo = document.getElementById('corpoRelatorio');
     document.getElementById('modalRelatorioTitulo').innerText = "📊 Relatório Financeiro Global";
@@ -816,7 +837,6 @@ function gerarRelatorioDiario() {
                 <span>Saldo Final Previsto:</span><span style="color: ${corBalanco}">${formatar(saldoGeral)}</span>
             </div>
         </div>
-
         <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
             <h4 style="margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">💡 Realizado até agora</h4>
             <p style="margin: 0; font-size: 0.95rem; color: var(--text-dark);">
@@ -824,12 +844,10 @@ function gerarRelatorioDiario() {
                 <strong>${formatar(diferencaOk)}</strong>.
             </p>
         </div>
-
         <div style="background: ${corRealizado}15; border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
             <p style="margin: 0; font-size: 0.9rem; color: var(--text-dark); line-height: 1.4;">${msgMotivacional}</p>
         </div>
     `;
-
     document.getElementById('modalRelatorio').style.display = 'flex';
 }
 

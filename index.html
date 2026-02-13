@@ -82,12 +82,11 @@
   .dash-card {
     position: relative; overflow: hidden; color: #fff;
     border: none !important; transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer; /* Cursor de clique */
+    cursor: pointer;
   }
   .dash-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
   .dash-card:active { transform: scale(0.98); }
 
-  /* Dica de clique visual */
   .click-hint {
       position: absolute; top: 12px; right: 15px; font-size: 0.7rem;
       background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 12px;
@@ -146,14 +145,12 @@
   .custom-check:checked { background: var(--success); border-color: var(--success); }
   .custom-check:checked::after { content: '✔'; color: white; position: absolute; font-size: 12px; top: -1px; left: 2px; }
 
-  /* MODAL DO RELATÓRIO INDIVIDUAL */
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; }
   .modal-content { background: #fff; width: 90%; max-width: 500px; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: 85vh; }
   body.dark-mode .modal-content { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); }
   .modal-header { background: var(--primary-gradient); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
   .modal-body { padding: 20px; overflow-y: auto; }
   
-  /* ESTILOS INTERNOS DOS RELATÓRIOS */
   .insight-card { padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; }
   .insight-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
   .item-list { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed rgba(0,0,0,0.1); font-size: 0.9rem; }
@@ -546,9 +543,6 @@ function atualizarGrafico(){
     if(ctxMob && Object.keys(resumo).length > 0) chartMobile = new Chart(ctxMob, chartConfig);
 }
 
-// ==========================================
-// NOVA FUNÇÃO: RELATÓRIOS INDIVIDUAIS DOS CARDS
-// ==========================================
 const msgsCategoria = {
     'Filho': "Os gastos com os pequenos estão no topo! Cuidar deles é prioridade, mas tentar planejar compras de itens em atacado ou focar em promoções pode aliviar o caixa.",
     'Supermercado': "O supermercado levou a maior fatia do orçamento. Fazer uma lista rigorosa antes de sair e evitar ir às compras com fome são dicas de ouro!",
@@ -573,7 +567,6 @@ function abrirRelatorioCard(tipo) {
     if (tipo === 'receber') {
         titulo.innerText = "🟢 Resumo de Recebimentos";
         
-        // Filtra apenas recebimentos marcados (realizados)
         const recebidos = dadosPorMes[mesAtual].receber.filter(i => i.marcado);
         recebidos.forEach(i => total += i.valor);
         
@@ -606,7 +599,6 @@ function abrirRelatorioCard(tipo) {
             totaisCat[i.categoria] = (totaisCat[i.categoria] || 0) + i.valor;
         });
 
-        // Acha a categoria mais alta
         let topCat = ''; let maxVal = 0;
         for(let c in totaisCat) { if(totaisCat[c] > maxVal) { maxVal = totaisCat[c]; topCat = c; } }
         
@@ -672,7 +664,76 @@ function abrirRelatorioCard(tipo) {
     document.getElementById('modalRelatorio').style.display = 'flex';
 }
 
-function gerarRelatorioDiario() { abrirRelatorioCard('saldo'); } // Usa o novo modal de saldo como relatório geral para não duplicar código
+function gerarRelatorioDiario() {
+    garantirMes();
+    
+    let totalEntradasOk = 0, totalSaidasOk = 0;
+    let totalEntradasGeral = 0, totalSaidasGeral = 0;
+
+    dadosPorMes[mesAtual].receber.forEach(item => {
+        totalEntradasGeral += item.valor;
+        if (item.marcado) totalEntradasOk += item.valor;
+    });
+
+    dadosPorMes[mesAtual].pagar.forEach(item => {
+        totalSaidasGeral += item.valor; 
+        if (item.marcado) {
+            totalSaidasOk += item.valor;
+        }
+    });
+
+    const saldoGeral = totalEntradasGeral - totalSaidasGeral;
+    const diferencaOk = totalEntradasOk - totalSaidasOk; 
+    
+    const corBalanco = saldoGeral >= 0 ? '#10b981' : '#ef4444'; 
+    const corRealizado = diferencaOk >= 0 ? '#10b981' : '#ef4444'; 
+
+    let msgMotivacional = "";
+    if (diferencaOk > 2000) {
+        msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente. É um ótimo momento para separar uma parte para investimentos.";
+    } else if (diferencaOk > 500) {
+        msgMotivacional = "👏 <strong>No Azul!</strong> Você tem dinheiro em caixa sobrando. Continue controlando para manter essa tranquilidade.";
+    } else if (diferencaOk > 0) {
+        msgMotivacional = "😅 <strong>Positivo, mas cuidado!</strong> Tem dinheiro na conta, mas a margem é pequena. Evite gastos não planejados agora.";
+    } else if (diferencaOk === 0) {
+        msgMotivacional = "⚖️ <strong>Zerado.</strong> Tudo o que entrou, saiu. Cuidado, qualquer imprevisto pode te levar para o vermelho.";
+    } else {
+        msgMotivacional = "⚠️ <strong>Alerta de Caixa!</strong> Você gastou mais do que recebeu até agora. Segure as pontas nos próximos dias!";
+    }
+
+    const corpo = document.getElementById('corpoRelatorio');
+    document.getElementById('modalRelatorioTitulo').innerText = "📊 Relatório Financeiro Global";
+    
+    corpo.innerHTML = `
+        <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corBalanco}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
+            <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">📊 Balanço Geral (Previsto)</h4>
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px;">
+                <span>Total Lançado:</span><span style="font-weight: bold;">${formatar(totalEntradasGeral)}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px;">
+                <span>Saídas Lançadas:</span><span style="font-weight: bold; color: var(--danger);">${formatar(totalSaidasGeral)}</span>
+            </div>
+            <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 8px; display: flex; justify-content: space-between; font-weight: bold;">
+                <span>Saldo Final Previsto:</span><span style="color: ${corBalanco}">${formatar(saldoGeral)}</span>
+            </div>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
+            <h4 style="margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">💡 Realizado até agora</h4>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--text-dark);">
+                ${diferencaOk >= 0 ? '✅ Seu caixa está positivo em ' : '⚠️ Você gastou ' + formatar(Math.abs(diferencaOk)) + ' a mais do que recebeu '} 
+                <strong>${formatar(diferencaOk)}</strong>.
+            </p>
+        </div>
+
+        <div style="background: ${corRealizado}15; border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+            <p style="margin: 0; font-size: 0.9rem; color: var(--text-dark); line-height: 1.4;">${msgMotivacional}</p>
+        </div>
+    `;
+
+    document.getElementById('modalRelatorio').style.display = 'flex';
+}
+
 function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_blush.json"; a.click(); }
 function importarDados(e) { const reader = new FileReader(); reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); alert("Restaurado!"); }; reader.readAsText(e.target.files[0]); }
 </script>

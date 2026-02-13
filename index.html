@@ -78,7 +78,6 @@
     margin-bottom: 20px; position: relative; overflow: hidden;
   }
   
-  /* CARDS CLICÁVEIS */
   .dash-card {
     position: relative; overflow: hidden; color: #fff;
     border: none !important; transition: transform 0.2s, box-shadow 0.2s;
@@ -114,8 +113,6 @@
 
   input, select { width: 100%; padding: 12px 15px; border: 1px solid rgba(255,255,255,0.4); border-radius: 12px; font-size: 0.95rem; background: var(--input-bg); color: var(--text-dark); outline: none; transition: 0.3s; font-family: 'Poppins', sans-serif; }
   input:focus, select:focus { background: rgba(255,255,255,0.9); border-color: #a855f7; box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2); }
-  
-  /* CORREÇÃO DO FUNDO DAS OPÇÕES NO DARK MODE */
   select option { background-color: #ffffff; color: #1e293b; }
   body.dark-mode select option { background-color: #1e293b; color: #f1f5f9; }
 
@@ -149,6 +146,12 @@
   .custom-check { appearance: none; width: 18px; height: 18px; border: 2px solid var(--text-light); border-radius: 6px; cursor: pointer; position: relative; margin: 0; }
   .custom-check:checked { background: var(--success); border-color: var(--success); }
   .custom-check:checked::after { content: '✔'; color: white; position: absolute; font-size: 12px; top: -1px; left: 2px; }
+
+  /* Estilos específicos para a linha de agrupamento (Categoria) */
+  .row-category { background: rgba(0,0,0,0.03); cursor: pointer; transition: background 0.2s; }
+  .row-category:hover { background: rgba(0,0,0,0.06); }
+  body.dark-mode .row-category { background: rgba(255,255,255,0.03); }
+  body.dark-mode .row-category:hover { background: rgba(255,255,255,0.06); }
 
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; }
   .modal-content { background: #fff; width: 90%; max-width: 500px; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: 85vh; }
@@ -311,7 +314,7 @@
       <h3 class="text-success" style="margin-top:0"><i class="fas fa-arrow-down"></i> Entradas</h3>
       <div class="table-box">
         <table>
-          <thead><tr><th>Desc.</th><th>Valor</th><th>Data</th><th>OK</th><th></th></tr></thead>
+          <thead><tr><th>Categoria/Desc.</th><th>Valor</th><th>Data</th><th>OK</th><th></th></tr></thead>
           <tbody id="tabelaReceber"></tbody>
         </table>
       </div>
@@ -321,7 +324,7 @@
       <h3 class="text-danger" style="margin-top:0"><i class="fas fa-arrow-up"></i> Saídas</h3>
       <div class="table-box">
         <table>
-          <thead><tr><th>Desc.</th><th>Valor</th><th>Data</th><th>OK</th><th></th></tr></thead>
+          <thead><tr><th>Categoria/Desc.</th><th>Valor</th><th>Data</th><th>OK</th><th></th></tr></thead>
           <tbody id="tabelaPagar"></tbody>
         </table>
       </div>
@@ -397,6 +400,9 @@ let mesSalvo = localStorage.getItem('mesSelecionado') || '2026-01';
 let mesAtual = mesSalvo;
 let editandoIndex = null;
 let editandoTipo = null;
+
+// Memória de categorias abertas (para não fechar a lista quando clica em OK)
+let categoriasExpandidas = { receber: {}, pagar: {} };
 
 document.getElementById('mes').value = mesAtual;
 if(document.getElementById('mesMobile')) document.getElementById('mesMobile').value = mesAtual;
@@ -485,6 +491,10 @@ function adicionar(){
     
     if(!descricao || !valor) return alert("Preencha descrição e valor");
     garantirMes();
+    
+    const idSafe = categoria.replace(/[^a-zA-Z0-9]/g, '');
+    categoriasExpandidas[tipo][idSafe] = true; // Força a categoria a abrir quando adiciona novo item
+    
     const item = {descricao, valor, data, categoria, marcado: false};
     if(editandoIndex !== null) { item.marcado = dadosPorMes[mesAtual][editandoTipo][editandoIndex].marcado; dadosPorMes[mesAtual][editandoTipo][editandoIndex] = item; } 
     else { dadosPorMes[mesAtual][tipo].push(item); }
@@ -505,30 +515,88 @@ function prepararEdicao(tipo, index){
 function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].splice(i,1); salvar(); render(); } }
 function toggle(tipo, i) { dadosPorMes[mesAtual][tipo][i].marcado = !dadosPorMes[mesAtual][tipo][i].marcado; salvar(); render(); }
 
+// FUNÇÃO PARA ABRIR/FECHAR A CATEGORIA NA TABELA
+function toggleCategoriaRow(tipo, idSafe) {
+    categoriasExpandidas[tipo][idSafe] = !categoriasExpandidas[tipo][idSafe];
+    render(); // Redesenha a tabela mantendo o estado
+}
+
+// NOVA RENDERIZAÇÃO OTIMIZADA COM AGRUPAMENTO
 function render() {
     garantirMes();
-    const tRec = document.getElementById('tabelaReceber'); const tPag = document.getElementById('tabelaPagar');
-    tRec.innerHTML = ''; tPag.innerHTML = '';
+    const tRec = document.getElementById('tabelaReceber'); 
+    const tPag = document.getElementById('tabelaPagar');
     let totalRec = 0, totalPag = 0, urgente = false;
     const hoje = new Date().toISOString().split('T')[0];
 
     ['receber', 'pagar'].forEach(tipo => {
-        const lista = dadosPorMes[mesAtual][tipo].map((item, idx) => ({...item, idxOriginal: idx})).sort((a,b) => (a.data > b.data ? 1 : -1));
-        lista.forEach(item => {
-            const i = item.idxOriginal;
+        const categoriasGroup = {};
+        
+        // 1. Agrupar dados por Categoria
+        dadosPorMes[mesAtual][tipo].forEach((item, idx) => {
+            const itemWithIdx = {...item, idxOriginal: idx};
+            if (!categoriasGroup[item.categoria]) categoriasGroup[item.categoria] = { total: 0, items: [] };
+            
+            categoriasGroup[item.categoria].items.push(itemWithIdx);
+            categoriasGroup[item.categoria].total += item.valor;
+            
             if(item.marcado) { if(tipo === 'receber') totalRec += item.valor; else totalPag += item.valor; }
             const atrasado = (tipo === 'pagar' && !item.marcado && item.data && item.data < hoje);
             if(atrasado) urgente = true;
-
-            const html = `<tr>
-                <td><span class="${atrasado ? 'vencido' : ''}" style="display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${atrasado ? '⚠️ ' : ''}${item.descricao}</span><div style="font-size:0.75rem; color:var(--text-light);">${item.categoria}</div></td>
-                <td style="font-weight:600; text-align:right;">${formatar(item.valor)}</td>
-                <td style="font-size:0.85rem; text-align:center;">${item.data ? item.data.split('-').reverse().slice(0,2).join('/') : '-'}</td>
-                <td style="text-align:center;"><input type="checkbox" class="custom-check" ${item.marcado ? 'checked' : ''} onclick="toggle('${tipo}', ${i})"></td>
-                <td style="text-align:right;"><button class="btn-action btn-edit" onclick="prepararEdicao('${tipo}', ${i})"><i class="fas fa-pen"></i></button><button class="btn-action btn-del" onclick="remover('${tipo}', ${i})"><i class="fas fa-trash"></i></button></td>
-            </tr>`;
-            if(tipo === 'receber') tRec.innerHTML += html; else tPag.innerHTML += html;
         });
+
+        // 2. Ordenar categorias pelo valor total (maior pro menor)
+        const catKeys = Object.keys(categoriasGroup).sort((a,b) => categoriasGroup[b].total - categoriasGroup[a].total);
+
+        let html = '';
+        
+        // 3. Montar o HTML
+        catKeys.forEach(cat => {
+            const idSafe = cat.replace(/[^a-zA-Z0-9]/g, '');
+            const isExpanded = categoriasExpandidas[tipo][idSafe] || false;
+            const displayRow = isExpanded ? 'table-row' : 'none';
+            const iconRot = isExpanded ? 'rotate(90deg)' : 'rotate(0deg)';
+            const corBorda = tipo === 'receber' ? 'var(--success)' : 'var(--danger)';
+
+            // Linha da Categoria (Cabeçalho agrupador)
+            html += `
+                <tr class="row-category" onclick="toggleCategoriaRow('${tipo}', '${idSafe}')" style="border-left: 3px solid ${corBorda};">
+                    <td style="font-weight:600; color:var(--text-dark);">
+                        <i class="fas fa-chevron-right" style="margin-right:8px; font-size:0.7rem; transition:0.3s; transform:${iconRot}"></i>
+                        ${cat} <span style="font-size:0.7rem; color:var(--text-light); font-weight:normal;">(${categoriasGroup[cat].items.length})</span>
+                    </td>
+                    <td style="font-weight:700; text-align:right;">${formatar(categoriasGroup[cat].total)}</td>
+                    <td></td><td></td><td></td>
+                </tr>
+            `;
+
+            // Ordena os itens daquela categoria por data
+            categoriasGroup[cat].items.sort((a,b) => (a.data > b.data ? 1 : -1));
+
+            // Linhas de Detalhe (itens individuais)
+            categoriasGroup[cat].items.forEach(item => {
+                const i = item.idxOriginal;
+                const atrasado = (tipo === 'pagar' && !item.marcado && item.data && item.data < hoje);
+                html += `
+                    <tr style="display:${displayRow}; background: rgba(0,0,0,0.01);">
+                        <td style="padding-left: 28px;">
+                            <span class="${atrasado ? 'vencido' : ''}" style="display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size: 0.8rem; color: var(--text-light);">
+                                ${atrasado ? '⚠️ ' : ''}${item.descricao}
+                            </span>
+                        </td>
+                        <td style="text-align:right; font-size:0.8rem;">${formatar(item.valor)}</td>
+                        <td style="font-size:0.8rem; text-align:center;">${item.data ? item.data.split('-').reverse().slice(0,2).join('/') : '-'}</td>
+                        <td style="text-align:center;"><input type="checkbox" class="custom-check" ${item.marcado ? 'checked' : ''} onclick="toggle('${tipo}', ${i})"></td>
+                        <td style="text-align:right;">
+                            <button class="btn-action btn-edit" onclick="prepararEdicao('${tipo}', ${i})"><i class="fas fa-pen"></i></button>
+                            <button class="btn-action btn-del" onclick="remover('${tipo}', ${i})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        });
+
+        if(tipo === 'receber') tRec.innerHTML = html; else tPag.innerHTML = html;
     });
 
     document.getElementById('bannerAlerta').style.display = urgente ? 'block' : 'none';

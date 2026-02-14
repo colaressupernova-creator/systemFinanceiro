@@ -125,6 +125,7 @@
   .btn-edit { color: var(--warning); background: rgba(245, 158, 11, 0.1); }
   .btn-del { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
 
+  .header-actions { display: flex; align-items: center; gap: 15px; }
   .perfil-wrapper { position: relative; display: flex; align-items: center; }
   .perfil-avatar { width: 45px; height: 45px; border-radius: 50%; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; background: #e2e8f0; }
   .perfil-avatar:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3); border-color: #a855f7; }
@@ -165,7 +166,6 @@
   .dot-pendente { color: var(--warning); font-size: 0.5rem; animation: pulseDot 2s infinite; }
   @keyframes pulseDot { 0% { opacity: 0.6; } 50% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0.6; } }
 
-  /* ESTILOS DO SLIDER DE DICAS */
   .tip-card {
       background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
       border: 1px dashed rgba(168, 85, 247, 0.5);
@@ -206,6 +206,55 @@
   .text-success { color: var(--success); }
   .text-danger { color: var(--danger); }
   .vencido { color: var(--danger); font-weight: 700; }
+
+  /* --- MUDANÇAS PARA O POPUP DE FORMULÁRIO (MOBILE) --- */
+  
+  /* Configuração Padrão (Desktop) */
+  #areaFormulario { display: block; }
+
+  /* Configuração Mobile */
+  @media (max-width: 1024px) {
+      /* Oculta o formulário "estático" no mobile */
+      #areaFormulario { 
+          display: none; 
+      }
+      
+      /* Quando ativado via JS, vira um Modal */
+      #areaFormulario.mobile-popup {
+          display: flex !important;
+          position: fixed;
+          top: 0; left: 0; width: 100%; height: 100%;
+          background: rgba(15, 23, 42, 0.85);
+          backdrop-filter: blur(8px);
+          z-index: 5000;
+          align-items: flex-end; /* Abre de baixo pra cima */
+          justify-content: center;
+          padding: 0; margin: 0;
+          border-radius: 0;
+          border: none;
+      }
+      
+      /* Estilo do Card dentro do Modal */
+      #areaFormulario.mobile-popup .form-content {
+          background: #fff; 
+          width: 100%; 
+          border-radius: 24px 24px 0 0;
+          padding: 25px;
+          box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
+          animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          border: 1px solid rgba(0,0,0,0.05);
+          position: relative;
+      }
+      body.dark-mode #areaFormulario.mobile-popup .form-content {
+          background: #1e293b;
+          border-color: rgba(255,255,255,0.1);
+      }
+  }
+
+  @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .btn-close-form { display: none; position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.05); border: none; width: 30px; height: 30px; border-radius: 50%; color: var(--text-light); font-size: 1rem; cursor: pointer; }
+  body.dark-mode .btn-close-form { background: rgba(255,255,255,0.1); color: #fff; }
 </style>
 </head>
 <body>
@@ -304,45 +353,48 @@
   </div>
 
   <div id="areaFormulario" class="card" style="margin-top: 20px;">
-    <h3 style="margin-top:0; margin-bottom: 15px;">📝 Novo Lançamento</h3>
-    <div class="grid-2">
-      <div>
-        <label>Tipo</label>
-        <select id="tipo">
-          <option value="pagar">🔴 Pagar (Saída)</option>
-          <option value="receber">🟢 Receber (Entrada)</option>
-        </select>
-      </div>
-      <div>
-        <label>Categoria</label>
-        <select id="categoria">
-            <option value="Supermercado">🛒 Supermercado</option>
-            <option value="Alimentação">🍔 Alimentação</option>
-            <option value="Transporte">🚗 Transporte</option>
-            <option value="Lazer">🎉 Lazer</option>
-            <option value="Gastos Pessoais">💆‍♂️ Gastos Pessoais</option>
-            <option value="Saúde">🩺 Saúde e bem-estar</option>
-            <option value="Credito">💲 Credito</option>
-            <option value="Filho">🧒 Filho</option>
-            <option value="Moradia">🏠 Moradia</option>
-            <option value="Assinaturas">📺 Assinaturas</option>
-            <option value="Emprestimos">💸 Emprestimos</option>
-            <option value="Vale Alimentação">💳 Vale Alimentação</option>
-            <option value="Mensalidades">💪 Mensalidades</option>
-            <option value="Reserva">🧾 Reserva</option>
-            <option value="Salário">💰 Salário</option>
-            <option value="Outros">⚙️ Outros</option>
-        </select>
-      </div>
+    <div class="form-content">
+        <button class="btn-close-form mobile-only" onclick="fecharFormularioMobile()" style="display:block">✕</button>
+        <h3 style="margin-top:0; margin-bottom: 15px;">📝 Novo Lançamento</h3>
+        <div class="grid-2">
+          <div>
+            <label>Tipo</label>
+            <select id="tipo">
+              <option value="pagar">🔴 Pagar (Saída)</option>
+              <option value="receber">🟢 Receber (Entrada)</option>
+            </select>
+          </div>
+          <div>
+            <label>Categoria</label>
+            <select id="categoria">
+                <option value="Supermercado">🛒 Supermercado</option>
+                <option value="Alimentação">🍔 Alimentação</option>
+                <option value="Transporte">🚗 Transporte</option>
+                <option value="Lazer">🎉 Lazer</option>
+                <option value="Gastos Pessoais">💆‍♂️ Gastos Pessoais</option>
+                <option value="Saúde">🩺 Saúde e bem-estar</option>
+                <option value="Credito">💲 Credito</option>
+                <option value="Filho">🧒 Filho</option>
+                <option value="Moradia">🏠 Moradia</option>
+                <option value="Assinaturas">📺 Assinaturas</option>
+                <option value="Emprestimos">💸 Emprestimos</option>
+                <option value="Vale Alimentação">💳 Vale Alimentação</option>
+                <option value="Mensalidades">💪 Mensalidades</option>
+                <option value="Reserva">🧾 Reserva</option>
+                <option value="Salário">💰 Salário</option>
+                <option value="Outros">⚙️ Outros</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div><label>Descrição</label><input id="descricao" placeholder="Ex: Mercado Semanal"></div>
+          <div><label>Valor (R$)</label><input id="valor" type="number" step="0.01"></div>
+        </div>
+        <div style="margin-bottom: 15px;"><label>Data</label><input id="data" type="date"></div>
+        <button id="btnSalvar" class="btn-primary" onclick="adicionar()">
+          <i class="fas fa-plus-circle"></i> Adicionar Lançamento
+        </button>
     </div>
-    <div class="grid-2">
-      <div><label>Descrição</label><input id="descricao" placeholder="Ex: Mercado Semanal"></div>
-      <div><label>Valor (R$)</label><input id="valor" type="number" step="0.01"></div>
-    </div>
-    <div style="margin-bottom: 15px;"><label>Data</label><input id="data" type="date"></div>
-    <button id="btnSalvar" class="btn-primary" onclick="adicionar()">
-      <i class="fas fa-plus-circle"></i> Adicionar Lançamento
-    </button>
   </div>
 
   <div class="grid-2">
@@ -378,7 +430,7 @@
     <i class="fas fa-chart-pie"></i> <span>Relatório</span>
   </button>
   
-  <button class="nav-btn-main" onclick="scrollToId('areaFormulario')">
+  <button class="nav-btn-main" onclick="abrirFormularioMobile()">
     <i class="fas fa-plus"></i>
   </button>
   
@@ -439,7 +491,6 @@ let editandoTipo = null;
 
 let categoriasExpandidas = { receber: {}, pagar: {} };
 
-// --- ARRAY DE DICAS FINANCEIRAS ---
 const dicasFinanceiras = [
     "<strong>Regra 50/30/20:</strong> Tente usar 50% da renda no essencial, 30% em lazer e 20% para investir.",
     "<strong>Economia:</strong> Antes de compras impulsivas, espere 48h. A vontade quase sempre passa!",
@@ -455,19 +506,16 @@ let dicaAtual = 0;
 function iniciarSliderDicas() {
     const tipEl = document.getElementById('tipText');
     if(!tipEl) return;
-    
     tipEl.innerHTML = dicasFinanceiras[dicaAtual];
     
     setInterval(() => {
-        tipEl.classList.add('tip-hidden'); // Animação de saída
-        
+        tipEl.classList.add('tip-hidden'); 
         setTimeout(() => {
             dicaAtual = (dicaAtual + 1) % dicasFinanceiras.length;
             tipEl.innerHTML = dicasFinanceiras[dicaAtual];
-            tipEl.classList.remove('tip-hidden'); // Animação de entrada
-        }, 500); // Espera a opacidade zerar antes de trocar o texto
-        
-    }, 25000); // Troca a dica a cada 7 segundos
+            tipEl.classList.remove('tip-hidden'); 
+        }, 500); 
+    }, 10000); 
 }
 
 document.getElementById('mes').value = mesAtual;
@@ -477,7 +525,7 @@ if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add(
 window.onload = () => {
   render(); 
   atualizarLabelTopo(); 
-  iniciarSliderDicas(); // INICIA AS DICAS
+  iniciarSliderDicas(); 
   
   const fotoSalva = localStorage.getItem('fotoPerfilUsuario');
   if (fotoSalva) document.getElementById('imgPerfil').src = fotoSalva;
@@ -550,6 +598,23 @@ function animarValor(id, valorFinal) {
     requestAnimationFrame(update);
 }
 
+// === FUNÇÕES DO POPUP MOBILE ===
+function abrirFormularioMobile() {
+    const form = document.getElementById('areaFormulario');
+    form.classList.add('mobile-popup');
+}
+
+function fecharFormularioMobile() {
+    const form = document.getElementById('areaFormulario');
+    form.classList.remove('mobile-popup');
+    
+    // Se não estiver editando, limpa os campos ao fechar
+    if(editandoIndex === null) {
+        document.getElementById('descricao').value = '';
+        document.getElementById('valor').value = '';
+    }
+}
+
 function adicionar(){
     const tipo = document.getElementById('tipo').value;
     const descricao = document.getElementById('descricao').value;
@@ -569,7 +634,11 @@ function adicionar(){
     editandoIndex = null;
     document.getElementById('btnSalvar').innerHTML = '<i class="fas fa-plus-circle"></i> Adicionar Lançamento';
     document.getElementById('descricao').value = ''; document.getElementById('valor').value = '';
+    
     salvar(); render();
+    
+    // FECHA O POPUP MOBILE APÓS SALVAR
+    fecharFormularioMobile();
 }
 
 function prepararEdicao(tipo, index){
@@ -577,7 +646,15 @@ function prepararEdicao(tipo, index){
     const item = dadosPorMes[mesAtual][tipo][index];
     document.getElementById('tipo').value = tipo; document.getElementById('descricao').value = item.descricao;
     document.getElementById('valor').value = item.valor; document.getElementById('data').value = item.data; document.getElementById('categoria').value = item.categoria;
-    document.getElementById('btnSalvar').innerHTML = '<i class="fas fa-save"></i> Salvar Alteração'; scrollToId('areaFormulario');
+    document.getElementById('btnSalvar').innerHTML = '<i class="fas fa-save"></i> Salvar Alteração'; 
+    
+    // ABRE O FORMULÁRIO (SEJA DESKTOP SCROLL OU MOBILE POPUP)
+    const isMobile = window.innerWidth <= 1024;
+    if(isMobile) {
+        abrirFormularioMobile();
+    } else {
+        scrollToId('areaFormulario');
+    }
 }
 
 function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].splice(i,1); salvar(); render(); } }

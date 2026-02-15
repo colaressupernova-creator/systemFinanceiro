@@ -58,118 +58,43 @@
 
   @keyframes blushAnimation { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-  /* --- INÍCIO DA SIDEBAR ANIMADA --- */
+  /* SIDEBAR */
   .sidebar { 
-    width: 80px; /* Largura recolhida */
-    background: rgba(255, 255, 255, 0.8);
+    width: 80px; background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-right: var(--glass-border); 
-    display: flex; flex-direction: column; 
-    padding: 25px 15px; /* Padding ajustado */
-    flex-shrink: 0; z-index: 100; overflow-x: hidden; overflow-y: auto;
-    transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animação suave */
+    border-right: var(--glass-border); display: flex; flex-direction: column; 
+    padding: 25px 15px; flex-shrink: 0; z-index: 100; overflow-x: hidden; overflow-y: auto;
+    transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
-  
-  /* Estado Expandido (Hover) */
-  .sidebar:hover {
-    width: 280px;
-  }
-
+  .sidebar:hover { width: 280px; }
   body.dark-mode .sidebar { background: rgba(15, 23, 42, 0.8); }
 
-  /* Logotipo */
-  /* Estilo do Container do Logo */
   .logo { 
-    font-size: 1.5rem; 
-    font-weight: 700; 
-    margin-bottom: 30px; 
-    
-    /* Cor do texto (Preto conforme seu pedido anterior) */
-    color: #000000; 
-
-    display: flex; 
-    align-items: center; 
-    gap: 12px; /* Espaço entre a imagem e o texto */
-    
-    white-space: nowrap; 
-    justify-content: flex-start;
-    overflow: hidden: 60px /* Garante que nada saia da caixa */
+    height: 60px; margin-bottom: 20px; display: flex; align-items: center;
+    overflow: hidden; white-space: nowrap; color: #000000;
+    font-size: 1.3rem; font-weight: 700;
   }
-  
-  /* --- NOVO ESTILO DA IMAGEM --- */
-  .logo-img {
-      width: 35px;       /* Largura da imagem */
-      height: 35px;      /* Altura da imagem */
-      object-fit: contain; /* Garante que a imagem não distorça */
-      
-      /* IMPORTANTE: Impede que a imagem encolha quando o menu fecha */
-      min-width: 50px;   
-      
-      /* Opcional: Borda arredondada se quiser */
-      border-radius: 8px; 
+  .logo img {
+    height: 40px; width: auto; min-height: 40px; min-width: 40px;
+    object-fit: contain; margin-right: 15px;
   }
-
-  /* O texto continua com a mesma animação de antes */
-  .logo span { 
-    opacity: 0; 
-    transition: 0.3s; 
-    transform: translateX(-10px); 
-    display: inline-block;
-  }
-  
-  .sidebar:hover .logo span { 
-    opacity: 1; 
-    transform: translateX(0); 
-  }
-  /* Texto do Logo (some quando recolhido) */
-  .logo span { 
-    opacity: 0; transition: 0.3s; transform: translateX(-10px); 
-    display: inline-block;
-  }
+  .logo span { opacity: 0; transition: 0.3s; transform: translateX(-10px); display: inline-block; }
   .sidebar:hover .logo span { opacity: 1; transform: translateX(0); }
 
-  /* Seções e Labels (Esconder quando recolhido) */
   .sidebar-section { margin-bottom: 25px; width: 100%; transition: 0.3s; }
-  
-  .sidebar-label { 
-    font-size: 0.75rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px;
-    white-space: nowrap; opacity: 0; transition: 0.2s;
-  }
+  .sidebar-label { font-size: 0.75rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; white-space: nowrap; opacity: 0; transition: 0.2s; }
   .sidebar:hover .sidebar-label { opacity: 1; }
-
-  /* Inputs e Selects na Sidebar */
-  .sidebar select, .sidebar input {
-     /* Ajuste para não quebrar layout quando pequeno */
-     opacity: 0; pointer-events: none; transition: 0.2s;
-  }
-  .sidebar:hover select, .sidebar:hover input {
-     opacity: 1; pointer-events: auto;
-  }
-  
-  /* Gráfico na Sidebar (Esconder quando pequeno para não bugar) */
+  .sidebar select, .sidebar input { opacity: 0; pointer-events: none; transition: 0.2s; }
+  .sidebar:hover select, .sidebar:hover input { opacity: 1; pointer-events: auto; }
   #containerGraficoSide { opacity: 0; transition: 0.2s; visibility: hidden; }
   .sidebar:hover #containerGraficoSide { opacity: 1; visibility: visible; transition-delay: 0.2s; }
 
-  /* Botões da Sidebar (Ajuste para ícone + texto animado) */
-  .sidebar .btn-outline {
-      display: flex; align-items: center; justify-content: flex-start;
-      padding: 12px; white-space: nowrap; overflow: hidden;
-  }
-  
-  /* Ícone do botão */
-  .sidebar .btn-outline i {
-      min-width: 25px; text-align: center; margin-right: 10px; font-size: 1.1rem;
-  }
-  
-  /* Texto do botão */
-  .sidebar .btn-outline span {
-      opacity: 0; transform: translateX(-10px); transition: 0.3s;
-  }
-  .sidebar:hover .btn-outline span {
-      opacity: 1; transform: translateX(0);
-  }
-  /* --- FIM DA SIDEBAR ANIMADA --- */
+  .sidebar .btn-outline { display: flex; align-items: center; justify-content: flex-start; padding: 12px; white-space: nowrap; overflow: hidden; }
+  .sidebar .btn-outline i { min-width: 25px; text-align: center; margin-right: 10px; font-size: 1.1rem; }
+  .sidebar .btn-outline span { opacity: 0; transform: translateX(-10px); transition: 0.3s; }
+  .sidebar:hover .btn-outline span { opacity: 1; transform: translateX(0); }
 
+  /* MAIN CONTENT */
   .main-content { flex: 1; padding: 30px; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
   
   .card { 
@@ -178,20 +103,10 @@
     margin-bottom: 20px; position: relative; overflow: hidden;
   }
   
-  .dash-card {
-    position: relative; overflow: hidden; color: #fff;
-    border: none !important; transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-  }
+  .dash-card { position: relative; overflow: hidden; color: #fff; border: none !important; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
   .dash-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
   .dash-card:active { transform: scale(0.98); }
-
-  .click-hint {
-      position: absolute; top: 12px; right: 15px; font-size: 0.7rem;
-      background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 12px;
-      backdrop-filter: blur(5px); z-index: 3;
-  }
-
+  .click-hint { position: absolute; top: 12px; right: 15px; font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 12px; backdrop-filter: blur(5px); z-index: 3; }
   .dash-card label { font-size: 0.9rem; opacity: 0.9; font-weight: 600; letter-spacing: 0.5px; position: relative; z-index: 2; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
   .dash-card .dash-value { font-size: 1.8rem; font-weight: 700; margin-top: 5px; position: relative; z-index: 2; text-shadow: 0 2px 10px rgba(0,0,0,0.2); color: white !important; }
   .dash-bg-icon { position: absolute; right: -10px; bottom: -15px; font-size: 5rem; opacity: 0.2; transform: rotate(-15deg); z-index: 1; transition: 0.3s; }
@@ -200,8 +115,11 @@
   .card-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); }
   .card-danger { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3); }
   .card-primary { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3); }
+  /* Novo Card Reserva */
+  .card-reserva { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3); }
 
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  /* Alterado para Grid 4 */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
   .desktop-only { display: block; } .mobile-only { display: none; }
@@ -209,12 +127,20 @@
     .desktop-only { display: none !important; } .mobile-only { display: block !important; }
     .sidebar { display: none; } 
     .main-content { padding: 20px; padding-bottom: 90px; }
-    .grid-3, .grid-2 { grid-template-columns: 1fr; gap: 15px; }
+    .grid-4, .grid-2 { grid-template-columns: 1fr; gap: 15px; } /* Mobile vira 1 coluna */
   }
 
+  /* INPUTS - CORREÇÃO DARK MODE */
   input, select { width: 100%; padding: 12px 15px; border: 1px solid rgba(255,255,255,0.4); border-radius: 12px; font-size: 0.95rem; background: var(--input-bg); color: var(--text-dark); outline: none; transition: 0.3s; font-family: 'Poppins', sans-serif; }
   input:focus, select:focus { background: rgba(255,255,255,0.9); border-color: #a855f7; box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2); }
   select option { background-color: #ffffff; color: #1e293b; }
+  
+  /* Fix Específico para Dark Mode nos Inputs */
+  body.dark-mode input, body.dark-mode select {
+    background-color: #1e293b !important; /* Fundo Sólido Escuro */
+    color: #ffffff !important; /* Texto Branco */
+    border-color: rgba(255,255,255,0.2);
+  }
   body.dark-mode select option { background-color: #1e293b; color: #f1f5f9; }
 
   button { padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem; transition: 0.3s; font-family: 'Poppins', sans-serif; }
@@ -226,8 +152,6 @@
   .btn-edit { color: var(--warning); background: rgba(245, 158, 11, 0.1); }
   .btn-del { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
 
-  .header-actions { display: flex; align-items: center; gap: 15px; }
-  .perfil-wrapper { position: relative; display: flex; align-items: center; }
   .perfil-avatar { width: 45px; height: 45px; border-radius: 50%; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; background: #e2e8f0; }
   .perfil-avatar:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3); border-color: #a855f7; }
   .perfil-avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -237,10 +161,8 @@
   th { text-align: left; padding: 10px 5px; color: #8b5cf6; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; border-bottom: 2px solid rgba(0,0,0,0.05); }
   td { padding: 10px 5px; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--text-dark); font-size: 0.85rem; vertical-align: middle; }
   th:nth-child(1), td:nth-child(1) { width: auto; }
-  
   .desc-text { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
   @media (min-width: 500px) { .desc-text { max-width: 200px; } }
-
   th:nth-child(2), td:nth-child(2) { width: 25%; text-align: right; }
   th:nth-child(3), td:nth-child(3) { width: 18%; text-align: center; }
   @media (max-width: 400px) { th:nth-child(3), td:nth-child(3) { display: none; } } 
@@ -255,32 +177,18 @@
   .row-category:hover { background: rgba(0,0,0,0.06); }
   body.dark-mode .row-category { background: rgba(255,255,255,0.03); }
   body.dark-mode .row-category:hover { background: rgba(255,255,255,0.06); }
-
+  
   .cat-title-wrapper { display: flex; align-items: center; gap: 6px; }
-
-  .badge-pendente {
-      font-size: 0.65rem; background: rgba(245, 158, 11, 0.15); color: var(--warning); 
-      padding: 3px 8px; border-radius: 12px; margin-left: 8px; vertical-align: middle; 
-      font-weight: 600; text-transform: none; display: inline-flex; align-items: center; gap: 4px;
-      border: 1px solid rgba(245, 158, 11, 0.3); letter-spacing: 0;
-  }
+  .badge-pendente { font-size: 0.65rem; background: rgba(245, 158, 11, 0.15); color: var(--warning); padding: 3px 8px; border-radius: 12px; margin-left: 8px; vertical-align: middle; font-weight: 600; text-transform: none; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(245, 158, 11, 0.3); letter-spacing: 0; }
   .dot-pendente { color: var(--warning); font-size: 0.5rem; animation: pulseDot 2s infinite; }
   @keyframes pulseDot { 0% { opacity: 0.6; } 50% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0.6; } }
 
-  .tip-card {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
-      border: 1px dashed rgba(168, 85, 247, 0.5);
-      border-radius: 16px; padding: 12px 20px; margin-bottom: 20px;
-      display: flex; align-items: center; gap: 15px;
-  }
+  .tip-card { background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%); border: 1px dashed rgba(168, 85, 247, 0.5); border-radius: 16px; padding: 12px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
   body.dark-mode .tip-card { background: rgba(255, 255, 255, 0.03); }
   .tip-icon { font-size: 1.4rem; color: #a855f7; animation: bounceTip 2s infinite ease-in-out; }
   @keyframes bounceTip { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
   .tip-text-container { flex: 1; overflow: hidden; display: flex; align-items: center; }
-  .tip-text {
-      font-size: 0.85rem; color: var(--text-dark); font-weight: 500;
-      transition: opacity 0.5s ease, transform 0.5s ease; width: 100%;
-  }
+  .tip-text { font-size: 0.85rem; color: var(--text-dark); font-weight: 500; transition: opacity 0.5s ease, transform 0.5s ease; width: 100%; }
   .tip-hidden { opacity: 0; transform: translateY(5px); }
 
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; }
@@ -292,7 +200,6 @@
   .insight-card { padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; }
   .insight-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
   .item-list { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed rgba(0,0,0,0.1); font-size: 0.9rem; }
-
   #bannerAlerta { display: none; background: rgba(239, 68, 68, 0.9); backdrop-filter: blur(5px); color: white; text-align: center; padding: 10px; font-weight: 600; font-size: 0.9rem; position: fixed; top: 0; left: 0; right: 0; z-index: 200; }
 
   .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); border-top: 1px solid rgba(255,255,255,0.5); z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
@@ -303,7 +210,6 @@
   .nav-btn:active i { transform: scale(0.9); color: #8b5cf6; }
   .nav-btn-main { background: var(--primary-gradient); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -30px; box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4); border: 4px solid rgba(255,255,255,0.8); }
   body.dark-mode .nav-btn-main { border-color: #1e1b4b; }
-  .nav-btn-main i { font-size: 1.5rem; }
   .text-success { color: var(--success); }
   .text-danger { color: var(--danger); }
   .vencido { color: var(--danger); font-weight: 700; }
@@ -312,30 +218,11 @@
   #areaFormulario { display: block; }
   @media (max-width: 1024px) {
       #areaFormulario { display: none; }
-      #areaFormulario.mobile-popup {
-          display: flex !important;
-          position: fixed;
-          top: 0; left: 0; width: 100%; height: 100%;
-          background: rgba(15, 23, 42, 0.85);
-          backdrop-filter: blur(8px);
-          z-index: 5000;
-          align-items: flex-end; 
-          justify-content: center;
-          padding: 0; margin: 0;
-          border-radius: 0;
-          border: none;
-      }
-      #areaFormulario.mobile-popup .form-content {
-          background: #fff; width: 100%; border-radius: 24px 24px 0 0;
-          padding: 25px; box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
-          animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-          border: 1px solid rgba(0,0,0,0.05); position: relative;
-      }
+      #areaFormulario.mobile-popup { display: flex !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 5000; align-items: flex-end; justify-content: center; padding: 0; margin: 0; border-radius: 0; border: none; }
+      #areaFormulario.mobile-popup .form-content { background: #fff; width: 100%; border-radius: 24px 24px 0 0; padding: 25px; box-shadow: 0 -10px 40px rgba(0,0,0,0.3); animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid rgba(0,0,0,0.05); position: relative; }
       body.dark-mode #areaFormulario.mobile-popup .form-content { background: #1e293b; border-color: rgba(255,255,255,0.1); }
   }
-
   @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
   .btn-close-form { display: none; position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.05); border: none; width: 30px; height: 30px; border-radius: 50%; color: var(--text-light); font-size: 1rem; cursor: pointer; }
   body.dark-mode .btn-close-form { background: rgba(255,255,255,0.1); color: #fff; }
 </style>
@@ -410,7 +297,14 @@
     </div>
   </div>
 
-  <div class="grid-3">
+  <div class="tip-card">
+      <i class="fas fa-lightbulb tip-icon"></i>
+      <div class="tip-text-container">
+          <div id="tipText" class="tip-text">Carregando dica...</div>
+      </div>
+  </div>
+
+  <div class="grid-4">
     <div class="card dash-card card-success" onclick="abrirRelatorioCard('receber')">
       <span class="click-hint"><i class="fas fa-search"></i> Resumo</span>
       <i class="fas fa-arrow-down dash-bg-icon"></i>
@@ -425,6 +319,13 @@
       <div class="dash-value" id="totalPago">R$ 0,00</div>
     </div>
     
+    <div class="card dash-card card-reserva" onclick="abrirRelatorioCard('reserva')">
+      <span class="click-hint"><i class="fas fa-search"></i> Detalhes</span>
+      <i class="fas fa-piggy-bank dash-bg-icon"></i>
+      <label>Reserva</label>
+      <div class="dash-value" id="totalReserva">R$ 0,00</div>
+    </div>
+
     <div class="card dash-card card-primary" onclick="abrirRelatorioCard('saldo')">
       <span class="click-hint"><i class="fas fa-search"></i> Resumo</span>
       <i class="fas fa-wallet dash-bg-icon"></i>
@@ -433,14 +334,7 @@
     </div>
   </div>
 
-  <div class="tip-card">
-      <i class="fas fa-lightbulb tip-icon"></i>
-      <div class="tip-text-container">
-          <div id="tipText" class="tip-text">Carregando dica...</div>
-      </div>
-  </div>
-
-  <div class="card mobile-only" style="margin-top: 0px;">
+  <div class="card mobile-only" style="margin-top: 20px;">
     <h3 style="margin-top:0; margin-bottom: 15px; font-size: 1rem; color: var(--text-light); text-transform: uppercase;">📊 Resumo de Gastos</h3>
     <div style="height: 250px; position: relative;">
       <canvas id="graficoMobile"></canvas>
@@ -475,7 +369,7 @@
                 <option value="Emprestimos">💸 Emprestimos</option>
                 <option value="Vale Alimentação">💳 Vale Alimentação</option>
                 <option value="Mensalidades">💪 Mensalidades</option>
-                <option value="Reserva">🧾 Reserva</option>
+                <option value="Reserva">🧾 Reserva (Envia p/ Card)</option>
                 <option value="Salário">💰 Salário</option>
                 <option value="Outros">⚙️ Outros</option>
             </select>
@@ -764,7 +658,7 @@ function render() {
     garantirMes();
     const tRec = document.getElementById('tabelaReceber'); 
     const tPag = document.getElementById('tabelaPagar');
-    let totalRec = 0, totalPag = 0, urgente = false;
+    let totalRec = 0, totalPag = 0, totalReserva = 0, urgente = false;
     const hoje = new Date().toISOString().split('T')[0];
 
     ['receber', 'pagar'].forEach(tipo => {
@@ -779,7 +673,14 @@ function render() {
             categoriasGroup[item.categoria].total += item.valor;
             
             if(item.marcado) { 
-                if(tipo === 'receber') totalRec += item.valor; else totalPag += item.valor; 
+                if(tipo === 'receber') totalRec += item.valor; 
+                else {
+                    totalPag += item.valor; 
+                    // Se for categoria Reserva, soma no card Reserva também
+                    if(item.categoria === 'Reserva') {
+                        totalReserva += item.valor;
+                    }
+                }
             } else {
                 categoriasGroup[item.categoria].pendentes++;
                 pendentesTotaisDoTipo++;
@@ -851,7 +752,10 @@ function render() {
     });
 
     document.getElementById('bannerAlerta').style.display = urgente ? 'block' : 'none';
-    animarValor('totalRecebido', totalRec); animarValor('totalPago', totalPag); animarValor('saldo', totalRec - totalPag);
+    animarValor('totalRecebido', totalRec); 
+    animarValor('totalPago', totalPag); 
+    animarValor('totalReserva', totalReserva); 
+    animarValor('saldo', totalRec - totalPag);
     atualizarGrafico();
 }
 
@@ -943,6 +847,31 @@ function abrirRelatorioCard(tipo) {
             corpo.innerHTML += `<div class="item-list"><span>${data} - ${item.descricao} <small style="color:var(--text-light)">(${item.categoria})</small></span><span style="font-weight:bold; color:var(--danger)">${formatar(item.valor)}</span></div>`;
         });
         
+    } else if (tipo === 'reserva') {
+        titulo.innerText = "💰 Reserva de Emergência";
+        let totalRes = 0;
+        // Filtra apenas categoria Reserva
+        const reservas = dadosPorMes[mesAtual].pagar.filter(i => i.marcado && i.categoria === 'Reserva');
+        reservas.forEach(i => totalRes += i.valor);
+        
+        corpo.innerHTML += `
+             <div class="insight-card" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);">
+                <div class="insight-icon" style="background: var(--warning); color: white;"><i class="fas fa-piggy-bank"></i></div>
+                <div>
+                    <h4 style="margin:0; color: var(--text-dark);">Fundo de Segurança</h4>
+                    <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: var(--text-light);">
+                        Você separou <strong>${formatar(totalRes)}</strong> este mês. Parabéns pela disciplina! Isso é fundamental para sua tranquilidade.
+                    </p>
+                </div>
+            </div>
+            <h4 style="margin-bottom:10px; color: var(--text-light); text-transform:uppercase; font-size:0.8rem;">Aportes na Reserva</h4>
+        `;
+         if (reservas.length === 0) corpo.innerHTML += '<p style="text-align:center; font-size:0.9rem;">Nenhum aporte realizado neste mês.</p>';
+        reservas.forEach(item => {
+            const data = item.data ? item.data.split('-').reverse().join('/') : '-';
+            corpo.innerHTML += `<div class="item-list"><span>${data} - ${item.descricao}</span><span style="font-weight:bold; color:var(--warning)">${formatar(item.valor)}</span></div>`;
+        });
+
     } else if (tipo === 'saldo') {
         titulo.innerText = "⚖️ Resumo de Balanço Realizado";
         let totalRec = 0; dadosPorMes[mesAtual].receber.filter(i=>i.marcado).forEach(i=>totalRec += i.valor);
@@ -954,7 +883,7 @@ function abrirRelatorioCard(tipo) {
 
         corpo.innerHTML += `
             <div class="insight-card" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3);">
-                <div class="insight-icon" style="background: var(--info); color: white;"><i class="fas fa-piggy-bank"></i></div>
+                <div class="insight-icon" style="background: var(--info); color: white;"><i class="fas fa-wallet"></i></div>
                 <div>
                     <h4 style="margin:0; color: var(--text-dark);">Seu Balanço Atual</h4>
                     <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: var(--text-light);">${msgSaldo}</p>

@@ -9,8 +9,8 @@
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="logo.png.png">
-<link rel="icon" type="image/png" href="logo.png.png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="icon" type="image/png" href="logo.png">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -69,24 +69,14 @@
   .sidebar:hover { width: 280px; }
   body.dark-mode .sidebar { background: rgba(15, 23, 42, 0.8); }
 
-  /* LOGO AJUSTADO PARA ALINHAR COM ÍCONES */
+  /* LOGO AJUSTADO */
   .logo { 
-    padding: 12px; /* Mesmo padding dos botões */
-    margin-bottom: 25px; 
-    display: flex; 
-    align-items: center;
-    overflow: hidden; 
-    white-space: nowrap; 
-    color: #000000;
-    font-size: 1.3rem; 
-    font-weight: 700;
+    padding: 12px; margin-bottom: 25px; display: flex; align-items: center;
+    overflow: hidden; white-space: nowrap; color: #000000;
+    font-size: 1.3rem; font-weight: 700;
   }
   .logo img {
-    height: 28px; /* Altura visual próxima aos ícones de fonte */
-    width: auto; 
-    min-width: 25px; /* Mesma largura mínima do ícone .btn-outline i */
-    object-fit: contain; 
-    margin-right: 10px; /* Mesma margem dos ícones */
+    height: 28px; width: auto; min-width: 25px; object-fit: contain; margin-right: 10px;
   }
   .logo span { opacity: 0; transition: 0.3s; transform: translateX(-10px); display: inline-block; }
   .sidebar:hover .logo span { opacity: 1; transform: translateX(0); }
@@ -127,7 +117,7 @@
   .card-primary { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3); }
   .card-reserva { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3); }
 
-  /* Alterado para Grid 4 */
+  /* Grid Systems */
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
@@ -136,7 +126,7 @@
     .desktop-only { display: none !important; } .mobile-only { display: block !important; }
     .sidebar { display: none; } 
     .main-content { padding: 20px; padding-bottom: 90px; }
-    .grid-4, .grid-2 { grid-template-columns: 1fr; gap: 15px; } /* Mobile vira 1 coluna */
+    .grid-4, .grid-2 { grid-template-columns: 1fr; gap: 15px; } 
   }
 
   /* INPUTS */
@@ -160,7 +150,6 @@
   .btn-edit { color: var(--warning); background: rgba(245, 158, 11, 0.1); }
   .btn-del { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
   
-  /* Botões de ação rápida no relatório */
   .btn-green { background: var(--success); color: white; width: 100%; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
   .btn-red { background: var(--danger); color: white; width: 100%; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
 
@@ -245,7 +234,7 @@
 
 <div class="sidebar d-none d-lg-flex">
   <div class="logo">
-    <img src="logo.png.png" alt="Logo" class="logo-img"> 
+    <img src="logo.png" alt="Logo" class="logo-img"> 
     <span>RE Solution</span>
 </div>
   
@@ -286,10 +275,9 @@
     <button class="btn-outline" onclick="toggleDarkMode()">
         <i class="fas fa-adjust"></i> <span>Tema</span>
     </button>
-    <button class="btn-outline" onclick="document.getElementById('inputImport').click()">
-        <i class="fas fa-file-import"></i> <span>Restaurar</span>
+    <button class="btn-outline" onclick="window.fazerLogout()" style="color: var(--danger); border-color: var(--danger);">
+        <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
     </button>
-    <input type="file" id="inputImport" style="display:none" onchange="importarDados(event)">
   </div>
 </div>
 
@@ -302,10 +290,9 @@
     </div>
     
     <div class="perfil-wrapper">
-        <div class="perfil-avatar" onclick="document.getElementById('inputFotoPerfil').click()">
+        <div class="perfil-avatar">
             <img id="imgPerfil" src="https://ui-avatars.com/api/?name=User&background=random" alt="Perfil">
         </div>
-        <input type="file" id="inputFotoPerfil" accept="image/*" style="display:none" onchange="carregarFotoPerfil(event)">
     </div>
   </div>
 
@@ -439,8 +426,8 @@
   <button class="nav-btn" onclick="abrirConfigMobile()">
     <i class="fas fa-calendar-alt"></i> <span>Mês</span>
   </button>
-  <button class="nav-btn" onclick="toggleDarkMode()">
-    <i class="fas fa-adjust"></i> <span>Tema</span>
+  <button class="nav-btn" onclick="window.fazerLogout()" style="color:var(--danger)">
+    <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
   </button>
 </nav>
 
@@ -469,7 +456,7 @@
 
       <label>Dados</label>
       <button class="btn-outline" style="color:var(--text-dark); border-color:var(--text-light);" onclick="exportarDados()">Baixar Backup</button>
-      <button class="btn-outline" style="color:var(--text-dark); border-color:var(--text-light);" onclick="document.getElementById('inputImport').click()">Restaurar Backup</button>
+      <button class="btn-outline" style="color:var(--text-dark); border-color:var(--text-light);" onclick="toggleDarkMode()">Mudar Tema</button>
     </div>
   </div>
 </div>
@@ -484,531 +471,583 @@
   </div>
 </div>
 
-<script>
-let dadosPorMes = JSON.parse(localStorage.getItem('financeiroDados2026') || '{}');
-let mesSalvo = localStorage.getItem('mesSelecionado') || '2026-01';
-let mesAtual = mesSalvo;
-let editandoIndex = null;
-let editandoTipo = null;
+<script type="module">
+    import { auth, db } from './config.js';
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-let categoriasExpandidas = { receber: {}, pagar: {} };
-
-const dicasFinanceiras = [
-    "<strong>Regra 50/30/20:</strong> Tente usar 50% da renda no essencial, 30% em lazer e 20% para investir.",
-    "<strong>Economia:</strong> Antes de compras impulsivas, espere 48h. A vontade quase sempre passa!",
-    "<strong>Segurança:</strong> Construa sua Reserva de Emergência. O ideal é ter 6 meses de seus gastos fixos guardados.",
-    "<strong>Pague-se primeiro:</strong> Separe o dinheiro do seu investimento no mesmo dia que o salário cair na conta.",
-    "<strong>Investimentos:</strong> Juros compostos são mágicos! O tempo é mais importante que o valor inicial. Comece hoje.",
-    "<strong>Organização:</strong> Revise suas assinaturas (streaming, apps). Cancele tudo o que não usou nos últimos 30 dias.",
-    "<strong>Dívidas:</strong> Evite ao máximo o rotativo do cartão de crédito. Os juros podem destruir o seu planejamento mensal.",
-    "<strong>Supermercado:</strong> Evite fazer compras com fome. Estudos mostram que isso reduz os gastos por impulso em até 20%!"
-];
-let dicaAtual = 0;
-
-function iniciarSliderDicas() {
-    const tipEl = document.getElementById('tipText');
-    if(!tipEl) return;
-    tipEl.innerHTML = dicasFinanceiras[dicaAtual];
+    // ----------------------------------------------------
+    // VARIÁVEIS GLOBAIS (Acessíveis pelo HTML)
+    // ----------------------------------------------------
+    window.usuarioLogado = null;
+    window.dadosPorMes = {};
+    window.mesSelecionado = localStorage.getItem('mesSelecionado') || '2026-01';
+    window.mesAtual = window.mesSelecionado;
+    window.editandoIndex = null;
+    window.editandoTipo = null;
+    window.categoriasExpandidas = { receber: {}, pagar: {} };
     
-    setInterval(() => {
-        tipEl.classList.add('tip-hidden'); 
-        setTimeout(() => {
-            dicaAtual = (dicaAtual + 1) % dicasFinanceiras.length;
-            tipEl.innerHTML = dicasFinanceiras[dicaAtual];
-            tipEl.classList.remove('tip-hidden'); 
-        }, 500); 
-    }, 30000); 
-}
+    // Dicas
+    const dicasFinanceiras = [
+        "Regra 50/30/20: 50% Essencial, 30% Lazer, 20% Futuro.",
+        "Reserva de Emergência: Tenha 6 meses de gastos guardados.",
+        "Pague-se primeiro: Invista assim que receber o salário.",
+        "Juros compostos são seus amigos no longo prazo.",
+        "Evite compras por impulso. Espere 24h.",
+        "Cancele assinaturas que você não usa."
+    ];
+    let dicaAtual = 0;
 
-document.getElementById('mes').value = mesAtual;
-if(document.getElementById('mesMobile')) document.getElementById('mesMobile').value = mesAtual;
-if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
+    // ----------------------------------------------------
+    // 1. MONITORAMENTO DE LOGIN (Substitui window.onload antigo)
+    // ----------------------------------------------------
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            console.log("Usuário detectado:", user.email);
+            window.usuarioLogado = user;
+            if(user.photoURL) document.getElementById('imgPerfil').src = user.photoURL;
 
-window.onload = () => {
-  render(); 
-  atualizarLabelTopo(); 
-  iniciarSliderDicas(); 
-  
-  const fotoSalva = localStorage.getItem('fotoPerfilUsuario');
-  if (fotoSalva) document.getElementById('imgPerfil').src = fotoSalva;
-  const isMobile = window.innerWidth <= 1024;
-  if(!isMobile) document.getElementById('navMobile').style.display = 'none';
-};
-
-window.onresize = () => {
-   const isMobile = window.innerWidth <= 1024;
-   document.getElementById('navMobile').style.display = isMobile ? 'flex' : 'none';
-   document.querySelector('.sidebar').classList.toggle('d-lg-flex', !isMobile);
-}
-
-function scrollToId(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
-
-function toggleDarkMode() {
-  document.body.classList.toggle('dark-mode');
-  localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
-  atualizarGrafico();
-}
-
-function salvar(){ localStorage.setItem('financeiroDados2026', JSON.stringify(dadosPorMes)); }
-function garantirMes(){ if(!dadosPorMes[mesAtual]) dadosPorMes[mesAtual] = { receber: [], pagar: [] }; }
-function formatar(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
-
-function atualizarLabelTopo() {
-    const select = document.getElementById('mes');
-    const texto = select.options[select.selectedIndex].text;
-    document.getElementById('labelMesAtivo').innerText = texto;
-}
-
-function mudarMes() {
-    mesAtual = document.getElementById('mes').value;
-    localStorage.setItem('mesSelecionado', mesAtual);
-    if(document.getElementById('mesMobile')) document.getElementById('mesMobile').value = mesAtual;
-    atualizarLabelTopo(); render();
-}
-
-function mudarMesMobile() {
-    mesAtual = document.getElementById('mesMobile').value;
-    document.getElementById('mes').value = mesAtual;
-    mudarMes(); document.getElementById('modalConfig').style.display = 'none';
-}
-
-function abrirConfigMobile() { document.getElementById('modalConfig').style.display = 'flex'; }
-function fecharModalGeral(e, id) { if(e.target.id === id) e.target.style.display = 'none'; }
-
-function carregarFotoPerfil(event) {
-    const arquivo = event.target.files[0];
-    if (arquivo) {
-        const leitor = new FileReader();
-        leitor.onload = function(e) {
-            document.getElementById('imgPerfil').src = e.target.result;
-            localStorage.setItem('fotoPerfilUsuario', e.target.result);
-        }
-        leitor.readAsDataURL(arquivo);
-    }
-}
-
-function animarValor(id, valorFinal) {
-    const elemento = document.getElementById(id);
-    const duracao = 1000; const inicio = 0; const startTime = performance.now();
-    function update(tempoAtual) {
-        const progresso = Math.min((tempoAtual - startTime) / duracao, 1);
-        const ease = 1 - Math.pow(1 - progresso, 4);
-        if(elemento) elemento.innerText = (inicio + (valorFinal - inicio) * ease).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-        if (progresso < 1) requestAnimationFrame(update);
-        else if (elemento) elemento.innerText = valorFinal.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-    }
-    requestAnimationFrame(update);
-}
-
-// === FUNÇÕES DO POPUP MOBILE ===
-function abrirFormularioMobile() {
-    const form = document.getElementById('areaFormulario');
-    form.classList.add('mobile-popup');
-}
-
-function fecharFormularioMobile() {
-    const form = document.getElementById('areaFormulario');
-    form.classList.remove('mobile-popup');
-    if(editandoIndex === null) {
-        document.getElementById('descricao').value = '';
-        document.getElementById('valor').value = '';
-    }
-}
-
-// === FUNÇÃO DE TRANSAÇÃO RÁPIDA DENTRO DO RELATÓRIO ===
-function realizarTransacaoReserva(tipo) {
-    const input = document.getElementById('inputValorReserva');
-    const valor = Number(input.value);
-    
-    if(!valor || valor <= 0) {
-        alert("Digite um valor válido.");
-        return;
-    }
-
-    const hoje = new Date().toISOString().split('T')[0];
-    garantirMes();
-
-    if(tipo === 'depositar') {
-        dadosPorMes[mesAtual].pagar.push({
-            descricao: 'Aporte Reserva',
-            valor: valor,
-            data: hoje,
-            categoria: 'Reserva',
-            marcado: true
-        });
-        categoriasExpandidas['pagar']['Reserva'] = true;
-    } else {
-         dadosPorMes[mesAtual].receber.push({
-            descricao: 'Resgate Reserva',
-            valor: valor,
-            data: hoje,
-            categoria: 'Resgate Reserva',
-            marcado: true
-        });
-        categoriasExpandidas['receber']['ResgateReserva'] = true;
-    }
-
-    salvar();
-    render(); // Atualiza os dados de fundo
-    abrirRelatorioCard('reserva'); // Recarrega o modal para mostrar saldo atualizado
-    
-    // Feedback visual opcional
-    // alert(tipo === 'depositar' ? "Guardado com sucesso!" : "Resgatado com sucesso!");
-}
-
-function adicionar(){
-    const tipo = document.getElementById('tipo').value;
-    const descricao = document.getElementById('descricao').value;
-    const valor = Number(document.getElementById('valor').value);
-    const data = document.getElementById('data').value;
-    const categoria = document.getElementById('categoria').value;
-    
-    if(!descricao || !valor) return alert("Preencha descrição e valor");
-    garantirMes();
-    
-    const idSafe = categoria.replace(/[^a-zA-Z0-9]/g, '');
-    categoriasExpandidas[tipo][idSafe] = true; 
-    
-    const item = {descricao, valor, data, categoria, marcado: false};
-    if(editandoIndex !== null) { item.marcado = dadosPorMes[mesAtual][editandoTipo][editandoIndex].marcado; dadosPorMes[mesAtual][editandoTipo][editandoIndex] = item; } 
-    else { dadosPorMes[mesAtual][tipo].push(item); }
-    editandoIndex = null;
-    document.getElementById('btnSalvar').innerHTML = '<i class="fas fa-plus-circle"></i> Adicionar Lançamento';
-    document.getElementById('descricao').value = ''; document.getElementById('valor').value = '';
-    
-    salvar(); render();
-    fecharFormularioMobile();
-}
-
-function prepararEdicao(tipo, index){
-    editandoIndex = index; editandoTipo = tipo;
-    const item = dadosPorMes[mesAtual][tipo][index];
-    document.getElementById('tipo').value = tipo; document.getElementById('descricao').value = item.descricao;
-    document.getElementById('valor').value = item.valor; document.getElementById('data').value = item.data; document.getElementById('categoria').value = item.categoria;
-    document.getElementById('btnSalvar').innerHTML = '<i class="fas fa-save"></i> Salvar Alteração'; 
-    
-    const isMobile = window.innerWidth <= 1024;
-    if(isMobile) abrirFormularioMobile();
-    else scrollToId('areaFormulario');
-}
-
-function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].splice(i,1); salvar(); render(); } }
-function toggle(tipo, i) { dadosPorMes[mesAtual][tipo][i].marcado = !dadosPorMes[mesAtual][tipo][i].marcado; salvar(); render(); }
-
-function toggleCategoriaRow(tipo, idSafe) {
-    categoriasExpandidas[tipo][idSafe] = !categoriasExpandidas[tipo][idSafe];
-    render(); 
-}
-
-function calcularTotalReservaAcumulado() {
-    let total = 0;
-    Object.keys(dadosPorMes).forEach(mesKey => {
-        const mesDados = dadosPorMes[mesKey];
-        if(mesDados.pagar) {
-            mesDados.pagar.forEach(i => {
-                if(i.marcado && i.categoria === 'Reserva') total += i.valor;
-            });
-        }
-        if(mesDados.receber) {
-            mesDados.receber.forEach(i => {
-                if(i.marcado && i.categoria === 'Resgate Reserva') total -= i.valor;
-            });
-        }
-    });
-    return total;
-}
-
-function render() {
-    garantirMes();
-    const tRec = document.getElementById('tabelaReceber'); 
-    const tPag = document.getElementById('tabelaPagar');
-    let totalRec = 0, totalPag = 0, urgente = false;
-    const hoje = new Date().toISOString().split('T')[0];
-
-    ['receber', 'pagar'].forEach(tipo => {
-        const categoriasGroup = {};
-        let pendentesTotaisDoTipo = 0;
-        
-        dadosPorMes[mesAtual][tipo].forEach((item, idx) => {
-            const itemWithIdx = {...item, idxOriginal: idx};
-            if (!categoriasGroup[item.categoria]) categoriasGroup[item.categoria] = { total: 0, items: [], pendentes: 0 };
-            
-            categoriasGroup[item.categoria].items.push(itemWithIdx);
-            categoriasGroup[item.categoria].total += item.valor;
-            
-            if(item.marcado) { 
-                if(tipo === 'receber') totalRec += item.valor; 
-                else totalPag += item.valor; 
-            } else {
-                categoriasGroup[item.categoria].pendentes++;
-                pendentesTotaisDoTipo++;
+            // CARREGAR DO FIRESTORE
+            const docRef = doc(db, "usuarios", user.uid);
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    window.dadosPorMes = docSnap.data().financeiro || {};
+                } else {
+                    // Primeiro acesso: tenta migrar localStorage ou cria vazio
+                    const dadosLocais = localStorage.getItem('financeiroDados2026');
+                    if (dadosLocais) {
+                        window.dadosPorMes = JSON.parse(dadosLocais);
+                        salvarNaNuvem(); // Sobe o backup local para a nuvem
+                    } else {
+                        window.dadosPorMes = {};
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao buscar dados:", error);
+                alert("Erro de conexão com a nuvem. Tentando usar dados locais...");
+                window.dadosPorMes = JSON.parse(localStorage.getItem('financeiroDados2026') || '{}');
             }
 
-            const atrasado = (tipo === 'pagar' && !item.marcado && item.data && item.data < hoje);
-            if(atrasado) urgente = true;
-        });
+            // Inicializa a tela após carregar dados
+            inicializarApp();
 
-        const iconeTitulo = tipo === 'receber' ? '<i class="fas fa-arrow-down"></i>' : '<i class="fas fa-arrow-up"></i>';
-        const nomeTitulo = tipo === 'receber' ? 'Entradas' : 'Saídas';
-        const badgeTitulo = pendentesTotaisDoTipo > 0 ? `<span class="badge-pendente"><i class="fas fa-exclamation-circle"></i> ${pendentesTotaisDoTipo} pendente(s)</span>` : '';
-        
-        if (tipo === 'receber') document.getElementById('tituloReceber').innerHTML = `${iconeTitulo} ${nomeTitulo} ${badgeTitulo}`;
-        else document.getElementById('tituloPagar').innerHTML = `${iconeTitulo} ${nomeTitulo} ${badgeTitulo}`;
-
-        const catKeys = Object.keys(categoriasGroup).sort((a,b) => categoriasGroup[b].total - categoriasGroup[a].total);
-        let html = '';
-        
-        catKeys.forEach(cat => {
-            const idSafe = cat.replace(/[^a-zA-Z0-9]/g, '');
-            const isExpanded = categoriasExpandidas[tipo][idSafe] || false;
-            const displayRow = isExpanded ? 'table-row' : 'none';
-            const iconRot = isExpanded ? 'rotate(90deg)' : 'rotate(0deg)';
-            const corBorda = tipo === 'receber' ? 'var(--success)' : 'var(--danger)';
-            
-            const badgeCategoria = categoriasGroup[cat].pendentes > 0 ? `<i class="fas fa-circle dot-pendente" title="Há itens pendentes"></i>` : '';
-
-            html += `
-                <tr class="row-category" onclick="toggleCategoriaRow('${tipo}', '${idSafe}')" style="border-left: 3px solid ${corBorda};">
-                    <td style="font-weight:600; color:var(--text-dark);">
-                        <div class="cat-title-wrapper">
-                            <i class="fas fa-chevron-right" style="font-size:0.7rem; transition:0.3s; transform:${iconRot}"></i>
-                            <span>${cat}</span>
-                            <span style="font-size:0.75rem; color:var(--text-light); font-weight:normal;">(${categoriasGroup[cat].items.length})</span>
-                            ${badgeCategoria}
-                        </div>
-                    </td>
-                    <td style="font-weight:700; text-align:right;">${formatar(categoriasGroup[cat].total)}</td>
-                    <td></td><td></td><td></td>
-                </tr>
-            `;
-
-            categoriasGroup[cat].items.sort((a,b) => (a.data > b.data ? 1 : -1));
-
-            categoriasGroup[cat].items.forEach(item => {
-                const i = item.idxOriginal;
-                const atrasado = (tipo === 'pagar' && !item.marcado && item.data && item.data < hoje);
-                html += `
-                    <tr style="display:${displayRow}; background: rgba(0,0,0,0.01);">
-                        <td style="padding-left: 28px;">
-                            <span class="desc-text ${atrasado ? 'vencido' : ''}" style="font-size: 0.8rem; color: var(--text-light);">
-                                ${atrasado ? '⚠️ ' : ''}${item.descricao}
-                            </span>
-                        </td>
-                        <td style="text-align:right; font-size:0.8rem;">${formatar(item.valor)}</td>
-                        <td style="font-size:0.8rem; text-align:center;">${item.data ? item.data.split('-').reverse().slice(0,2).join('/') : '-'}</td>
-                        <td style="text-align:center;"><input type="checkbox" class="custom-check" ${item.marcado ? 'checked' : ''} onclick="toggle('${tipo}', ${i})"></td>
-                        <td style="text-align:right;">
-                            <button class="btn-action btn-edit" onclick="prepararEdicao('${tipo}', ${i})"><i class="fas fa-pen"></i></button>
-                            <button class="btn-action btn-del" onclick="remover('${tipo}', ${i})"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-        });
-
-        if(tipo === 'receber') tRec.innerHTML = html; else tPag.innerHTML = html;
+        } else {
+            // Se não estiver logado, manda pro login
+            window.location.href = "login.html";
+        }
     });
 
-    const totalReservaAcumulado = calcularTotalReservaAcumulado();
-
-    document.getElementById('bannerAlerta').style.display = urgente ? 'block' : 'none';
-    animarValor('totalRecebido', totalRec); 
-    animarValor('totalPago', totalPag); 
-    animarValor('totalReserva', totalReservaAcumulado); 
-    animarValor('saldo', totalRec - totalPag);
-    
-    atualizarGrafico();
-}
-
-let chartSidebar = null; let chartMobile = null;
-function atualizarGrafico(){
-    const resumo = {}; dadosPorMes[mesAtual].pagar.forEach(item => { if(item.marcado) resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor; });
-    const chartConfig = { type: 'doughnut', data: { labels: Object.keys(resumo), datasets: [{ data: Object.values(resumo), backgroundColor: ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#14b8a6'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { let label = context.label || ''; if (label) label += ': '; if (context.raw !== null) label += context.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); return label; } } } } } };
-
-    const ctxSide = document.getElementById('graficoSidebar'); if(chartSidebar) chartSidebar.destroy();
-    if(ctxSide && Object.keys(resumo).length > 0) chartSidebar = new Chart(ctxSide, chartConfig);
-
-    const ctxMob = document.getElementById('graficoMobile'); if(chartMobile) chartMobile.destroy();
-    if(ctxMob && Object.keys(resumo).length > 0) chartMobile = new Chart(ctxMob, chartConfig);
-}
-
-const msgsCategoria = {
-    'Filho': "Os gastos com os pequenos estão no topo! Cuidar deles é prioridade.",
-    'Supermercado': "O supermercado levou a maior fatia do orçamento. Fazer uma lista rigorosa ajuda!",
-    'Alimentação': "Comer fora ou pedir delivery pesou bastante. Tente cozinhar mais em casa.",
-    'Lazer': "Você curtiu bastante esse mês! Defina um teto máximo para o lazer.",
-    'Transporte': "Gastos com transporte estão altos. Avalie rotas ou alternativas.",
-    'Saúde': "A saúde cobrou seu preço. Lembre-se que bem-estar é investimento.",
-    'Moradia': "Sua casa é o maior custo. Revise planos de internet e energia.",
-    'Credito': "Cuidado com o cartão de crédito e juros!",
-    'Assinaturas': "Muitos streamings? Cancele o que não usa.",
-    'default': "Fique de olho nesta categoria! Ela foi a campeã de gastos."
-};
-
-function abrirRelatorioCard(tipo) {
-    garantirMes();
-    const corpo = document.getElementById('corpoRelatorio');
-    const titulo = document.getElementById('modalRelatorioTitulo');
-    corpo.innerHTML = '';
-    
-    let total = 0;
-    
-    if (tipo === 'receber') {
-        titulo.innerText = "🟢 Resumo de Recebimentos";
-        const recebidos = dadosPorMes[mesAtual].receber.filter(i => i.marcado);
-        recebidos.forEach(i => total += i.valor);
+    function inicializarApp() {
+        document.getElementById('mes').value = window.mesAtual;
+        if(document.getElementById('mesMobile')) document.getElementById('mesMobile').value = window.mesAtual;
+        if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
         
-        corpo.innerHTML += `
-            <div class="insight-card" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
-                <div class="insight-icon" style="background: var(--success); color: white;"><i class="fas fa-hand-holding-usd"></i></div>
-                <div>
-                    <h4 style="margin:0; color: var(--text-dark);">Mandou muito bem!</h4>
-                    <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: var(--text-light);">
-                        Você já garantiu <strong>${formatar(total)}</strong> neste mês. Continue focando em aumentar suas fontes de renda!
-                    </p>
-                </div>
-            </div>
-            <h4 style="margin-bottom:10px; color: var(--text-light); text-transform:uppercase; font-size:0.8rem;">Todas as Entradas Realizadas</h4>
-        `;
-        recebidos.forEach(item => {
-            const data = item.data ? item.data.split('-').reverse().join('/') : '-';
-            corpo.innerHTML += `<div class="item-list"><span>${data} - ${item.descricao}</span><span style="font-weight:bold; color:var(--success)">${formatar(item.valor)}</span></div>`;
+        iniciarSliderDicas();
+        render();
+        atualizarLabelTopo();
+        const isMobile = window.innerWidth <= 1024;
+        if(!isMobile) document.getElementById('navMobile').style.display = 'none';
+    }
+
+    // ----------------------------------------------------
+    // 2. FUNÇÃO SALVAR (Nuvem + Local)
+    // ----------------------------------------------------
+    async function salvarNaNuvem() {
+        try {
+            await setDoc(doc(db, "usuarios", window.usuarioLogado.uid), {
+                financeiro: window.dadosPorMes,
+                ultimoAcesso: new Date().toISOString()
+            });
+        } catch (e) {
+            console.error("Erro ao salvar na nuvem:", e);
+        }
+    }
+
+    window.salvar = async function() {
+        // Backup Local (rápido)
+        localStorage.setItem('financeiroDados2026', JSON.stringify(window.dadosPorMes));
+        
+        // Salvar na Nuvem
+        if (window.usuarioLogado) {
+            await salvarNaNuvem();
+        }
+    }
+
+    // ----------------------------------------------------
+    // 3. FUNÇÕES GLOBAIS DE INTERFACE (Botões HTML chamam estas)
+    // ----------------------------------------------------
+
+    window.fazerLogout = () => {
+        if(confirm("Deseja realmente sair?")) {
+            signOut(auth).then(() => window.location.href = "login.html");
+        }
+    }
+
+    window.garantirMes = () => { 
+        if(!window.dadosPorMes[window.mesAtual]) window.dadosPorMes[window.mesAtual] = { receber: [], pagar: [] }; 
+    }
+    
+    window.formatar = (v) => { 
+        return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); 
+    }
+
+    window.atualizarLabelTopo = () => {
+        const select = document.getElementById('mes');
+        const texto = select.options[select.selectedIndex].text;
+        document.getElementById('labelMesAtivo').innerText = texto;
+    }
+
+    window.mudarMes = () => {
+        window.mesAtual = document.getElementById('mes').value;
+        localStorage.setItem('mesSelecionado', window.mesAtual);
+        if(document.getElementById('mesMobile')) document.getElementById('mesMobile').value = window.mesAtual;
+        atualizarLabelTopo(); render();
+    }
+
+    window.mudarMesMobile = () => {
+        window.mesAtual = document.getElementById('mesMobile').value;
+        document.getElementById('mes').value = window.mesAtual;
+        mudarMes(); document.getElementById('modalConfig').style.display = 'none';
+    }
+
+    window.abrirConfigMobile = () => { document.getElementById('modalConfig').style.display = 'flex'; }
+    window.fecharModalGeral = (e, id) => { if(e.target.id === id) e.target.style.display = 'none'; }
+    window.scrollToId = (id) => { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+    
+    window.toggleDarkMode = () => {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
+        atualizarGrafico();
+    }
+
+    // Slider Dicas
+    window.iniciarSliderDicas = function() {
+        const tipEl = document.getElementById('tipText');
+        if(!tipEl) return;
+        tipEl.innerHTML = dicasFinanceiras[dicaAtual];
+        
+        // Limpar intervalos antigos se houver
+        if(window.intervaloDicas) clearInterval(window.intervaloDicas);
+
+        window.intervaloDicas = setInterval(() => {
+            tipEl.classList.add('tip-hidden'); 
+            setTimeout(() => {
+                dicaAtual = (dicaAtual + 1) % dicasFinanceiras.length;
+                tipEl.innerHTML = dicasFinanceiras[dicaAtual];
+                tipEl.classList.remove('tip-hidden'); 
+            }, 500); 
+        }, 30000); 
+    }
+
+    // Funções de UI (Popups)
+    window.abrirFormularioMobile = () => { document.getElementById('areaFormulario').classList.add('mobile-popup'); }
+    window.fecharFormularioMobile = () => {
+        document.getElementById('areaFormulario').classList.remove('mobile-popup');
+        if(window.editandoIndex === null) {
+            document.getElementById('descricao').value = '';
+            document.getElementById('valor').value = '';
+        }
+    }
+
+    // Transação de Reserva Direta
+    window.realizarTransacaoReserva = (tipo) => {
+        const input = document.getElementById('inputValorReserva');
+        const valor = Number(input.value);
+        if(!valor || valor <= 0) { alert("Digite um valor válido."); return; }
+
+        const hoje = new Date().toISOString().split('T')[0];
+        window.garantirMes();
+
+        if(tipo === 'depositar') {
+            window.dadosPorMes[window.mesAtual].pagar.push({
+                descricao: 'Aporte Reserva', valor: valor, data: hoje, categoria: 'Reserva', marcado: true
+            });
+            window.categoriasExpandidas['pagar']['Reserva'] = true;
+        } else {
+             window.dadosPorMes[window.mesAtual].receber.push({
+                descricao: 'Resgate Reserva', valor: valor, data: hoje, categoria: 'Resgate Reserva', marcado: true
+            });
+            window.categoriasExpandidas['receber']['ResgateReserva'] = true;
+        }
+        window.salvar();
+        window.render();
+        window.abrirRelatorioCard('reserva');
+    }
+
+    // CRUD (Adicionar, Editar, Remover)
+    window.adicionar = () => {
+        const tipo = document.getElementById('tipo').value;
+        const descricao = document.getElementById('descricao').value;
+        const valor = Number(document.getElementById('valor').value);
+        const data = document.getElementById('data').value;
+        const categoria = document.getElementById('categoria').value;
+        
+        if(!descricao || !valor) return alert("Preencha descrição e valor");
+        window.garantirMes();
+        
+        const idSafe = categoria.replace(/[^a-zA-Z0-9]/g, '');
+        window.categoriasExpandidas[tipo][idSafe] = true; 
+        
+        const item = {descricao, valor, data, categoria, marcado: false};
+        if(window.editandoIndex !== null) { 
+            item.marcado = window.dadosPorMes[window.mesAtual][window.editandoTipo][window.editandoIndex].marcado; 
+            window.dadosPorMes[window.mesAtual][window.editandoTipo][window.editandoIndex] = item; 
+        } else { 
+            window.dadosPorMes[window.mesAtual][tipo].push(item); 
+        }
+        window.editandoIndex = null;
+        document.getElementById('btnSalvar').innerHTML = '<i class="fas fa-plus-circle"></i> Adicionar Lançamento';
+        document.getElementById('descricao').value = ''; document.getElementById('valor').value = '';
+        
+        window.salvar(); window.render();
+        window.fecharFormularioMobile();
+    }
+
+    window.prepararEdicao = (tipo, index) => {
+        window.editandoIndex = index; window.editandoTipo = tipo;
+        const item = window.dadosPorMes[window.mesAtual][tipo][index];
+        document.getElementById('tipo').value = tipo; 
+        document.getElementById('descricao').value = item.descricao;
+        document.getElementById('valor').value = item.valor; 
+        document.getElementById('data').value = item.data; 
+        document.getElementById('categoria').value = item.categoria;
+        document.getElementById('btnSalvar').innerHTML = '<i class="fas fa-save"></i> Salvar Alteração'; 
+        
+        const isMobile = window.innerWidth <= 1024;
+        if(isMobile) window.abrirFormularioMobile();
+        else window.scrollToId('areaFormulario');
+    }
+
+    window.remover = (tipo, i) => { 
+        if(confirm("Excluir?")){ 
+            window.dadosPorMes[window.mesAtual][tipo].splice(i,1); 
+            window.salvar(); window.render(); 
+        } 
+    }
+    
+    window.toggle = (tipo, i) => { 
+        window.dadosPorMes[window.mesAtual][tipo][i].marcado = !window.dadosPorMes[window.mesAtual][tipo][i].marcado; 
+        window.salvar(); window.render(); 
+    }
+
+    window.toggleCategoriaRow = (tipo, idSafe) => {
+        window.categoriasExpandidas[tipo][idSafe] = !window.categoriasExpandidas[tipo][idSafe];
+        window.render(); 
+    }
+
+    window.calcularTotalReservaAcumulado = () => {
+        let total = 0;
+        Object.keys(window.dadosPorMes).forEach(mesKey => {
+            const mesDados = window.dadosPorMes[mesKey];
+            if(mesDados.pagar) {
+                mesDados.pagar.forEach(i => { if(i.marcado && i.categoria === 'Reserva') total += i.valor; });
+            }
+            if(mesDados.receber) {
+                mesDados.receber.forEach(i => { if(i.marcado && i.categoria === 'Resgate Reserva') total -= i.valor; });
+            }
         });
+        return total;
+    }
+
+    // RENDERIZAÇÃO
+    window.render = () => {
+        window.garantirMes();
+        const tRec = document.getElementById('tabelaReceber'); 
+        const tPag = document.getElementById('tabelaPagar');
+        let totalRec = 0, totalPag = 0, urgente = false;
+        const hoje = new Date().toISOString().split('T')[0];
+
+        ['receber', 'pagar'].forEach(tipo => {
+            const categoriasGroup = {};
+            let pendentesTotaisDoTipo = 0;
+            
+            window.dadosPorMes[window.mesAtual][tipo].forEach((item, idx) => {
+                const itemWithIdx = {...item, idxOriginal: idx};
+                if (!categoriasGroup[item.categoria]) categoriasGroup[item.categoria] = { total: 0, items: [], pendentes: 0 };
+                
+                categoriasGroup[item.categoria].items.push(itemWithIdx);
+                categoriasGroup[item.categoria].total += item.valor;
+                
+                if(item.marcado) { 
+                    if(tipo === 'receber') totalRec += item.valor; else totalPag += item.valor; 
+                } else {
+                    categoriasGroup[item.categoria].pendentes++;
+                    pendentesTotaisDoTipo++;
+                }
+
+                const atrasado = (tipo === 'pagar' && !item.marcado && item.data && item.data < hoje);
+                if(atrasado) urgente = true;
+            });
+
+            const iconeTitulo = tipo === 'receber' ? '<i class="fas fa-arrow-down"></i>' : '<i class="fas fa-arrow-up"></i>';
+            const nomeTitulo = tipo === 'receber' ? 'Entradas' : 'Saídas';
+            const badgeTitulo = pendentesTotaisDoTipo > 0 ? `<span class="badge-pendente"><i class="fas fa-exclamation-circle"></i> ${pendentesTotaisDoTipo} pendente(s)</span>` : '';
+            
+            if (tipo === 'receber') document.getElementById('tituloReceber').innerHTML = `${iconeTitulo} ${nomeTitulo} ${badgeTitulo}`;
+            else document.getElementById('tituloPagar').innerHTML = `${iconeTitulo} ${nomeTitulo} ${badgeTitulo}`;
+
+            const catKeys = Object.keys(categoriasGroup).sort((a,b) => categoriasGroup[b].total - categoriasGroup[a].total);
+            let html = '';
+            
+            catKeys.forEach(cat => {
+                const idSafe = cat.replace(/[^a-zA-Z0-9]/g, '');
+                const isExpanded = window.categoriasExpandidas[tipo][idSafe] || false;
+                const displayRow = isExpanded ? 'table-row' : 'none';
+                const iconRot = isExpanded ? 'rotate(90deg)' : 'rotate(0deg)';
+                const corBorda = tipo === 'receber' ? 'var(--success)' : 'var(--danger)';
+                const badgeCategoria = categoriasGroup[cat].pendentes > 0 ? `<i class="fas fa-circle dot-pendente" title="Há itens pendentes"></i>` : '';
+
+                html += `
+                    <tr class="row-category" onclick="toggleCategoriaRow('${tipo}', '${idSafe}')" style="border-left: 3px solid ${corBorda};">
+                        <td style="font-weight:600; color:var(--text-dark);">
+                            <div class="cat-title-wrapper">
+                                <i class="fas fa-chevron-right" style="font-size:0.7rem; transition:0.3s; transform:${iconRot}"></i>
+                                <span>${cat}</span>
+                                <span style="font-size:0.75rem; color:var(--text-light); font-weight:normal;">(${categoriasGroup[cat].items.length})</span>
+                                ${badgeCategoria}
+                            </div>
+                        </td>
+                        <td style="font-weight:700; text-align:right;">${formatar(categoriasGroup[cat].total)}</td>
+                        <td></td><td></td><td></td>
+                    </tr>
+                `;
+
+                categoriasGroup[cat].items.sort((a,b) => (a.data > b.data ? 1 : -1));
+
+                categoriasGroup[cat].items.forEach(item => {
+                    const i = item.idxOriginal;
+                    const atrasado = (tipo === 'pagar' && !item.marcado && item.data && item.data < hoje);
+                    html += `
+                        <tr style="display:${displayRow}; background: rgba(0,0,0,0.01);">
+                            <td style="padding-left: 28px;">
+                                <span class="desc-text ${atrasado ? 'vencido' : ''}" style="font-size: 0.8rem; color: var(--text-light);">
+                                    ${atrasado ? '⚠️ ' : ''}${item.descricao}
+                                </span>
+                            </td>
+                            <td style="text-align:right; font-size:0.8rem;">${formatar(item.valor)}</td>
+                            <td style="font-size:0.8rem; text-align:center;">${item.data ? item.data.split('-').reverse().slice(0,2).join('/') : '-'}</td>
+                            <td style="text-align:center;"><input type="checkbox" class="custom-check" ${item.marcado ? 'checked' : ''} onclick="toggle('${tipo}', ${i})"></td>
+                            <td style="text-align:right;">
+                                <button class="btn-action btn-edit" onclick="prepararEdicao('${tipo}', ${i})"><i class="fas fa-pen"></i></button>
+                                <button class="btn-action btn-del" onclick="remover('${tipo}', ${i})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+
+            if(tipo === 'receber') tRec.innerHTML = html; else tPag.innerHTML = html;
+        });
+
+        const totalReservaAcumulado = window.calcularTotalReservaAcumulado();
+        document.getElementById('bannerAlerta').style.display = urgente ? 'block' : 'none';
+        animarValor('totalRecebido', totalRec); 
+        animarValor('totalPago', totalPag); 
+        animarValor('totalReserva', totalReservaAcumulado); 
+        animarValor('saldo', totalRec - totalPag);
+        atualizarGrafico();
+    }
+
+    let chartSidebar = null; let chartMobile = null;
+    window.atualizarGrafico = () => {
+        const resumo = {}; 
+        window.dadosPorMes[window.mesAtual].pagar.forEach(item => { if(item.marcado) resumo[item.categoria] = (resumo[item.categoria] || 0) + item.valor; });
+        const chartConfig = { type: 'doughnut', data: { labels: Object.keys(resumo), datasets: [{ data: Object.values(resumo), backgroundColor: ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#14b8a6'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { let label = context.label || ''; if (label) label += ': '; if (context.raw !== null) label += context.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); return label; } } } } } };
+
+        const ctxSide = document.getElementById('graficoSidebar'); if(chartSidebar) chartSidebar.destroy();
+        if(ctxSide && Object.keys(resumo).length > 0) chartSidebar = new Chart(ctxSide, chartConfig);
+
+        const ctxMob = document.getElementById('graficoMobile'); if(chartMobile) chartMobile.destroy();
+        if(ctxMob && Object.keys(resumo).length > 0) chartMobile = new Chart(ctxMob, chartConfig);
+    }
+    
+    // Configurações de Mensagens
+    const msgsCategoria = {
+        'Filho': "Os gastos com os pequenos estão no topo! Cuidar deles é prioridade.",
+        'Supermercado': "O supermercado levou a maior fatia do orçamento. Fazer uma lista rigorosa ajuda!",
+        'Alimentação': "Comer fora ou pedir delivery pesou bastante. Tente cozinhar mais em casa.",
+        'Lazer': "Você curtiu bastante esse mês! Defina um teto máximo para o lazer.",
+        'Transporte': "Gastos com transporte estão altos. Avalie rotas ou alternativas.",
+        'Saúde': "A saúde cobrou seu preço. Lembre-se que bem-estar é investimento.",
+        'Moradia': "Sua casa é o maior custo. Revise planos de internet e energia.",
+        'Credito': "Cuidado com o cartão de crédito e juros!",
+        'Assinaturas': "Muitos streamings? Cancele o que não usa.",
+        'default': "Fique de olho nesta categoria! Ela foi a campeã de gastos."
+    };
+
+    window.abrirRelatorioCard = (tipo) => {
+        window.garantirMes();
+        const corpo = document.getElementById('corpoRelatorio');
+        const titulo = document.getElementById('modalRelatorioTitulo');
+        corpo.innerHTML = '';
         
-    } else if (tipo === 'pagar') {
-        titulo.innerText = "🔴 Resumo de Saídas";
-        const totaisCat = {};
-        const pagos = dadosPorMes[mesAtual].pagar.filter(i => i.marcado);
-        pagos.forEach(i => { total += i.valor; totaisCat[i.categoria] = (totaisCat[i.categoria] || 0) + i.valor; });
-
-        let topCat = ''; let maxVal = 0;
-        for(let c in totaisCat) { if(totaisCat[c] > maxVal) { maxVal = totaisCat[c]; topCat = c; } }
-        let msgPersonalizada = msgsCategoria[topCat] || msgsCategoria['default'];
-
-        if (maxVal > 0) {
+        let total = 0;
+        
+        if (tipo === 'receber') {
+            titulo.innerText = "🟢 Resumo de Recebimentos";
+            const recebidos = window.dadosPorMes[window.mesAtual].receber.filter(i => i.marcado);
+            recebidos.forEach(i => total += i.valor);
+            
             corpo.innerHTML += `
-                <div class="insight-card" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);">
-                    <div class="insight-icon" style="background: var(--danger); color: white;"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="insight-card" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
+                    <div class="insight-icon" style="background: var(--success); color: white;"><i class="fas fa-hand-holding-usd"></i></div>
                     <div>
-                        <h4 style="margin:0; color: var(--text-dark);">Maior Gasto: ${topCat}</h4>
+                        <h4 style="margin:0; color: var(--text-dark);">Mandou muito bem!</h4>
                         <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: var(--text-light);">
-                            Você gastou <strong>${formatar(maxVal)}</strong> com isso.<br> ${msgPersonalizada}
+                            Você já garantiu <strong>${formatar(total)}</strong> neste mês. Continue focando em aumentar suas fontes de renda!
                         </p>
                     </div>
                 </div>
+                <h4 style="margin-bottom:10px; color: var(--text-light); text-transform:uppercase; font-size:0.8rem;">Todas as Entradas Realizadas</h4>
+            `;
+            recebidos.forEach(item => {
+                const data = item.data ? item.data.split('-').reverse().join('/') : '-';
+                corpo.innerHTML += `<div class="item-list"><span>${data} - ${item.descricao}</span><span style="font-weight:bold; color:var(--success)">${formatar(item.valor)}</span></div>`;
+            });
+            
+        } else if (tipo === 'pagar') {
+            titulo.innerText = "🔴 Resumo de Saídas";
+            const totaisCat = {};
+            const pagos = window.dadosPorMes[window.mesAtual].pagar.filter(i => i.marcado);
+            pagos.forEach(i => { total += i.valor; totaisCat[i.categoria] = (totaisCat[i.categoria] || 0) + i.valor; });
+
+            let topCat = ''; let maxVal = 0;
+            for(let c in totaisCat) { if(totaisCat[c] > maxVal) { maxVal = totaisCat[c]; topCat = c; } }
+            let msgPersonalizada = msgsCategoria[topCat] || msgsCategoria['default'];
+
+            if (maxVal > 0) {
+                corpo.innerHTML += `
+                    <div class="insight-card" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);">
+                        <div class="insight-icon" style="background: var(--danger); color: white;"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div>
+                            <h4 style="margin:0; color: var(--text-dark);">Maior Gasto: ${topCat}</h4>
+                            <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: var(--text-light);">
+                                Você gastou <strong>${formatar(maxVal)}</strong> com isso.<br> ${msgPersonalizada}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+            corpo.innerHTML += `<h4 style="margin-bottom:10px; color: var(--text-light); text-transform:uppercase; font-size:0.8rem;">Todas as Saídas Realizadas</h4>`;
+            pagos.forEach(item => {
+                 const data = item.data ? item.data.split('-').reverse().join('/') : '-';
+                 corpo.innerHTML += `<div class="item-list"><span>${data} - ${item.descricao}</span><span style="font-weight:bold; color:var(--danger)">${formatar(item.valor)}</span></div>`;
+            });
+            
+        } else if (tipo === 'reserva') {
+            titulo.innerText = "💰 Detalhes da Reserva";
+            const totalAcumulado = window.calcularTotalReservaAcumulado();
+            let aportesMes = 0; window.dadosPorMes[window.mesAtual].pagar.filter(i => i.marcado && i.categoria === 'Reserva').forEach(i => aportesMes += i.valor);
+            let resgatesMes = 0; window.dadosPorMes[window.mesAtual].receber.filter(i => i.marcado && i.categoria === 'Resgate Reserva').forEach(i => resgatesMes += i.valor);
+
+            corpo.innerHTML += `
+                <div class="insight-card" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);">
+                    <div class="insight-icon" style="background: var(--warning); color: white;"><i class="fas fa-piggy-bank"></i></div>
+                    <div>
+                        <h4 style="margin:0; color: var(--text-dark);">Saldo Total Guardado</h4>
+                        <p style="margin: 5px 0 0 0; font-size: 1.2rem; font-weight:bold; color: var(--warning);">
+                            ${formatar(totalAcumulado)}
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.03); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed rgba(0,0,0,0.1);">
+                    <label style="display:block; margin-bottom:5px; font-weight:600; font-size:0.9rem;">Nova Movimentação</label>
+                    <input id="inputValorReserva" type="number" placeholder="Valor (R$)" style="margin-bottom: 10px;">
+                    <div style="display: flex; gap: 10px;">
+                         <button class="btn-green" onclick="realizarTransacaoReserva('depositar')"><i class="fas fa-plus-circle"></i> Guardar</button>
+                         <button class="btn-red" onclick="realizarTransacaoReserva('sacar')"><i class="fas fa-minus-circle"></i> Resgatar</button>
+                    </div>
+                </div>
+                
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; padding:10px; background:var(--glass-bg); border-radius:8px;">
+                     <span>Movimentação do Mês:</span>
+                     <span style="font-weight:bold;">+${formatar(aportesMes)} / -${formatar(resgatesMes)}</span>
+                </div>
+            `;
+
+        } else if (tipo === 'saldo') {
+            titulo.innerText = "⚖️ Balanço Disponível";
+            let totalRec = 0; window.dadosPorMes[window.mesAtual].receber.filter(i=>i.marcado).forEach(i=>totalRec += i.valor);
+            let totalPag = 0; window.dadosPorMes[window.mesAtual].pagar.filter(i=>i.marcado).forEach(i=>totalPag += i.valor);
+            let saldoFinal = totalRec - totalPag;
+            const reservaTotal = window.calcularTotalReservaAcumulado();
+
+            corpo.innerHTML += `
+                <div style="background: var(--card-bg); border-radius: 12px; padding: 15px; border: 1px solid var(--border-color);">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <span>Saldo Disponível (Carteira):</span> <span style="font-weight:bold; font-size:1.1rem; color:var(--info)">${formatar(saldoFinal)}</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:10px;">
+                        <span>Guardado na Reserva:</span> <span style="font-weight:bold; color:var(--warning)">${formatar(reservaTotal)}</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:1.2rem; font-weight:bold;">
+                        <span>Patrimônio Total:</span> <span style="color:var(--success)">${formatar(saldoFinal + reservaTotal)}</span>
+                    </div>
+                    <p style="font-size:0.8rem; color:var(--text-light); text-align:center; margin-top:10px;">* O saldo disponível já teve os valores da reserva descontados.</p>
+                </div>
             `;
         }
-        corpo.innerHTML += `<h4 style="margin-bottom:10px; color: var(--text-light); text-transform:uppercase; font-size:0.8rem;">Todas as Saídas Realizadas</h4>`;
-        pagos.forEach(item => {
-             const data = item.data ? item.data.split('-').reverse().join('/') : '-';
-             corpo.innerHTML += `<div class="item-list"><span>${data} - ${item.descricao}</span><span style="font-weight:bold; color:var(--danger)">${formatar(item.valor)}</span></div>`;
-        });
-        
-    } else if (tipo === 'reserva') {
-        titulo.innerText = "💰 Detalhes da Reserva";
-        const totalAcumulado = calcularTotalReservaAcumulado();
-        let aportesMes = 0; dadosPorMes[mesAtual].pagar.filter(i => i.marcado && i.categoria === 'Reserva').forEach(i => aportesMes += i.valor);
-        let resgatesMes = 0; dadosPorMes[mesAtual].receber.filter(i => i.marcado && i.categoria === 'Resgate Reserva').forEach(i => resgatesMes += i.valor);
-
-        corpo.innerHTML += `
-            <div class="insight-card" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);">
-                <div class="insight-icon" style="background: var(--warning); color: white;"><i class="fas fa-piggy-bank"></i></div>
-                <div>
-                    <h4 style="margin:0; color: var(--text-dark);">Saldo Total Guardado</h4>
-                    <p style="margin: 5px 0 0 0; font-size: 1.2rem; font-weight:bold; color: var(--warning);">
-                        ${formatar(totalAcumulado)}
-                    </p>
-                </div>
-            </div>
-
-            <div style="background: rgba(0,0,0,0.03); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed rgba(0,0,0,0.1);">
-                <label style="display:block; margin-bottom:5px; font-weight:600; font-size:0.9rem;">Nova Movimentação</label>
-                <input id="inputValorReserva" type="number" placeholder="Valor (R$)" style="margin-bottom: 10px;">
-                <div style="display: flex; gap: 10px;">
-                     <button class="btn-green" onclick="realizarTransacaoReserva('depositar')"><i class="fas fa-plus-circle"></i> Guardar</button>
-                     <button class="btn-red" onclick="realizarTransacaoReserva('sacar')"><i class="fas fa-minus-circle"></i> Resgatar</button>
-                </div>
-            </div>
-            
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px; padding:10px; background:var(--glass-bg); border-radius:8px;">
-                 <span>Movimentação do Mês:</span>
-                 <span style="font-weight:bold;">+${formatar(aportesMes)} / -${formatar(resgatesMes)}</span>
-            </div>
-        `;
-
-    } else if (tipo === 'saldo') {
-        titulo.innerText = "⚖️ Balanço Disponível";
-        let totalRec = 0; dadosPorMes[mesAtual].receber.filter(i=>i.marcado).forEach(i=>totalRec += i.valor);
-        let totalPag = 0; dadosPorMes[mesAtual].pagar.filter(i=>i.marcado).forEach(i=>totalPag += i.valor);
-        let saldoFinal = totalRec - totalPag;
-        const reservaTotal = calcularTotalReservaAcumulado();
-
-        corpo.innerHTML += `
-            <div style="background: var(--card-bg); border-radius: 12px; padding: 15px; border: 1px solid var(--border-color);">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <span>Saldo Disponível (Carteira):</span> <span style="font-weight:bold; font-size:1.1rem; color:var(--info)">${formatar(saldoFinal)}</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:10px;">
-                    <span>Guardado na Reserva:</span> <span style="font-weight:bold; color:var(--warning)">${formatar(reservaTotal)}</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:1.2rem; font-weight:bold;">
-                    <span>Patrimônio Total:</span> <span style="color:var(--success)">${formatar(saldoFinal + reservaTotal)}</span>
-                </div>
-                <p style="font-size:0.8rem; color:var(--text-light); text-align:center; margin-top:10px;">* O saldo disponível já teve os valores da reserva descontados.</p>
-            </div>
-        `;
+        document.getElementById('modalRelatorio').style.display = 'flex';
     }
-    document.getElementById('modalRelatorio').style.display = 'flex';
-}
 
-function gerarRelatorioDiario() {
-    garantirMes();
-    let totalEntradasOk = 0, totalSaidasOk = 0, totalEntradasGeral = 0, totalSaidasGeral = 0;
-    dadosPorMes[mesAtual].receber.forEach(item => { totalEntradasGeral += item.valor; if (item.marcado) totalEntradasOk += item.valor; });
-    dadosPorMes[mesAtual].pagar.forEach(item => { totalSaidasGeral += item.valor; if (item.marcado) totalSaidasOk += item.valor; });
+    window.gerarRelatorioDiario = () => {
+        window.garantirMes();
+        let totalEntradasOk = 0, totalSaidasOk = 0, totalEntradasGeral = 0, totalSaidasGeral = 0;
+        window.dadosPorMes[window.mesAtual].receber.forEach(item => { totalEntradasGeral += item.valor; if (item.marcado) totalEntradasOk += item.valor; });
+        window.dadosPorMes[window.mesAtual].pagar.forEach(item => { totalSaidasGeral += item.valor; if (item.marcado) totalSaidasOk += item.valor; });
 
-    const saldoGeral = totalEntradasGeral - totalSaidasGeral; 
-    const diferencaOk = totalEntradasOk - totalSaidasOk; 
-    const corBalanco = saldoGeral >= 0 ? '#10b981' : '#ef4444'; const corRealizado = diferencaOk >= 0 ? '#10b981' : '#ef4444'; 
+        const saldoGeral = totalEntradasGeral - totalSaidasGeral; 
+        const diferencaOk = totalEntradasOk - totalSaidasOk; 
+        const corBalanco = saldoGeral >= 0 ? '#10b981' : '#ef4444'; const corRealizado = diferencaOk >= 0 ? '#10b981' : '#ef4444'; 
 
-    let msgMotivacional = "";
-    if (diferencaOk > 2000) msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente.";
-    else if (diferencaOk > 500) msgMotivacional = "👏 <strong>No Azul!</strong> Você tem dinheiro sobrando.";
-    else if (diferencaOk > 0) msgMotivacional = "😅 <strong>Positivo, mas cuidado!</strong>";
-    else msgMotivacional = "⚠️ <strong>Alerta de Caixa!</strong>";
+        let msgMotivacional = "";
+        if (diferencaOk > 2000) msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente.";
+        else if (diferencaOk > 500) msgMotivacional = "👏 <strong>No Azul!</strong> Você tem dinheiro sobrando.";
+        else if (diferencaOk > 0) msgMotivacional = "😅 <strong>Positivo, mas cuidado!</strong>";
+        else msgMotivacional = "⚠️ <strong>Alerta de Caixa!</strong>";
 
-    const corpo = document.getElementById('corpoRelatorio');
-    document.getElementById('modalRelatorioTitulo').innerText = "📊 Relatório Financeiro Global";
+        const corpo = document.getElementById('corpoRelatorio');
+        document.getElementById('modalRelatorioTitulo').innerText = "📊 Relatório Financeiro Global";
+        
+        corpo.innerHTML = `
+            <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corBalanco}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
+                <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">📊 Previsão Geral (Lançado)</h4>
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px;">
+                    <span>Total Lançado:</span><span style="font-weight: bold;">${formatar(totalEntradasGeral)}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px;">
+                    <span>Saídas Lançadas:</span><span style="font-weight: bold; color: var(--danger);">${formatar(totalSaidasGeral)}</span>
+                </div>
+                <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 8px; display: flex; justify-content: space-between; font-weight: bold;">
+                    <span>Saldo Final Previsto:</span><span style="color: ${corBalanco}">${formatar(saldoGeral)}</span>
+                </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
+                <h4 style="margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">💡 Realizado até agora (Pago/Recebido)</h4>
+                <p style="margin: 0; font-size: 0.95rem; color: var(--text-dark);">
+                    ${diferencaOk >= 0 ? '✅ Seu caixa está positivo em ' : '⚠️ Você gastou ' + formatar(Math.abs(diferencaOk)) + ' a mais do que recebeu '} 
+                    <strong>${formatar(diferencaOk)}</strong>.
+                </p>
+            </div>
+            <div style="background: ${corRealizado}15; border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <p style="margin: 0; font-size: 0.9rem; color: var(--text-dark); line-height: 1.4;">${msgMotivacional}</p>
+            </div>
+        `;
+        document.getElementById('modalRelatorio').style.display = 'flex';
+    }
+
+    window.exportarDados = () => { const blob = new Blob([JSON.stringify(window.dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_blush.json"; a.click(); }
+    window.importarDados = (e) => { const reader = new FileReader(); reader.onload = (ev) => { window.dadosPorMes = JSON.parse(ev.target.result); window.salvar(); window.render(); alert("Restaurado!"); }; reader.readAsText(e.target.files[0]); }
     
-    corpo.innerHTML = `
-        <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corBalanco}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
-            <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">📊 Previsão Geral (Lançado)</h4>
-            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px;">
-                <span>Total Lançado:</span><span style="font-weight: bold;">${formatar(totalEntradasGeral)}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px;">
-                <span>Saídas Lançadas:</span><span style="font-weight: bold; color: var(--danger);">${formatar(totalSaidasGeral)}</span>
-            </div>
-            <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 8px; display: flex; justify-content: space-between; font-weight: bold;">
-                <span>Saldo Final Previsto:</span><span style="color: ${corBalanco}">${formatar(saldoGeral)}</span>
-            </div>
-        </div>
-        <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
-            <h4 style="margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">💡 Realizado até agora (Pago/Recebido)</h4>
-            <p style="margin: 0; font-size: 0.95rem; color: var(--text-dark);">
-                ${diferencaOk >= 0 ? '✅ Seu caixa está positivo em ' : '⚠️ Você gastou ' + formatar(Math.abs(diferencaOk)) + ' a mais do que recebeu '} 
-                <strong>${formatar(diferencaOk)}</strong>.
-            </p>
-        </div>
-        <div style="background: ${corRealizado}15; border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
-            <p style="margin: 0; font-size: 0.9rem; color: var(--text-dark); line-height: 1.4;">${msgMotivacional}</p>
-        </div>
-    `;
-    document.getElementById('modalRelatorio').style.display = 'flex';
-}
+    // Resize Listener
+    window.onresize = () => {
+       const isMobile = window.innerWidth <= 1024;
+       document.getElementById('navMobile').style.display = isMobile ? 'flex' : 'none';
+       document.querySelector('.sidebar').classList.toggle('d-lg-flex', !isMobile);
+    }
 
-function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_blush.json"; a.click(); }
-function importarDados(e) { const reader = new FileReader(); reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); alert("Restaurado!"); }; reader.readAsText(e.target.files[0]); }
 </script>
 </body>
 </html>

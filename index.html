@@ -150,7 +150,7 @@
   .btn-edit { color: var(--warning); background: rgba(245, 158, 11, 0.1); }
   .btn-del { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
   
-  /* Botões específicos do modal de reserva */
+  /* Botões de ação rápida no relatório */
   .btn-green { background: var(--success); color: white; width: 100%; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
   .btn-red { background: var(--danger); color: white; width: 100%; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
 
@@ -414,21 +414,6 @@
   <div style="height: 50px;"></div> 
 </main>
 
-<div id="modalOperacaoReserva" class="modal-overlay" onclick="fecharModalGeral(event, 'modalOperacaoReserva')">
-    <div class="modal-content" style="max-width: 350px;">
-        <div class="modal-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-            <h3 style="margin:0" id="tituloOpReserva">Operação</h3>
-            <button onclick="document.getElementById('modalOperacaoReserva').style.display='none'" style="background:none; border:none; color:white; font-size:1.2rem;">✕</button>
-        </div>
-        <div class="modal-body">
-            <label>Valor (R$)</label>
-            <input type="number" id="valorOpReserva" placeholder="0,00" style="font-size: 1.2rem; margin-bottom: 20px;">
-            <input type="hidden" id="tipoOpReserva">
-            <button class="btn-primary" onclick="confirmarOpReserva()" style="background: #f59e0b; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">Confirmar</button>
-        </div>
-    </div>
-</div>
-
 <nav class="bottom-nav" id="navMobile">
   <button class="nav-btn" onclick="scrollToId('top')">
     <i class="fas fa-home"></i> <span>Início</span>
@@ -620,30 +605,20 @@ function fecharFormularioMobile() {
     }
 }
 
-// === NOVA LÓGICA DE OPERAÇÃO RÁPIDA DA RESERVA ===
-function operarReserva(acao) {
-    document.getElementById('modalOperacaoReserva').style.display = 'flex';
-    document.getElementById('tipoOpReserva').value = acao;
-    document.getElementById('valorOpReserva').value = '';
+// === FUNÇÃO DE TRANSAÇÃO RÁPIDA DENTRO DO RELATÓRIO ===
+function realizarTransacaoReserva(tipo) {
+    const input = document.getElementById('inputValorReserva');
+    const valor = Number(input.value);
     
-    if(acao === 'depositar') {
-        document.getElementById('tituloOpReserva').innerHTML = '<i class="fas fa-plus-circle"></i> Guardar na Reserva';
-    } else {
-        document.getElementById('tituloOpReserva').innerHTML = '<i class="fas fa-minus-circle"></i> Resgatar da Reserva';
+    if(!valor || valor <= 0) {
+        alert("Digite um valor válido.");
+        return;
     }
-}
 
-function confirmarOpReserva() {
-    const valor = Number(document.getElementById('valorOpReserva').value);
-    const acao = document.getElementById('tipoOpReserva').value;
-    
-    if(!valor || valor <= 0) return alert("Valor inválido");
-    
-    garantirMes();
-    
     const hoje = new Date().toISOString().split('T')[0];
-    
-    if(acao === 'depositar') {
+    garantirMes();
+
+    if(tipo === 'depositar') {
         dadosPorMes[mesAtual].pagar.push({
             descricao: 'Aporte Reserva',
             valor: valor,
@@ -653,7 +628,7 @@ function confirmarOpReserva() {
         });
         categoriasExpandidas['pagar']['Reserva'] = true;
     } else {
-        dadosPorMes[mesAtual].receber.push({
+         dadosPorMes[mesAtual].receber.push({
             descricao: 'Resgate Reserva',
             valor: valor,
             data: hoje,
@@ -662,14 +637,14 @@ function confirmarOpReserva() {
         });
         categoriasExpandidas['receber']['ResgateReserva'] = true;
     }
-    
-    salvar();
-    render();
-    document.getElementById('modalOperacaoReserva').style.display = 'none';
-    
-    alert(acao === 'depositar' ? 'Dinheiro guardado! Saiu do seu saldo disponível.' : 'Dinheiro resgatado! Voltou para o saldo disponível.');
-}
 
+    salvar();
+    render(); // Atualiza os dados de fundo
+    abrirRelatorioCard('reserva'); // Recarrega o modal para mostrar saldo atualizado
+    
+    // Feedback visual opcional
+    // alert(tipo === 'depositar' ? "Guardado com sucesso!" : "Resgatado com sucesso!");
+}
 
 function adicionar(){
     const tipo = document.getElementById('tipo').value;
@@ -936,9 +911,13 @@ function abrirRelatorioCard(tipo) {
                 </div>
             </div>
 
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                 <button class="btn-green" onclick="operarReserva('depositar')"><i class="fas fa-plus-circle"></i> Guardar</button>
-                 <button class="btn-red" onclick="operarReserva('sacar')"><i class="fas fa-minus-circle"></i> Resgatar</button>
+            <div style="background: rgba(0,0,0,0.03); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed rgba(0,0,0,0.1);">
+                <label style="display:block; margin-bottom:5px; font-weight:600; font-size:0.9rem;">Nova Movimentação</label>
+                <input id="inputValorReserva" type="number" placeholder="Valor (R$)" style="margin-bottom: 10px;">
+                <div style="display: flex; gap: 10px;">
+                     <button class="btn-green" onclick="realizarTransacaoReserva('depositar')"><i class="fas fa-plus-circle"></i> Guardar</button>
+                     <button class="btn-red" onclick="realizarTransacaoReserva('sacar')"><i class="fas fa-minus-circle"></i> Resgatar</button>
+                </div>
             </div>
             
             <div style="display:flex; justify-content:space-between; margin-bottom:10px; padding:10px; background:var(--glass-bg); border-radius:8px;">

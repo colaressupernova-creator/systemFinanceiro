@@ -69,14 +69,24 @@
   .sidebar:hover { width: 280px; }
   body.dark-mode .sidebar { background: rgba(15, 23, 42, 0.8); }
 
+  /* LOGO AJUSTADO PARA ALINHAR COM ÍCONES */
   .logo { 
-    height: 40px; margin-bottom: 20px; display: flex; align-items: center;
-    overflow: hidden: 60px; white-space: nowrap; color: #000000;
-    font-size: 1.3rem; font-weight: 700;
+    padding: 12px; /* Mesmo padding dos botões */
+    margin-bottom: 25px; 
+    display: flex; 
+    align-items: center;
+    overflow: hidden; 
+    white-space: nowrap; 
+    color: #000000;
+    font-size: 1.3rem; 
+    font-weight: 700;
   }
   .logo img {
-    height: 60px; width: auto; min-height: 40px; min-width: 40px;
-    object-fit: contain; margin-right: 15px;
+    height: 28px; /* Altura visual próxima aos ícones de fonte */
+    width: auto; 
+    min-width: 25px; /* Mesma largura mínima do ícone .btn-outline i */
+    object-fit: contain; 
+    margin-right: 10px; /* Mesma margem dos ícones */
   }
   .logo span { opacity: 0; transition: 0.3s; transform: translateX(-10px); display: inline-block; }
   .sidebar:hover .logo span { opacity: 1; transform: translateX(0); }

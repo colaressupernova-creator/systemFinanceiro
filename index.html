@@ -115,7 +115,6 @@
   .card-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); }
   .card-danger { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3); }
   .card-primary { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3); }
-  /* Novo Card Reserva */
   .card-reserva { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3); }
 
   /* Alterado para Grid 4 */
@@ -130,15 +129,14 @@
     .grid-4, .grid-2 { grid-template-columns: 1fr; gap: 15px; } /* Mobile vira 1 coluna */
   }
 
-  /* INPUTS - CORREÇÃO DARK MODE */
+  /* INPUTS */
   input, select { width: 100%; padding: 12px 15px; border: 1px solid rgba(255,255,255,0.4); border-radius: 12px; font-size: 0.95rem; background: var(--input-bg); color: var(--text-dark); outline: none; transition: 0.3s; font-family: 'Poppins', sans-serif; }
   input:focus, select:focus { background: rgba(255,255,255,0.9); border-color: #a855f7; box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2); }
   select option { background-color: #ffffff; color: #1e293b; }
   
-  /* Fix Específico para Dark Mode nos Inputs */
   body.dark-mode input, body.dark-mode select {
-    background-color: #1e293b !important; /* Fundo Sólido Escuro */
-    color: #ffffff !important; /* Texto Branco */
+    background-color: #1e293b !important;
+    color: #ffffff !important;
     border-color: rgba(255,255,255,0.2);
   }
   body.dark-mode select option { background-color: #1e293b; color: #f1f5f9; }
@@ -151,6 +149,10 @@
   .btn-action { width: 32px; height: 32px; padding: 0; border-radius: 8px; font-size: 0.9rem; margin-left: 2px; }
   .btn-edit { color: var(--warning); background: rgba(245, 158, 11, 0.1); }
   .btn-del { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
+  
+  /* Botões específicos do modal de reserva */
+  .btn-green { background: var(--success); color: white; width: 100%; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+  .btn-red { background: var(--danger); color: white; width: 100%; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
 
   .perfil-avatar { width: 45px; height: 45px; border-radius: 50%; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; background: #e2e8f0; }
   .perfil-avatar:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3); border-color: #a855f7; }
@@ -322,14 +324,14 @@
     <div class="card dash-card card-reserva" onclick="abrirRelatorioCard('reserva')">
       <span class="click-hint"><i class="fas fa-search"></i> Detalhes</span>
       <i class="fas fa-piggy-bank dash-bg-icon"></i>
-      <label>Reserva</label>
+      <label>Reserva (Total)</label>
       <div class="dash-value" id="totalReserva">R$ 0,00</div>
     </div>
 
     <div class="card dash-card card-primary" onclick="abrirRelatorioCard('saldo')">
       <span class="click-hint"><i class="fas fa-search"></i> Resumo</span>
       <i class="fas fa-wallet dash-bg-icon"></i>
-      <label>Saldo</label>
+      <label>Saldo Disponível</label>
       <div class="dash-value" id="saldo">R$ 0,00</div>
     </div>
   </div>
@@ -370,6 +372,7 @@
                 <option value="Vale Alimentação">💳 Vale Alimentação</option>
                 <option value="Mensalidades">💪 Mensalidades</option>
                 <option value="Reserva">🧾 Reserva (Envia p/ Card)</option>
+                <option value="Resgate Reserva">💰 Resgate Reserva</option>
                 <option value="Salário">💰 Salário</option>
                 <option value="Outros">⚙️ Outros</option>
             </select>
@@ -410,6 +413,21 @@
 
   <div style="height: 50px;"></div> 
 </main>
+
+<div id="modalOperacaoReserva" class="modal-overlay" onclick="fecharModalGeral(event, 'modalOperacaoReserva')">
+    <div class="modal-content" style="max-width: 350px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <h3 style="margin:0" id="tituloOpReserva">Operação</h3>
+            <button onclick="document.getElementById('modalOperacaoReserva').style.display='none'" style="background:none; border:none; color:white; font-size:1.2rem;">✕</button>
+        </div>
+        <div class="modal-body">
+            <label>Valor (R$)</label>
+            <input type="number" id="valorOpReserva" placeholder="0,00" style="font-size: 1.2rem; margin-bottom: 20px;">
+            <input type="hidden" id="tipoOpReserva">
+            <button class="btn-primary" onclick="confirmarOpReserva()" style="background: #f59e0b; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">Confirmar</button>
+        </div>
+    </div>
+</div>
 
 <nav class="bottom-nav" id="navMobile">
   <button class="nav-btn" onclick="scrollToId('top')">
@@ -596,13 +614,62 @@ function abrirFormularioMobile() {
 function fecharFormularioMobile() {
     const form = document.getElementById('areaFormulario');
     form.classList.remove('mobile-popup');
-    
-    // Se não estiver editando, limpa os campos ao fechar
     if(editandoIndex === null) {
         document.getElementById('descricao').value = '';
         document.getElementById('valor').value = '';
     }
 }
+
+// === NOVA LÓGICA DE OPERAÇÃO RÁPIDA DA RESERVA ===
+function operarReserva(acao) {
+    document.getElementById('modalOperacaoReserva').style.display = 'flex';
+    document.getElementById('tipoOpReserva').value = acao;
+    document.getElementById('valorOpReserva').value = '';
+    
+    if(acao === 'depositar') {
+        document.getElementById('tituloOpReserva').innerHTML = '<i class="fas fa-plus-circle"></i> Guardar na Reserva';
+    } else {
+        document.getElementById('tituloOpReserva').innerHTML = '<i class="fas fa-minus-circle"></i> Resgatar da Reserva';
+    }
+}
+
+function confirmarOpReserva() {
+    const valor = Number(document.getElementById('valorOpReserva').value);
+    const acao = document.getElementById('tipoOpReserva').value;
+    
+    if(!valor || valor <= 0) return alert("Valor inválido");
+    
+    garantirMes();
+    
+    const hoje = new Date().toISOString().split('T')[0];
+    
+    if(acao === 'depositar') {
+        dadosPorMes[mesAtual].pagar.push({
+            descricao: 'Aporte Reserva',
+            valor: valor,
+            data: hoje,
+            categoria: 'Reserva',
+            marcado: true
+        });
+        categoriasExpandidas['pagar']['Reserva'] = true;
+    } else {
+        dadosPorMes[mesAtual].receber.push({
+            descricao: 'Resgate Reserva',
+            valor: valor,
+            data: hoje,
+            categoria: 'Resgate Reserva',
+            marcado: true
+        });
+        categoriasExpandidas['receber']['ResgateReserva'] = true;
+    }
+    
+    salvar();
+    render();
+    document.getElementById('modalOperacaoReserva').style.display = 'none';
+    
+    alert(acao === 'depositar' ? 'Dinheiro guardado! Saiu do seu saldo disponível.' : 'Dinheiro resgatado! Voltou para o saldo disponível.');
+}
+
 
 function adicionar(){
     const tipo = document.getElementById('tipo').value;
@@ -625,8 +692,6 @@ function adicionar(){
     document.getElementById('descricao').value = ''; document.getElementById('valor').value = '';
     
     salvar(); render();
-    
-    // FECHA O POPUP MOBILE APÓS SALVAR
     fecharFormularioMobile();
 }
 
@@ -637,13 +702,9 @@ function prepararEdicao(tipo, index){
     document.getElementById('valor').value = item.valor; document.getElementById('data').value = item.data; document.getElementById('categoria').value = item.categoria;
     document.getElementById('btnSalvar').innerHTML = '<i class="fas fa-save"></i> Salvar Alteração'; 
     
-    // ABRE O FORMULÁRIO (SEJA DESKTOP SCROLL OU MOBILE POPUP)
     const isMobile = window.innerWidth <= 1024;
-    if(isMobile) {
-        abrirFormularioMobile();
-    } else {
-        scrollToId('areaFormulario');
-    }
+    if(isMobile) abrirFormularioMobile();
+    else scrollToId('areaFormulario');
 }
 
 function remover(tipo, i){ if(confirm("Excluir?")){ dadosPorMes[mesAtual][tipo].splice(i,1); salvar(); render(); } }
@@ -654,11 +715,29 @@ function toggleCategoriaRow(tipo, idSafe) {
     render(); 
 }
 
+function calcularTotalReservaAcumulado() {
+    let total = 0;
+    Object.keys(dadosPorMes).forEach(mesKey => {
+        const mesDados = dadosPorMes[mesKey];
+        if(mesDados.pagar) {
+            mesDados.pagar.forEach(i => {
+                if(i.marcado && i.categoria === 'Reserva') total += i.valor;
+            });
+        }
+        if(mesDados.receber) {
+            mesDados.receber.forEach(i => {
+                if(i.marcado && i.categoria === 'Resgate Reserva') total -= i.valor;
+            });
+        }
+    });
+    return total;
+}
+
 function render() {
     garantirMes();
     const tRec = document.getElementById('tabelaReceber'); 
     const tPag = document.getElementById('tabelaPagar');
-    let totalRec = 0, totalPag = 0, totalReserva = 0, urgente = false;
+    let totalRec = 0, totalPag = 0, urgente = false;
     const hoje = new Date().toISOString().split('T')[0];
 
     ['receber', 'pagar'].forEach(tipo => {
@@ -674,13 +753,7 @@ function render() {
             
             if(item.marcado) { 
                 if(tipo === 'receber') totalRec += item.valor; 
-                else {
-                    totalPag += item.valor; 
-                    // Se for categoria Reserva, soma no card Reserva também
-                    if(item.categoria === 'Reserva') {
-                        totalReserva += item.valor;
-                    }
-                }
+                else totalPag += item.valor; 
             } else {
                 categoriasGroup[item.categoria].pendentes++;
                 pendentesTotaisDoTipo++;
@@ -751,11 +824,14 @@ function render() {
         if(tipo === 'receber') tRec.innerHTML = html; else tPag.innerHTML = html;
     });
 
+    const totalReservaAcumulado = calcularTotalReservaAcumulado();
+
     document.getElementById('bannerAlerta').style.display = urgente ? 'block' : 'none';
     animarValor('totalRecebido', totalRec); 
     animarValor('totalPago', totalPag); 
-    animarValor('totalReserva', totalReserva); 
+    animarValor('totalReserva', totalReservaAcumulado); 
     animarValor('saldo', totalRec - totalPag);
+    
     atualizarGrafico();
 }
 
@@ -772,16 +848,16 @@ function atualizarGrafico(){
 }
 
 const msgsCategoria = {
-    'Filho': "Os gastos com os pequenos estão no topo! Cuidar deles é prioridade, mas tentar planejar compras em atacado ou focar em promoções pode aliviar o caixa.",
-    'Supermercado': "O supermercado levou a maior fatia do orçamento. Fazer uma lista rigorosa antes de sair e evitar ir às compras com fome são dicas de ouro!",
-    'Alimentação': "Comer fora ou pedir delivery pesou bastante. Que tal separar uns dias na semana para cozinhar em casa? Faz bem pro bolso!",
-    'Lazer': "Você curtiu bastante esse mês! Lazer é fundamental, mas defina um teto máximo para não comprometer as contas essenciais.",
-    'Transporte': "Gastos com transporte estão altos. Avalie se o uso de apps de corrida está excessivo ou se é possível otimizar rotas.",
-    'Saúde': "A saúde cobrou seu preço. Lembre-se que bem-estar é investimento, mas sempre vale pesquisar preços em diferentes redes de farmácias.",
-    'Moradia': "Sua casa é o maior custo. Contas fixas são difíceis de cortar, mas tente revisar planos de internet, luz e água para economizar.",
-    'Credito': "Cartão de crédito/empréstimos dominaram as saídas! Muito cuidado com os juros, tente sempre abater o máximo possível dessas dívidas.",
-    'Assinaturas': "Muitos streamings e assinaturas? Faça uma limpa! Cancele temporariamente aqueles que você não usou nos últimos 30 dias.",
-    'default': "Fique de olho nesta categoria! Ela foi a campeã de gastos neste mês. Tente estabelecer um limite rigoroso para ela no próximo ciclo."
+    'Filho': "Os gastos com os pequenos estão no topo! Cuidar deles é prioridade.",
+    'Supermercado': "O supermercado levou a maior fatia do orçamento. Fazer uma lista rigorosa ajuda!",
+    'Alimentação': "Comer fora ou pedir delivery pesou bastante. Tente cozinhar mais em casa.",
+    'Lazer': "Você curtiu bastante esse mês! Defina um teto máximo para o lazer.",
+    'Transporte': "Gastos com transporte estão altos. Avalie rotas ou alternativas.",
+    'Saúde': "A saúde cobrou seu preço. Lembre-se que bem-estar é investimento.",
+    'Moradia': "Sua casa é o maior custo. Revise planos de internet e energia.",
+    'Credito': "Cuidado com o cartão de crédito e juros!",
+    'Assinaturas': "Muitos streamings? Cancele o que não usa.",
+    'default': "Fique de olho nesta categoria! Ela foi a campeã de gastos."
 };
 
 function abrirRelatorioCard(tipo) {
@@ -809,15 +885,13 @@ function abrirRelatorioCard(tipo) {
             </div>
             <h4 style="margin-bottom:10px; color: var(--text-light); text-transform:uppercase; font-size:0.8rem;">Todas as Entradas Realizadas</h4>
         `;
-        
-        if (recebidos.length === 0) corpo.innerHTML += '<p style="text-align:center; font-size:0.9rem;">Nenhuma entrada confirmada ainda.</p>';
         recebidos.forEach(item => {
             const data = item.data ? item.data.split('-').reverse().join('/') : '-';
             corpo.innerHTML += `<div class="item-list"><span>${data} - ${item.descricao}</span><span style="font-weight:bold; color:var(--success)">${formatar(item.valor)}</span></div>`;
         });
         
     } else if (tipo === 'pagar') {
-        titulo.innerText = "🔴 Resumo de Saídas e Hábitos";
+        titulo.innerText = "🔴 Resumo de Saídas";
         const totaisCat = {};
         const pagos = dadosPorMes[mesAtual].pagar.filter(i => i.marcado);
         pagos.forEach(i => { total += i.valor; totaisCat[i.categoria] = (totaisCat[i.categoria] || 0) + i.valor; });
@@ -840,66 +914,58 @@ function abrirRelatorioCard(tipo) {
             `;
         }
         corpo.innerHTML += `<h4 style="margin-bottom:10px; color: var(--text-light); text-transform:uppercase; font-size:0.8rem;">Todas as Saídas Realizadas</h4>`;
-        
-        if (pagos.length === 0) corpo.innerHTML += '<p style="text-align:center; font-size:0.9rem;">Nenhum pagamento confirmado ainda.</p>';
         pagos.forEach(item => {
-            const data = item.data ? item.data.split('-').reverse().join('/') : '-';
-            corpo.innerHTML += `<div class="item-list"><span>${data} - ${item.descricao} <small style="color:var(--text-light)">(${item.categoria})</small></span><span style="font-weight:bold; color:var(--danger)">${formatar(item.valor)}</span></div>`;
+             const data = item.data ? item.data.split('-').reverse().join('/') : '-';
+             corpo.innerHTML += `<div class="item-list"><span>${data} - ${item.descricao}</span><span style="font-weight:bold; color:var(--danger)">${formatar(item.valor)}</span></div>`;
         });
         
     } else if (tipo === 'reserva') {
-        titulo.innerText = "💰 Reserva de Emergência";
-        let totalRes = 0;
-        // Filtra apenas categoria Reserva
-        const reservas = dadosPorMes[mesAtual].pagar.filter(i => i.marcado && i.categoria === 'Reserva');
-        reservas.forEach(i => totalRes += i.valor);
-        
+        titulo.innerText = "💰 Detalhes da Reserva";
+        const totalAcumulado = calcularTotalReservaAcumulado();
+        let aportesMes = 0; dadosPorMes[mesAtual].pagar.filter(i => i.marcado && i.categoria === 'Reserva').forEach(i => aportesMes += i.valor);
+        let resgatesMes = 0; dadosPorMes[mesAtual].receber.filter(i => i.marcado && i.categoria === 'Resgate Reserva').forEach(i => resgatesMes += i.valor);
+
         corpo.innerHTML += `
-             <div class="insight-card" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);">
+            <div class="insight-card" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);">
                 <div class="insight-icon" style="background: var(--warning); color: white;"><i class="fas fa-piggy-bank"></i></div>
                 <div>
-                    <h4 style="margin:0; color: var(--text-dark);">Fundo de Segurança</h4>
-                    <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: var(--text-light);">
-                        Você separou <strong>${formatar(totalRes)}</strong> este mês. Parabéns pela disciplina! Isso é fundamental para sua tranquilidade.
+                    <h4 style="margin:0; color: var(--text-dark);">Saldo Total Guardado</h4>
+                    <p style="margin: 5px 0 0 0; font-size: 1.2rem; font-weight:bold; color: var(--warning);">
+                        ${formatar(totalAcumulado)}
                     </p>
                 </div>
             </div>
-            <h4 style="margin-bottom:10px; color: var(--text-light); text-transform:uppercase; font-size:0.8rem;">Aportes na Reserva</h4>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                 <button class="btn-green" onclick="operarReserva('depositar')"><i class="fas fa-plus-circle"></i> Guardar</button>
+                 <button class="btn-red" onclick="operarReserva('sacar')"><i class="fas fa-minus-circle"></i> Resgatar</button>
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; padding:10px; background:var(--glass-bg); border-radius:8px;">
+                 <span>Movimentação do Mês:</span>
+                 <span style="font-weight:bold;">+${formatar(aportesMes)} / -${formatar(resgatesMes)}</span>
+            </div>
         `;
-         if (reservas.length === 0) corpo.innerHTML += '<p style="text-align:center; font-size:0.9rem;">Nenhum aporte realizado neste mês.</p>';
-        reservas.forEach(item => {
-            const data = item.data ? item.data.split('-').reverse().join('/') : '-';
-            corpo.innerHTML += `<div class="item-list"><span>${data} - ${item.descricao}</span><span style="font-weight:bold; color:var(--warning)">${formatar(item.valor)}</span></div>`;
-        });
 
     } else if (tipo === 'saldo') {
-        titulo.innerText = "⚖️ Resumo de Balanço Realizado";
+        titulo.innerText = "⚖️ Balanço Disponível";
         let totalRec = 0; dadosPorMes[mesAtual].receber.filter(i=>i.marcado).forEach(i=>totalRec += i.valor);
         let totalPag = 0; dadosPorMes[mesAtual].pagar.filter(i=>i.marcado).forEach(i=>totalPag += i.valor);
         let saldoFinal = totalRec - totalPag;
-        
-        let corSaldo = saldoFinal >= 0 ? 'var(--success)' : 'var(--danger)';
-        let msgSaldo = saldoFinal >= 0 ? "Tudo sob controle! Você gastou menos do que ganhou até o momento. Mantenha o ritmo." : "Atenção máxima! Suas saídas já ultrapassaram suas entradas neste mês. Tente frear os gastos.";
+        const reservaTotal = calcularTotalReservaAcumulado();
 
         corpo.innerHTML += `
-            <div class="insight-card" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3);">
-                <div class="insight-icon" style="background: var(--info); color: white;"><i class="fas fa-wallet"></i></div>
-                <div>
-                    <h4 style="margin:0; color: var(--text-dark);">Seu Balanço Atual</h4>
-                    <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: var(--text-light);">${msgSaldo}</p>
-                </div>
-            </div>
-            
             <div style="background: var(--card-bg); border-radius: 12px; padding: 15px; border: 1px solid var(--border-color);">
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <span>Total de Entradas:</span> <span style="font-weight:bold; color:var(--success)">${formatar(totalRec)}</span>
+                    <span>Saldo Disponível (Carteira):</span> <span style="font-weight:bold; font-size:1.1rem; color:var(--info)">${formatar(saldoFinal)}</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:10px;">
-                    <span>Total de Saídas:</span> <span style="font-weight:bold; color:var(--danger)">${formatar(totalPag)}</span>
+                    <span>Guardado na Reserva:</span> <span style="font-weight:bold; color:var(--warning)">${formatar(reservaTotal)}</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; font-size:1.2rem; font-weight:bold;">
-                    <span>Saldo Líquido:</span> <span style="color:${corSaldo}">${formatar(saldoFinal)}</span>
+                    <span>Patrimônio Total:</span> <span style="color:var(--success)">${formatar(saldoFinal + reservaTotal)}</span>
                 </div>
+                <p style="font-size:0.8rem; color:var(--text-light); text-align:center; margin-top:10px;">* O saldo disponível já teve os valores da reserva descontados.</p>
             </div>
         `;
     }
@@ -912,22 +978,22 @@ function gerarRelatorioDiario() {
     dadosPorMes[mesAtual].receber.forEach(item => { totalEntradasGeral += item.valor; if (item.marcado) totalEntradasOk += item.valor; });
     dadosPorMes[mesAtual].pagar.forEach(item => { totalSaidasGeral += item.valor; if (item.marcado) totalSaidasOk += item.valor; });
 
-    const saldoGeral = totalEntradasGeral - totalSaidasGeral; const diferencaOk = totalEntradasOk - totalSaidasOk; 
+    const saldoGeral = totalEntradasGeral - totalSaidasGeral; 
+    const diferencaOk = totalEntradasOk - totalSaidasOk; 
     const corBalanco = saldoGeral >= 0 ? '#10b981' : '#ef4444'; const corRealizado = diferencaOk >= 0 ? '#10b981' : '#ef4444'; 
 
     let msgMotivacional = "";
-    if (diferencaOk > 2000) msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente. É um ótimo momento para separar uma parte para investimentos.";
-    else if (diferencaOk > 500) msgMotivacional = "👏 <strong>No Azul!</strong> Você tem dinheiro em caixa sobrando. Continue controlando para manter essa tranquilidade.";
-    else if (diferencaOk > 0) msgMotivacional = "😅 <strong>Positivo, mas cuidado!</strong> Tem dinheiro na conta, mas a margem é pequena. Evite gastos não planejados agora.";
-    else if (diferencaOk === 0) msgMotivacional = "⚖️ <strong>Zerado.</strong> Tudo o que entrou, saiu. Cuidado, qualquer imprevisto pode te levar para o vermelho.";
-    else msgMotivacional = "⚠️ <strong>Alerta de Caixa!</strong> Você gastou mais do que recebeu até agora. Segure as pontas nos próximos dias!";
+    if (diferencaOk > 2000) msgMotivacional = "🚀 <strong>Caixa Forte!</strong> Seu saldo real está excelente.";
+    else if (diferencaOk > 500) msgMotivacional = "👏 <strong>No Azul!</strong> Você tem dinheiro sobrando.";
+    else if (diferencaOk > 0) msgMotivacional = "😅 <strong>Positivo, mas cuidado!</strong>";
+    else msgMotivacional = "⚠️ <strong>Alerta de Caixa!</strong>";
 
     const corpo = document.getElementById('corpoRelatorio');
     document.getElementById('modalRelatorioTitulo').innerText = "📊 Relatório Financeiro Global";
     
     corpo.innerHTML = `
         <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corBalanco}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
-            <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">📊 Balanço Geral (Previsto)</h4>
+            <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">📊 Previsão Geral (Lançado)</h4>
             <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px;">
                 <span>Total Lançado:</span><span style="font-weight: bold;">${formatar(totalEntradasGeral)}</span>
             </div>
@@ -939,7 +1005,7 @@ function gerarRelatorioDiario() {
             </div>
         </div>
         <div style="background: rgba(0,0,0,0.02); border-left: 5px solid ${corRealizado}; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05);">
-            <h4 style="margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">💡 Realizado até agora</h4>
+            <h4 style="margin: 0 0 5px 0; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase;">💡 Realizado até agora (Pago/Recebido)</h4>
             <p style="margin: 0; font-size: 0.95rem; color: var(--text-dark);">
                 ${diferencaOk >= 0 ? '✅ Seu caixa está positivo em ' : '⚠️ Você gastou ' + formatar(Math.abs(diferencaOk)) + ' a mais do que recebeu '} 
                 <strong>${formatar(diferencaOk)}</strong>.

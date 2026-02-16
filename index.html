@@ -58,7 +58,6 @@
 
   @keyframes blushAnimation { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-  /* SIDEBAR */
   .sidebar { 
     width: 80px; background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -69,24 +68,13 @@
   .sidebar:hover { width: 280px; }
   body.dark-mode .sidebar { background: rgba(15, 23, 42, 0.8); }
 
-  /* LOGO AJUSTADO PARA ALINHAR COM ÍCONES */
   .logo { 
-    padding: 12px; /* Mesmo padding dos botões */
-    margin-bottom: 25px; 
-    display: flex; 
-    align-items: center;
-    overflow: hidden; 
-    white-space: nowrap; 
-    color: #000000;
-    font-size: 1.3rem; 
-    font-weight: 700;
+    padding: 12px; margin-bottom: 25px; display: flex; align-items: center;
+    overflow: hidden; white-space: nowrap; color: #000000;
+    font-size: 1.3rem; font-weight: 700;
   }
   .logo img {
-    height: 28px; /* Altura visual próxima aos ícones de fonte */
-    width: auto; 
-    min-width: 25px; /* Mesma largura mínima do ícone .btn-outline i */
-    object-fit: contain; 
-    margin-right: 10px; /* Mesma margem dos ícones */
+    height: 28px; width: auto; min-width: 25px; object-fit: contain; margin-right: 10px;
   }
   .logo span { opacity: 0; transition: 0.3s; transform: translateX(-10px); display: inline-block; }
   .sidebar:hover .logo span { opacity: 1; transform: translateX(0); }
@@ -104,7 +92,6 @@
   .sidebar .btn-outline span { opacity: 0; transform: translateX(-10px); transition: 0.3s; }
   .sidebar:hover .btn-outline span { opacity: 1; transform: translateX(0); }
 
-  /* MAIN CONTENT */
   .main-content { flex: 1; padding: 30px; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
   
   .card { 
@@ -127,7 +114,6 @@
   .card-primary { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3); }
   .card-reserva { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3); }
 
-  /* Alterado para Grid 4 */
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
@@ -136,19 +122,14 @@
     .desktop-only { display: none !important; } .mobile-only { display: block !important; }
     .sidebar { display: none; } 
     .main-content { padding: 20px; padding-bottom: 90px; }
-    .grid-4, .grid-2 { grid-template-columns: 1fr; gap: 15px; } /* Mobile vira 1 coluna */
+    .grid-4, .grid-2 { grid-template-columns: 1fr; gap: 15px; } 
   }
 
-  /* INPUTS */
   input, select { width: 100%; padding: 12px 15px; border: 1px solid rgba(255,255,255,0.4); border-radius: 12px; font-size: 0.95rem; background: var(--input-bg); color: var(--text-dark); outline: none; transition: 0.3s; font-family: 'Poppins', sans-serif; }
   input:focus, select:focus { background: rgba(255,255,255,0.9); border-color: #a855f7; box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2); }
   select option { background-color: #ffffff; color: #1e293b; }
   
-  body.dark-mode input, body.dark-mode select {
-    background-color: #1e293b !important;
-    color: #ffffff !important;
-    border-color: rgba(255,255,255,0.2);
-  }
+  body.dark-mode input, body.dark-mode select { background-color: #1e293b !important; color: #ffffff !important; border-color: rgba(255,255,255,0.2); }
   body.dark-mode select option { background-color: #1e293b; color: #f1f5f9; }
 
   button { padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem; transition: 0.3s; font-family: 'Poppins', sans-serif; }
@@ -160,7 +141,6 @@
   .btn-edit { color: var(--warning); background: rgba(245, 158, 11, 0.1); }
   .btn-del { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
   
-  /* Botões de ação rápida no relatório */
   .btn-green { background: var(--success); color: white; width: 100%; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
   .btn-red { background: var(--danger); color: white; width: 100%; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
 
@@ -247,7 +227,7 @@
   <div class="logo">
     <img src="logo.png.png" alt="Logo" class="logo-img"> 
     <span>RE Solution</span>
-</div>
+  </div>
   
   <div class="sidebar-section">
     <div class="sidebar-label">Mês</div>
@@ -288,6 +268,9 @@
     </button>
     <button class="btn-outline" onclick="document.getElementById('inputImport').click()">
         <i class="fas fa-file-import"></i> <span>Restaurar</span>
+    </button>
+    <button class="btn-outline" onclick="if(window.fazerLogout) window.fazerLogout()" style="color:var(--danger); border-color:var(--danger);">
+        <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
     </button>
     <input type="file" id="inputImport" style="display:none" onchange="importarDados(event)">
   </div>
@@ -470,6 +453,7 @@
       <label>Dados</label>
       <button class="btn-outline" style="color:var(--text-dark); border-color:var(--text-light);" onclick="exportarDados()">Baixar Backup</button>
       <button class="btn-outline" style="color:var(--text-dark); border-color:var(--text-light);" onclick="document.getElementById('inputImport').click()">Restaurar Backup</button>
+      <button class="btn-outline" style="color:var(--danger); border-color:var(--danger); margin-top: 10px;" onclick="if(window.fazerLogout) window.fazerLogout()">Sair da Conta Google</button>
     </div>
   </div>
 </div>
@@ -485,13 +469,13 @@
 </div>
 
 <script>
-let dadosPorMes = JSON.parse(localStorage.getItem('financeiroDados2026') || '{}');
-let mesSalvo = localStorage.getItem('mesSelecionado') || '2026-01';
-let mesAtual = mesSalvo;
-let editandoIndex = null;
-let editandoTipo = null;
-
-let categoriasExpandidas = { receber: {}, pagar: {} };
+var dadosPorMes = JSON.parse(localStorage.getItem('financeiroDados2026') || '{}');
+var mesSalvo = localStorage.getItem('mesSelecionado') || '2026-01';
+var mesAtual = mesSalvo;
+var editandoIndex = null;
+var editandoTipo = null;
+var categoriasExpandidas = { receber: {}, pagar: {} };
+var dicaAtual = 0;
 
 const dicasFinanceiras = [
     "<strong>Regra 50/30/20:</strong> Tente usar 50% da renda no essencial, 30% em lazer e 20% para investir.",
@@ -503,34 +487,19 @@ const dicasFinanceiras = [
     "<strong>Dívidas:</strong> Evite ao máximo o rotativo do cartão de crédito. Os juros podem destruir o seu planejamento mensal.",
     "<strong>Supermercado:</strong> Evite fazer compras com fome. Estudos mostram que isso reduz os gastos por impulso em até 20%!"
 ];
-let dicaAtual = 0;
-
-function iniciarSliderDicas() {
-    const tipEl = document.getElementById('tipText');
-    if(!tipEl) return;
-    tipEl.innerHTML = dicasFinanceiras[dicaAtual];
-    
-    setInterval(() => {
-        tipEl.classList.add('tip-hidden'); 
-        setTimeout(() => {
-            dicaAtual = (dicaAtual + 1) % dicasFinanceiras.length;
-            tipEl.innerHTML = dicasFinanceiras[dicaAtual];
-            tipEl.classList.remove('tip-hidden'); 
-        }, 500); 
-    }, 30000); 
-}
-
-document.getElementById('mes').value = mesAtual;
-if(document.getElementById('mesMobile')) document.getElementById('mesMobile').value = mesAtual;
-if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
 
 window.onload = () => {
+  document.getElementById('mes').value = mesAtual;
+  if(document.getElementById('mesMobile')) document.getElementById('mesMobile').value = mesAtual;
+  if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
+
   render(); 
   atualizarLabelTopo(); 
   iniciarSliderDicas(); 
   
   const fotoSalva = localStorage.getItem('fotoPerfilUsuario');
   if (fotoSalva) document.getElementById('imgPerfil').src = fotoSalva;
+  
   const isMobile = window.innerWidth <= 1024;
   if(!isMobile) document.getElementById('navMobile').style.display = 'none';
 };
@@ -541,6 +510,20 @@ window.onresize = () => {
    document.querySelector('.sidebar').classList.toggle('d-lg-flex', !isMobile);
 }
 
+function iniciarSliderDicas() {
+    const tipEl = document.getElementById('tipText');
+    if(!tipEl) return;
+    tipEl.innerHTML = dicasFinanceiras[dicaAtual];
+    setInterval(() => {
+        tipEl.classList.add('tip-hidden'); 
+        setTimeout(() => {
+            dicaAtual = (dicaAtual + 1) % dicasFinanceiras.length;
+            tipEl.innerHTML = dicasFinanceiras[dicaAtual];
+            tipEl.classList.remove('tip-hidden'); 
+        }, 500); 
+    }, 30000); 
+}
+
 function scrollToId(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
 
 function toggleDarkMode() {
@@ -549,7 +532,12 @@ function toggleDarkMode() {
   atualizarGrafico();
 }
 
-function salvar(){ localStorage.setItem('financeiroDados2026', JSON.stringify(dadosPorMes)); }
+function salvar(){ 
+    localStorage.setItem('financeiroDados2026', JSON.stringify(dadosPorMes)); 
+    // Tenta salvar na nuvem se o Firebase estiver conectado
+    if(typeof window.salvarNaNuvem === 'function') window.salvarNaNuvem();
+}
+
 function garantirMes(){ if(!dadosPorMes[mesAtual]) dadosPorMes[mesAtual] = { receber: [], pagar: [] }; }
 function formatar(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
 
@@ -600,7 +588,6 @@ function animarValor(id, valorFinal) {
     requestAnimationFrame(update);
 }
 
-// === FUNÇÕES DO POPUP MOBILE ===
 function abrirFormularioMobile() {
     const form = document.getElementById('areaFormulario');
     form.classList.add('mobile-popup');
@@ -615,45 +602,26 @@ function fecharFormularioMobile() {
     }
 }
 
-// === FUNÇÃO DE TRANSAÇÃO RÁPIDA DENTRO DO RELATÓRIO ===
 function realizarTransacaoReserva(tipo) {
     const input = document.getElementById('inputValorReserva');
     const valor = Number(input.value);
     
-    if(!valor || valor <= 0) {
-        alert("Digite um valor válido.");
-        return;
-    }
-
+    if(!valor || valor <= 0) { alert("Digite um valor válido."); return; }
     const hoje = new Date().toISOString().split('T')[0];
     garantirMes();
 
     if(tipo === 'depositar') {
         dadosPorMes[mesAtual].pagar.push({
-            descricao: 'Aporte Reserva',
-            valor: valor,
-            data: hoje,
-            categoria: 'Reserva',
-            marcado: true
+            descricao: 'Aporte Reserva', valor: valor, data: hoje, categoria: 'Reserva', marcado: true
         });
         categoriasExpandidas['pagar']['Reserva'] = true;
     } else {
          dadosPorMes[mesAtual].receber.push({
-            descricao: 'Resgate Reserva',
-            valor: valor,
-            data: hoje,
-            categoria: 'Resgate Reserva',
-            marcado: true
+            descricao: 'Resgate Reserva', valor: valor, data: hoje, categoria: 'Resgate Reserva', marcado: true
         });
         categoriasExpandidas['receber']['ResgateReserva'] = true;
     }
-
-    salvar();
-    render(); // Atualiza os dados de fundo
-    abrirRelatorioCard('reserva'); // Recarrega o modal para mostrar saldo atualizado
-    
-    // Feedback visual opcional
-    // alert(tipo === 'depositar' ? "Guardado com sucesso!" : "Resgatado com sucesso!");
+    salvar(); render(); abrirRelatorioCard('reserva'); 
 }
 
 function adicionar(){
@@ -676,8 +644,7 @@ function adicionar(){
     document.getElementById('btnSalvar').innerHTML = '<i class="fas fa-plus-circle"></i> Adicionar Lançamento';
     document.getElementById('descricao').value = ''; document.getElementById('valor').value = '';
     
-    salvar(); render();
-    fecharFormularioMobile();
+    salvar(); render(); fecharFormularioMobile();
 }
 
 function prepararEdicao(tipo, index){
@@ -705,14 +672,10 @@ function calcularTotalReservaAcumulado() {
     Object.keys(dadosPorMes).forEach(mesKey => {
         const mesDados = dadosPorMes[mesKey];
         if(mesDados.pagar) {
-            mesDados.pagar.forEach(i => {
-                if(i.marcado && i.categoria === 'Reserva') total += i.valor;
-            });
+            mesDados.pagar.forEach(i => { if(i.marcado && i.categoria === 'Reserva') total += i.valor; });
         }
         if(mesDados.receber) {
-            mesDados.receber.forEach(i => {
-                if(i.marcado && i.categoria === 'Resgate Reserva') total -= i.valor;
-            });
+            mesDados.receber.forEach(i => { if(i.marcado && i.categoria === 'Resgate Reserva') total -= i.valor; });
         }
     });
     return total;
@@ -764,7 +727,6 @@ function render() {
             const displayRow = isExpanded ? 'table-row' : 'none';
             const iconRot = isExpanded ? 'rotate(90deg)' : 'rotate(0deg)';
             const corBorda = tipo === 'receber' ? 'var(--success)' : 'var(--danger)';
-            
             const badgeCategoria = categoriasGroup[cat].pendentes > 0 ? `<i class="fas fa-circle dot-pendente" title="Há itens pendentes"></i>` : '';
 
             html += `
@@ -1010,5 +972,62 @@ function gerarRelatorioDiario() {
 function exportarDados() { const blob = new Blob([JSON.stringify(dadosPorMes)], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "financeiro_blush.json"; a.click(); }
 function importarDados(e) { const reader = new FileReader(); reader.onload = (ev) => { dadosPorMes = JSON.parse(ev.target.result); salvar(); render(); alert("Restaurado!"); }; reader.readAsText(e.target.files[0]); }
 </script>
+
+
+<script type="module">
+    import { auth, db } from './config.js';
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    window.usuarioLogado = null;
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            window.usuarioLogado = user;
+            
+            // Traz foto do Google
+            if(user.photoURL) document.getElementById('imgPerfil').src = user.photoURL;
+
+            // Busca os dados da Nuvem para o app
+            const docRef = doc(db, "usuarios", user.uid);
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    window.dadosPorMes = docSnap.data().financeiro || {};
+                    window.render(); // Atualiza a tela com o que veio da nuvem
+                } else {
+                    // Se não tem na nuvem, pega o que o cara tinha salvo local e manda pra nuvem
+                    window.salvarNaNuvem();
+                }
+            } catch (error) {
+                console.error("Erro ao puxar dados da nuvem", error);
+            }
+        } else {
+            // Se abrir sem estar logado, manda pro login
+            window.location.href = "login.html";
+        }
+    });
+
+    // Esta função é chamada automaticamente pelo botão salvar() do Script 1
+    window.salvarNaNuvem = async function() {
+        if (!window.usuarioLogado) return;
+        try {
+            await setDoc(doc(db, "usuarios", window.usuarioLogado.uid), {
+                financeiro: window.dadosPorMes,
+                ultimoAcesso: new Date().toISOString()
+            });
+        } catch (e) {
+            console.error("Erro ao mandar pra nuvem:", e);
+        }
+    }
+
+    // Funciona para o botão sair
+    window.fazerLogout = function() {
+        if(confirm("Deseja desconectar sua conta da nuvem?")) {
+            signOut(auth).then(() => window.location.href = "login.html");
+        }
+    }
+</script>
+
 </body>
 </html>
